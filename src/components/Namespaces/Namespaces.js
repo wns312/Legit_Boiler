@@ -19,7 +19,7 @@ const Namespaces = () => {
 
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
-    })
+    })//완성⭐
 
     Socket.on('currentNs', (ns)=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
       dispatch(inputCurrentNs(ns)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다

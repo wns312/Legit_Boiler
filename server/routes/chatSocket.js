@@ -8,7 +8,7 @@ const Room = require('../classes/Room');
 
 module.exports = function (io) {
   const router = express.Router();
-  //Ns, Room 세팅
+  //Ns, Room 세팅        
   io.on("connection", (socket) => {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
 
