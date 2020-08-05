@@ -1,4 +1,4 @@
-import {SOCKET,  CURRENT_ROOM, ROOM_DATA, NS_LIST, CURRENT_NS} from './types'
+import {SOCKET,  CURRENT_ROOM, ROOM_LIST, NS_LIST, CURRENT_NS} from './types'
 //소켓
 export function inputSocket(nsSocket) {
   return {
@@ -20,10 +20,10 @@ export function inputCurrentNs(currentNs) {
   }
 }
 //방관련
-export function inputRoomData(roomData) {
+export function inputRoomList(roomList) {
   return {
-    type : ROOM_DATA,
-    payload : roomData
+    type : ROOM_LIST,
+    payload : roomList
   }
 }
 export function inputCurrentRoom(currentRoom) {

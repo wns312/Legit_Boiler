@@ -5,11 +5,11 @@ import CreateRoom from "../CreateRoom/CreateRoom";
 import InviteNs from "../InviteNs/InviteNs";
 import CreateDM from "../CreateDM/CreateDM";
 import {useDispatch, useSelector} from 'react-redux';
-import {inputSocket, inputCurrentNs, inputCurrentRoom, inputRoomData} from '../../_actions/chat_action'
+import {inputSocket, inputCurrentNs, inputCurrentRoom, inputRoomList} from '../../_actions/chat_action'
 let Socket = ''
 const Rooms = () => {
   let {_id} = useSelector(state=>state.user.userData)
-  let {roomData, currentNs} = useSelector(state=>state.chatInfo)
+  let {roomList, currentNs} = useSelector(state=>state.chatInfo)
   let {nsTitle} = currentNs // nsId
   const dispatch =useDispatch();
 
@@ -22,7 +22,7 @@ const Rooms = () => {
     // 방목록 : roomId / namespace / history ( / roomTitle / isPrivate / isDM )  
     Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대하고 나서 (전체룸로드)
       console.log("nsRoomLoad 실행");
-      dispatch(inputRoomData(rooms));
+      dispatch(inputRoomList(rooms));
     });
     
     Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
@@ -40,8 +40,8 @@ const Rooms = () => {
       return ()=>{ console.log(`[${nsTitle}] NS에서 나갔습니다`); }// 왜 나가지도 않았는데 실행되는가?? 함수안에서 사용하지 않았기 때문이다
   }, [nsTitle, _id, dispatch])
 
-  function roomList() {
-    let tmproom = roomData.filter((room)=> (room.isDM === undefined) )
+  function getroomList() {
+    let tmproom = roomList.filter((room)=> (room.isDM === undefined) )
     const newList= tmproom.map((room, index) => {
       let isPrivateLogo = (room.isPrivate ? "lock" : "globe")
       return (
@@ -53,8 +53,8 @@ const Rooms = () => {
     return newList
   }
 
-  function dmList() {
-    let tmproom = roomData.filter((room)=> room.isDM === true ) // 내가 참여한 모든 DM방 목록
+  function getdmList() {
+    let tmproom = roomList.filter((room)=> room.isDM === true ) // 내가 참여한 모든 DM방 목록
     const newList= tmproom.map((room, index) => { // 내가 포함된 dm방 전체데이터를 map한다
       let dataOfOpponent = room.member.find(ele=>ele._id !==_id)
       return (dataOfOpponent) // 리스트가 하나라도 있을 경우
@@ -74,13 +74,13 @@ const Rooms = () => {
     <div className="col-sm-2 rooms"><br/>
       <h3>Rooms</h3>
       <ul className="room-list">
-        {roomData && roomList()}<br/> {/* 방데이터가 있어야 방목록을 불러온다 */}
+        {roomList && getroomList()}<br/> {/* 방데이터가 있어야 방목록을 불러온다 */}
         <CreateRoom></CreateRoom>
       </ul>
       <hr/>
       <h3>Direct Message</h3>
       <ul className="room-list">
-        {roomData && dmList()}<br/> {/* 마찬가지로 방데이터가 있어야 DM목록을 불러온다 */}
+        {roomList && getdmList()}<br/> {/* 마찬가지로 방데이터가 있어야 DM목록을 불러온다 */}
         <CreateDM></CreateDM>
       </ul>
       <hr/> <br/><br/>

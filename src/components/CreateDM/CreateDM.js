@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 
 const CreateDM = () => {
   let {_id} = useSelector(state=>state.user.userData) // 본인의 아이디
-  let {nsSocket, currentNs, roomData} = useSelector(state=>state.chatInfo)
+  let {nsSocket, currentNs, roomList} = useSelector(state=>state.chatInfo)
   let memberList = currentNs.nsMember // 이 네임스페이스의 멤버리스트
   let MemberArray = list(memberList, _id) // 나를 뺀 멤버배열
 
@@ -27,7 +27,7 @@ const CreateDM = () => {
     if (invitedMembers !== undefined) {
       let invitedId = invitedMembers._id
       let member = [_id, invitedId].sort(); //둘을 이어붙인게 방이름이 될 것 (다른ns에서 중복여부는 특정 ns인 경우만 찾아올거라 괜찮음)
-      let sameroom = roomData.find((room)=>{
+      let sameroom = roomList.find((room)=>{
         return room.roomTitle === (member[0]+member[1])
       })
       sameroom===undefined // DM방이 존재여부 (없을때)

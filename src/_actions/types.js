@@ -6,5 +6,5 @@ export const AUTH_USER = 'auth_user';
 export const SOCKET = 'socket';
 export const NS_LIST = 'ns_list';
 export const CURRENT_NS = 'current_ns';
-export const ROOM_DATA = 'room_data';
+export const ROOM_LIST = 'room_list';
 export const CURRENT_ROOM = 'current_room';

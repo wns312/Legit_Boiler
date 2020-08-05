@@ -1,4 +1,4 @@
-import {SOCKET, NS_LIST, CURRENT_NS, ROOM_DATA, CURRENT_ROOM } from '../_actions/types'
+import {SOCKET, NS_LIST, CURRENT_NS, ROOM_LIST, CURRENT_ROOM } from '../_actions/types'
 
 export default function (state={}, action) {
   switch (action.type) {
@@ -10,8 +10,8 @@ export default function (state={}, action) {
     case CURRENT_NS:
       return {...state, currentNs : action.payload}
 
-    case ROOM_DATA:
-      return {...state, roomData : action.payload}      
+    case ROOM_LIST:
+      return {...state, roomList : action.payload}      
     case CURRENT_ROOM:
       return {...state, currentRoom : action.payload}
 

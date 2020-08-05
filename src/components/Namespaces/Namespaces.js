@@ -6,7 +6,7 @@ import Chat from '../Chat/Chat'
 import CreateNS from "../CreateNS/CreateNS"
 // import NavBar from "../NavBar/NavBar"
 import {useSelector, useDispatch} from 'react-redux';
-import {inputCurrentNs, inputNsList, inputCurrentRoom, inputRoomData} from '../../_actions/chat_action'
+import {inputCurrentNs, inputNsList, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket=""
 const Namespaces = () => {
   let {nsList, currentNs, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
