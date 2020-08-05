@@ -20,7 +20,7 @@ const InviteRoom = () => {
     let invitedMembers = MemberArray.find(member=> (member.email===Email) )
     if (invitedMembers !== undefined) {
       //네임스페이스 식별자도 보내야함
-      nsSocket.emit('inviteToRoom', {nsTitle : currentNs.nsTitle, roomId : currentRoom._id , invitedUserId : invitedMembers._id})
+      nsSocket.emit('inviteToRoom', {roomId : currentRoom._id , invitedUserId : invitedMembers._id})
     }else {
       message.error("이미 초대된 유저이거나 일치하는 유저가 없습니다");
     }

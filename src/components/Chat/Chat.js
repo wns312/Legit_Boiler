@@ -73,7 +73,9 @@ const Chat = () => {
       </div>
       )
     }else{ // dm이면
-      let dataOfOpponent = currentRoom.member.find(_id=> (_id !==userData._id) )
+      let dataOfOpponent = currentRoom.member.find(ele=> {
+        return(ele._id !==userData._id)
+      } )
       return (<div className="col-sm-3"><span className="curr-room-text">{dataOfOpponent.name}</span></div>)
     }
   }

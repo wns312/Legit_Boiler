@@ -9,7 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {inputCurrentNs, inputNsList, inputCurrentRoom, inputRoomData} from '../../_actions/chat_action'
 let Socket=""
 const Namespaces = () => {
-  let {nsList, roomData, currentNs, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
+  let {nsList, currentNs, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
@@ -26,7 +26,7 @@ const Namespaces = () => {
       // dispatch(inputCurrentRoom("")); // 클릭시 바로 이거 실행되게 해서 주석잡았음
     })
     
-    Socket.on("newRoomLoad", (rooms) => { // 초대받은 방을 로드
+    Socket.on("newRoomLoad", (rooms) => { // 문제점 : 다른ns있을지도 모르는데 소켓있다고 로드해버리면안됨
       dispatch(inputRoomData(rooms));
     });
 
@@ -51,11 +51,10 @@ const Namespaces = () => {
   function handleNsList(element){ // 2. 만약에 클릭시 정보를 받아온다고 했을때, 여기서 각 ns에 대한 emit이나 post요청을 해야한다
     let {nsTitle} = element;
     if(Title !== nsTitle) {
+      console.log("새로운 ns로드 실행");
       dispatch(inputCurrentRoom(""));
       setTitle(nsTitle);
-      //여기 내용 전부를 현재 NS를 서버에 요청하고 받아 온 뒤 실행하도록 바꾸기 (axios여도 될거같다) 내 _id와 현 nsTitle을를 보내야한다
-      Socket.emit('clickNs', {nsTitle});
-      
+      Socket.emit('clickNs', {nsTitle}); // 현재NS 갱신을 위한 요청
       console.log(`[${nsTitle}] NS에 입장했습니다`);
     }
     // console.log(`[${Title}] / [${title}]`);

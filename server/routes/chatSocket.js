@@ -10,7 +10,6 @@ module.exports = function (io) {
   const router = express.Router();
   //Ns, Room 세팅
   io.on("connection", (socket) => {
-    console.log("루트소켓id "+socket.id); // 소켓id : 이걸 DB저장해주므로써 나중에 초대한 인원에게만 emit을 보낼 수 있게된다
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
     
     NsModel.find({nsMember : _id}).select('nsTitle img')//접속시 nsList전송
@@ -25,7 +24,7 @@ module.exports = function (io) {
       let {nsTitle}= data
       NsModel.findOne({nsTitle}).populate('nsMember', 'email name socket image').select('nsTitle nsMember')
       .exec((err, doc)=>{
-        console.log(doc);
+        console.log("클릭한 네임스페이스 : "+doc);
         socket.emit('clickedNs', doc)
       })
     })
@@ -58,7 +57,9 @@ module.exports = function (io) {
     });
   });
   //애초에 서버가 켜지는 시점이므로 각 유저 접속시마다 켜면 안된다. 따라서 서버켜질 때 조회가 맞고, 추가되는 Ns는 추가로 켜주는게 맞는 것 같다
-  NsModel.find({}).exec((err, docs) => {
+  NsModel.find({}) // 최소한의 정보로 ns 소켓서버만 켜주고 안에서는 연결시 다시 ns를 받아와야 맞는거 아닌가?
+  .select('nsTitle endpoint')
+  .exec((err, docs) => {
     docs.forEach((ns) => {
       let NS_io = io.of(ns.endpoint)
       NS_io.on('connection', (nsSocket) => {
@@ -72,8 +73,7 @@ module.exports = function (io) {
   // nsSettings는 클릭한 Ns의 Room목록을 로드 한 뒤 updateRoomInNs, joinRoomInNs, sendMessageToClients를 호출한다
   function nsSettings(io, NS_io, nsSocket, ns) { // 사실 모든방을 받아오는데, 이것도 개인화된 방으로 바꿀 수 있는 여지가 있어보임
     let {handshake : {query : {_id}}}= nsSocket
-    console.log("내 유저_id "+_id); // 얘는 내 유저_id
-    console.log("ns의 소켓id "+nsSocket.id); // 얘는 NS소켓id
+    // _id : 얘는 내 유저_id nsSocket.id :  얘는 NS소켓id 
     //본인한테 맞는 방을 가져왔다
     RoomModel.find({nsEndpoint : ns.endpoint, member : _id})
     .populate('member', "name")
@@ -83,7 +83,7 @@ module.exports = function (io) {
     });
 
     nsSocket.on('clickRoom', (_id)=>{
-      console.log(_id);
+      console.log("클릭한 방 id : "+_id);
       //여기서 db접근해서 data로 방 상세정보 찾아오고 추후 history도 합쳐준다?(이건생각해보기)
       RoomModel.findOne({_id})
       .populate('member', "email name image")
@@ -104,7 +104,7 @@ module.exports = function (io) {
     })
     
     nsSocket.on("inviteToNs", (data)=>{
-      inviteNS(io, NS_io, nsSocket, data);
+      inviteNS(io, NS_io, nsSocket, ns, data);
     });
 
     nsSocket.on("NewDM", (data)=>{
@@ -112,7 +112,7 @@ module.exports = function (io) {
     })
 
     nsSocket.on('inviteToRoom', (data)=>{
-      inviteRoom(io, nsSocket, data);
+      inviteRoom(io, nsSocket, ns, data);
     })
 
     nsSocket.on('newMessageToServer', (data) => {//방에서 메시지를 받아서 '그 방으로' 메시지 보내기
@@ -123,7 +123,7 @@ module.exports = function (io) {
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
   function joinRoomInNs(NS_io, nsSocket,  ns, roomToJoin, numberOfUsersCallback) {
     let roomToLeave = Object.keys(nsSocket.rooms)[1];
-    console.log(roomToJoin);
+    console.log("참여하려는 방 이름 : "+roomToJoin);
     if (roomToLeave !== roomToJoin) {   // if문에 전체 명령을 넣어서 조건이 안맞을시 아무 코드도 실행 x
       nsSocket.leave(roomToLeave); //같은방 두번클릭시 leave만 되고 join이 안됨
       (roomToLeave !== undefined) && updateUsersInRoom(NS_io, roomToLeave); // 나갈때 적용
@@ -146,7 +146,8 @@ module.exports = function (io) {
   //방을 만들때 방유저목록에 생성한 유저를 추가
   function createRoomInNs(NS_io, nsSocket, ns, data) {
     //공개방일 경우 모든 멤버를 방에 추가. (따라서 nsMember를받아와야함? 모름)
-    let {RoomName, nsTitle, isPrivate} = data; // _id와 ids
+    let {RoomName, isPrivate} = data; // _id와 ids
+    let {nsTitle} = ns
     let newRoom = new Room(RoomName, ns._id, `/${nsTitle}`, isPrivate);
 
     data.isPrivate ? (newRoom.addMember(data._id)) : (newRoom.member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
@@ -169,8 +170,9 @@ module.exports = function (io) {
     })
   }
 
-  function inviteNS(io, NS_io, nsSocket, data) {
-    let {email, nsId} = data //이메일을 입력하면, nsMember에 당연히 없으므로 DB에서 검색 먼저 해야한다 
+  function inviteNS(io, NS_io, nsSocket, ns, data) {
+    let {email, nsId} = data //이메일을 입력하면, nsMember에 당연히 없으므로 DB에서 검색 먼저 해야한다
+    let {_id} = ns
     //(이건 진짜로 라우터로 먼저 유저 찾고나서 그다음 socket.emit 해도 될거같은데..)
     User.findOne({email}).select('email name socket').exec()
     .then((doc)=>{ //공개방 유저목록에 초대받은 유저 추가
@@ -181,13 +183,14 @@ module.exports = function (io) {
       return doc
     })
     .then((doc)=>{//네임스페이스의 유저목록에 신규유저 추가하고 접속중인 ns유저들에게 새 목록을 보내준다
-      NsModel.findOneAndUpdate({_id : nsId }, {$addToSet : {nsMember : doc._id}}, {new : true} )
+      NsModel.findOneAndUpdate({_id}, {$addToSet : {nsMember : doc._id}}, {new : true} )
       .populate('nsMember', 'email name socket image').select('nsTitle nsMember')
       .exec((err, ns)=>{
-        NS_io.emit('updateNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)
+        NS_io.emit('updatecurrentNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)
 
         NsModel.find({nsMember : doc._id}).select('nsTitle img').exec((err, nsArray)=>{
-          console.log(nsArray[nsArray.length-1]);
+          console.log("NS초대 시 조회가 제대로 되었는가? : "+nsArray[nsArray.length-1]);
+          console.log("NS초대시 보내려는 socket id : "+doc.socket);
           if(doc.socket) io.to(doc.socket).emit("nsList", nsArray);
         });
 
@@ -200,9 +203,11 @@ module.exports = function (io) {
 
   //상대와 나에게만 추가하면된다 (상대에겐 아직 추가안함, 이것도 data해서 나중에 여기서 sort해서 내id와 상대id 구분해서 상대에게도 emit보내주어야함)
   function createDM(io, nsSocket, ns, data) { // dm방 생성임
-    let {nsTitle, invitedId} = data; // 상대의 _id(초대받은사람)
+    let {invitedId} = data; // 상대의 _id(초대받은사람)
+    let {nsTitle} = ns
     let {handshake : {query : {_id}}}= nsSocket // 만든 사람의 _id(본인)
     let member= [invitedId, _id].sort() // sort한 멤버목록
+    console.log(ns); // 서버 구동 시점의 ns의 정보들 : nsMember / rooms / _id / nstitle / img / endpoint
     //여기서도 nsSocket에 내 유저_id가 있으므로 상대member꺼만 가져와서 sort해주어서 배열을 만들어주면 된다
     let room = new RoomModel({roomTitle : (member[0]+member[1]) ,namespace: ns._id, nsEndpoint : `/${nsTitle}`, member, isDM : true});
     room.save()
@@ -221,8 +226,8 @@ module.exports = function (io) {
     .then((doc)=>{ // 상대아이디 방검색 결과를 뿌려줌
       User.findOne({_id : invitedId})
       .exec((err, user)=>{
-        console.log("소켓있니 ? "+user.socket);
-        io.to(user.socket).emit('newRoomLoad', doc)
+        console.log("DM 초대시 상대의 소켓id : "+user.socket);
+        io.to(user.socket).emit('newRoomLoad', doc) // 문제점 : 다른ns있을지도 모르는데 소켓있다고 로드해버리면안됨
       })
     })
 
@@ -235,8 +240,9 @@ module.exports = function (io) {
     })
   }
 
-  function inviteRoom(io, nsSocket, data) { 
-    let { nsTitle, roomId, invitedUserId} = data
+  function inviteRoom(io, nsSocket, ns, data) { 
+    let {roomId, invitedUserId} = data
+    let {nsTitle} = ns
     RoomModel.findOneAndUpdate({_id : roomId}, { $addToSet : {member : invitedUserId}}, { new : true})
     .select('-history -__v -createdAt -updatedAt').exec()
     .then((data)=>{
@@ -251,7 +257,7 @@ module.exports = function (io) {
         .populate('member', "email name image")
         .select("-history -createdAt -updatedAt -__v")
         .exec((err, rooms) => {
-          io.to(doc.socket).emit('newRoomLoad', rooms) // 이거 안되면 새로 메소드 만들어서 io에 붙여주어야함?
+          io.to(doc.socket).emit('newRoomLoad', rooms) // 문제점 : 다른ns있을지도 모르는데 소켓있다고 로드해버리면안됨
         });
       }
     })

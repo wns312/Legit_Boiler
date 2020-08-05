@@ -25,14 +25,13 @@ const CreateDM = () => {
     e.preventDefault();
     let invitedMembers = MemberArray.find(member=> (member.email ===Email) )
     if (invitedMembers !== undefined) {
-      let nsTitle = currentNs.nsTitle
       let invitedId = invitedMembers._id
       let member = [_id, invitedId].sort(); //둘을 이어붙인게 방이름이 될 것 (다른ns에서 중복여부는 특정 ns인 경우만 찾아올거라 괜찮음)
       let sameroom = roomData.find((room)=>{
         return room.roomTitle === (member[0]+member[1])
       })
       sameroom===undefined // DM방이 존재여부 (없을때)
-        ? nsSocket.emit("NewDM", {nsTitle, invitedId}) // DM방이 존재하지 않으면
+        ? nsSocket.emit("NewDM", {invitedId}) // DM방이 존재하지 않으면
         : message.error("이미 방이 존재합니다") // DM방이 존재하면      
     }else{ // 이메일이 일치하는 멤버가 없으면
       message.error("이메일을 바르게 입력했는지 확인하세요");

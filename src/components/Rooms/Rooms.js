@@ -24,7 +24,7 @@ const Rooms = () => {
       dispatch(inputRoomData(rooms));
     });
     
-    Socket.on('updateNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
+    Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
       dispatch(inputCurrentNs(ns));
     })
 

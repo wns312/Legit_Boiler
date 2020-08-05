@@ -27,7 +27,7 @@ const InviteNs = () => {
     if (invitedMember) {
       message.error("이미 초대된 멤버입니다")
     }else{
-      nsSocket.emit("inviteToNs", {email : Email, nsId : currentNs._id});
+      nsSocket.emit("inviteToNs", {email : Email});
     }
     setOpen(false);
     setEmail("");
