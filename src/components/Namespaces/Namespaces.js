@@ -4,7 +4,7 @@ import { message } from "antd";
 import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import CreateNS from "../CreateNS/CreateNS"
-// import NavBar from "../NavBar/NavBar"
+// import NavBar from "../NavBar/NavBar" 푸시테스트
 import {useSelector, useDispatch} from 'react-redux';
 import {inputCurrentNs, inputNsList, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket=""
