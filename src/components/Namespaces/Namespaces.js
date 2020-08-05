@@ -21,14 +21,10 @@ const Namespaces = () => {
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
     })
 
-    Socket.on('clickedNs', (ns)=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
+    Socket.on('currentNs', (ns)=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
       dispatch(inputCurrentNs(ns)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다
       // dispatch(inputCurrentRoom("")); // 클릭시 바로 이거 실행되게 해서 주석잡았음
     })
-    
-    Socket.on("newRoomLoad", (rooms) => { // 문제점 : 다른ns있을지도 모르는데 소켓있다고 로드해버리면안됨
-      dispatch(inputRoomData(rooms));
-    });
 
     Socket.on('errorMsg', (msg)=>{ // 에러출력
       message.error(msg);

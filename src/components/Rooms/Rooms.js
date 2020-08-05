@@ -21,6 +21,7 @@ const Rooms = () => {
     }
     // 방목록 : roomId / namespace / history ( / roomTitle / isPrivate / isDM )  
     Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대하고 나서 (전체룸로드)
+      console.log("nsRoomLoad 실행");
       dispatch(inputRoomData(rooms));
     });
     
@@ -29,6 +30,7 @@ const Rooms = () => {
     })
 
     Socket.on('currentRoomLoad', (room)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
+      console.log('currentRoomLoad 실행됨');
       dispatch(inputCurrentRoom(room)) // 방클릭시 리턴도 여기로 해준다
     })
 
