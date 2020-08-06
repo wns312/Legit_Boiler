@@ -74,11 +74,9 @@ module.exports = function (io) {
   return router
 } 
   //---------------메소드들-----------------------
-  // nsSettings는 클릭한 Ns의 Room목록을 로드 한 뒤 updateRoomInNs, joinRoomInNs, sendMessageToClients를 호출한다
-  function nsSettings(io, NS_io, nsSocket, ns) { // 사실 모든방을 받아오는데, 이것도 개인화된 방으로 바꿀 수 있는 여지가 있어보임
+  function nsSettings(io, NS_io, nsSocket, ns) {
     let {handshake : {query : {_id}}}= nsSocket
     console.log(ns); // _id, nsTitle
-    // _id : 얘는 내 유저_id nsSocket.id :  얘는 NS소켓id 
     //본인한테 맞는 방을 가져왔다
     RoomModel.find({namespace : ns._id, member : _id})
     .populate('member', "name")
@@ -150,7 +148,6 @@ module.exports = function (io) {
   function createRoomInNs(NS_io, nsSocket, ns, data) {
     //공개방일 경우 모든 멤버를 방에 추가. (따라서 nsMember를받아와야함? 모름)
     let {roomTitle, isPrivate} = data; // _id와 ids
-    let {nsTitle} = ns
     let member;
     data.isPrivate ? (member = [data._id]) : (member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
     let room = new RoomModel({roomTitle, isPrivate, namespace : ns._id, member});
@@ -161,10 +158,6 @@ module.exports = function (io) {
       .populate('member', "email name image").select("-history").exec((err, rooms) => {
         (data.isPrivate) ? nsSocket.emit('nsRoomLoad', rooms) : NS_io.emit('nsRoomLoad', rooms) // 비밀방 ? 나한테만 / NS멤버 전부에게
       });
-      NsModel.findOneAndUpdate({nsTitle}, { $push: { rooms : room._id } }, { 'new': true }) //Ns의 room배열에 _id를 추가
-      .exec((err, doc)=>{
-        if(err) console.log(err);
-      })
     })
   }
 
@@ -191,7 +184,6 @@ module.exports = function (io) {
           console.log("NS초대시 보내려는 socket id : "+doc.socket);
           if(doc.socket) io.to(doc.socket).emit("nsList", nsArray);
         });
-
       })
     })
     .catch((err)=>{
@@ -227,11 +219,6 @@ module.exports = function (io) {
         NS_io.to(`/${nsTitle}#${user.socket}`).emit('nsRoomLoad', doc) // 된다
       })
     })
-
-    .then(()=>{ //Ns의 room배열에 방의 _id를 추가
-      NsModel.findOneAndUpdate({nsTitle}, { $push: { rooms : room._id } }, { 'new': true }).exec()
-    })
-
     .catch((err)=>{
       console.log(" DM생성에러 : "+ err);
     })
