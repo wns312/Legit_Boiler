@@ -160,8 +160,9 @@ module.exports = function (io) {
     let room = new RoomModel({roomTitle, isPrivate, namespace : ns._id, member});
     //방이름이 중복되지 않으면 save하기? 혹은 조건부저장방법찾아보기
     // find-save-find?? 극혐
-    RoomModel.estimatedDocumentCount({roomTitle, namespace : ns._id}).exec()
+    RoomModel.countDocuments({roomTitle, namespace : ns._id}).exec()
     .then((count)=>{
+      console.log(`중복된 방 갯수 : ${count}`);
       if(!count) return room.save()
       nsSocket.emit('errorMsg', `중복된 방 이름이 존재합니다`);
     })
