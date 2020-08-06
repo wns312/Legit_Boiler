@@ -7,7 +7,7 @@ const CreateNS = ({Socket}) => {
 
   const [Open, setOpen] = useState(false);
   const [Size, setSize] = useState();
-  const [name, setName] = useState("");
+  const [nsTitle, setNsTitle] = useState("");
 
   function show(size) {
     setSize(()=>size);
@@ -21,13 +21,13 @@ const CreateNS = ({Socket}) => {
   function createNs(e){
     e.preventDefault();
     //axios요청으로 뺄 수 있나?
-    Socket.emit("NewNs", {name, _id});
+    Socket.emit("NewNs", {nsTitle, _id});
     setOpen(false);
-    setName("");
+    setNsTitle("");
   }
 
   function handleNstitle(event) {
-    setName(event.target.value)
+    setNsTitle(event.target.value)
   }
 
   return (
@@ -38,7 +38,7 @@ const CreateNS = ({Socket}) => {
           <Modal.Content>
             <p style={{color : "black"}}>네임스페이스 이름 입력 (공백불가)</p>
             <form onSubmit={createNs}>
-              <input type="text" value={name} onChange={handleNstitle} placeholder="네임스페이스 이름 입력"/>
+              <input type="text" value={nsTitle} onChange={handleNstitle} placeholder="네임스페이스 이름 입력"/>
             </form>
           </Modal.Content>
           <Modal.Actions>

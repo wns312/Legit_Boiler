@@ -3,11 +3,11 @@ const express = require('express');
 const { NsModel } = require('../models/NsModel');
 const { RoomModel } = require("../models/RoomModel");
 const { User } = require("../models/User");
-const Namespace = require('../classes/Namespace');
 const Room = require('../classes/Room');
 
 module.exports = function (io) {
   const router = express.Router();
+  let nsTitleList;
   //Ns, Room 세팅        
   io.on("connection", (socket) => {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
@@ -34,24 +34,27 @@ module.exports = function (io) {
     })
     
     socket.on("NewNs", (data) => { //새 ns요청이 왔을 시 생성 후 새 리스트 전송, 각종 ns.on 켜주기
-      let {name}= data
-      let imageURL = "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D"
-      let namespace = new Namespace(name, imageURL, `/${name}`);
-      namespace.addNsMember(_id); // 생성한 본인 추가
-      let newNs = new NsModel(namespace);
+      let {nsTitle}= data
+      let result= nsTitleList.find( element=>(element ===nsTitle) )
+      let img = "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D"
+      let newNs = new NsModel({ endpoint: `/${nsTitle}`, nsMember : [_id], nsTitle, img });
+      
       newNs.save((err, ns) => { // 새 NS를 DB에 추가
-        if (err || ns===undefined) socket.emit('errorMsg', `방이 이미 존재합니다 : ${err}`)
+        console.log(err, ns);
+        if (err) socket.emit('errorMsg', `네임스페이스가 이미 존재합니다 : ${err}`) // if (err || ns===undefined)
         else {
           NsModel.find({nsMember : _id}).select('nsTitle img')
           .exec((err, nsArray) => {
             if(err) console.log(err);
             socket.emit("nsList", nsArray);
           });
-          //저장 성공시만 on을 켜준다
-          let NS_io = io.of(ns.endpoint) //새 네임스페이스와 방에 on 추가
-          NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 서버시작때가 아닌 데이터를 받아올 수 있다
-            nsSettings(io, NS_io, nsSocket, ns);
-          });
+
+          if(!result) { //만약 서버에서 생성한 ns의 on이 켜져있다면 if문은 실행되지 않는다
+            let NS_io = io.of(ns.endpoint) //새 네임스페이스와 방에 on 추가
+            NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 실시간 데이터를 받아올 수 있다
+              nsSettings(io, NS_io, nsSocket, ns);
+            });
+          }
         }
       })
     });
@@ -60,7 +63,9 @@ module.exports = function (io) {
   NsModel.find({}) // 최소한의 정보로 ns 소켓서버만 켜주고 안에서는 연결시 다시 ns를 받아와야 맞는거 아닌가?
   .select('nsTitle endpoint')
   .exec((err, docs) => {
-    docs.forEach((ns) => {
+    nsTitleList = docs.map((element)=>element.nsTitle) 
+
+    docs.forEach((ns) => { 
       let NS_io = io.of(ns.endpoint)
       NS_io.on('connection', (nsSocket) => {
         nsSettings(io, NS_io, nsSocket, ns)

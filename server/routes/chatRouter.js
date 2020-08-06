@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
-const { NsModel } = require('../models/NsModel');
-const { RoomModel } = require("../models/RoomModel");
-const { User } = require("../models/User");
 
 
 let storage = multer.diskStorage({ // 파일이 저장될 스토리지경로와 저장될 파일명 지정
