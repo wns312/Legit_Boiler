@@ -150,14 +150,12 @@ module.exports = function (io) {
   //방을 만들때 방유저목록에 생성한 유저를 추가
   function createRoomInNs(NS_io, nsSocket, ns, data) {
     //공개방일 경우 모든 멤버를 방에 추가. (따라서 nsMember를받아와야함? 모름)
-    let {RoomName, isPrivate} = data; // _id와 ids
+    let {roomTitle, isPrivate} = data; // _id와 ids
     let {nsTitle} = ns
-    let newRoom = new Room(RoomName, ns._id, `/${nsTitle}`, isPrivate);
-
-    data.isPrivate ? (newRoom.addMember(data._id)) : (newRoom.member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
-
-    let room = new RoomModel(newRoom);
-
+    let member;
+    data.isPrivate ? (member = [data._id]) : (member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
+    let room = new RoomModel({roomTitle, isPrivate, namespace : ns._id, nsEndpoint : `/${nsTitle}`, member});
+    
     room.save((err, res)=>{
       if(err) console.log("1번에러 : "+ err);
       RoomModel.find({nsEndpoint : ns.endpoint}) // 추가가 됐다 안됐다 하는건 비동기때문 (save를 변경해줄것)
