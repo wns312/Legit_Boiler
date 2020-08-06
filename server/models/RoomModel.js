@@ -17,10 +17,6 @@ const roomSchema = mongoose.Schema({
   namespace: { 
     type: mongoose.Schema.Types.ObjectId, ref: 'Namespaces'
   },
-  nsEndpoint : { // 소켓생성을 위해 필요
-    type: String,
-    required: true,
-  },
   member : [
     { 
       type: mongoose.Schema.Types.ObjectId,
