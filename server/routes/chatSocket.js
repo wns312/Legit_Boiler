@@ -3,7 +3,6 @@ const express = require('express');
 const { NsModel } = require('../models/NsModel');
 const { RoomModel } = require("../models/RoomModel");
 const { User } = require("../models/User");
-const Room = require('../classes/Room');
 
 module.exports = function (io) {
   const router = express.Router();
