@@ -19,7 +19,11 @@ const Rooms = () => {
       Socket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${nsTitle}`, { query :  {_id} });
       dispatch(inputSocket(Socket));
     }
-    // 방목록 : roomId / namespace / history ( / roomTitle / isPrivate / isDM )  
+
+    Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
+      dispatch(inputCurrentNs(ns));
+    })
+
     Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대하고 나서 (전체룸로드)
       console.log("nsRoomLoad 실행");
       let myRooms = rooms.filter((room)=>{
@@ -27,10 +31,6 @@ const Rooms = () => {
       })
       dispatch(inputRoomList(myRooms));
     });
-    
-    Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
-      dispatch(inputCurrentNs(ns));
-    })
 
     Socket.on('currentRoomLoad', (room)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
       console.log('currentRoomLoad 실행됨');
@@ -40,7 +40,8 @@ const Rooms = () => {
     Socket.on('errorMsg', (msg)=>{
       message.error(msg);
     })
-      return ()=>{ console.log(`[${nsTitle}] NS에서 나갔습니다`); }// 왜 나가지도 않았는데 실행되는가?? 함수안에서 사용하지 않았기 때문이다
+    
+    return ()=>{ console.log(`[${nsTitle}] NS에서 나갔습니다`); }// 왜 나가지도 않았는데 실행되는가?? 함수안에서 사용하지 않았기 때문이다
   }, [nsTitle, _id, dispatch])
 
   function getroomList() {
@@ -77,13 +78,13 @@ const Rooms = () => {
     <div className="col-sm-2 rooms"><br/>
       <h3>Rooms</h3>
       <ul className="room-list">
-        {getroomList()}<br/> {/* 방데이터가 있어야 방목록을 불러온다 */}
+        {getroomList()}<br/> {/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
         <CreateRoom></CreateRoom>
       </ul>
       <hr/>
       <h3>Direct Message</h3>
       <ul className="room-list">
-        {getdmList()}<br/> {/* 마찬가지로 방데이터가 있어야 DM목록을 불러온다 */}
+        {getdmList()}<br/> {/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
         <CreateDM></CreateDM>
       </ul>
       <hr/> <br/><br/>
