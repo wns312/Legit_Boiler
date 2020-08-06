@@ -22,7 +22,10 @@ const Rooms = () => {
     // 방목록 : roomId / namespace / history ( / roomTitle / isPrivate / isDM )  
     Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대하고 나서 (전체룸로드)
       console.log("nsRoomLoad 실행");
-      dispatch(inputRoomList(rooms));
+      let myRooms = rooms.filter((room)=>{
+        return room.member.find(mem=> (mem._id ===_id))
+      })
+      dispatch(inputRoomList(myRooms));
     });
     
     Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트

@@ -155,13 +155,22 @@ module.exports = function (io) {
     let member;
     data.isPrivate ? (member = [data._id]) : (member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
     let room = new RoomModel({roomTitle, isPrivate, namespace : ns._id, member});
-    
-    room.save((err, res)=>{
-      if(err) console.log("1번에러 : "+ err);
-      RoomModel.find({namespace : ns._id}) // 추가가 됐다 안됐다 하는건 비동기때문 (save를 변경해줄것)
-      .populate('member', "email name image").select("-history").exec((err, rooms) => {
-        (data.isPrivate) ? nsSocket.emit('nsRoomLoad', rooms) : NS_io.emit('nsRoomLoad', rooms) // 비밀방 ? 나한테만 / NS멤버 전부에게
-      });
+    //방이름이 중복되지 않으면 save하기? 혹은 조건부저장방법찾아보기
+    // find-save-find?? 극혐
+    RoomModel.estimatedDocumentCount({roomTitle, namespace : ns._id}).exec()
+    .then((count)=>{
+      if(!count) return room.save()
+      nsSocket.emit('errorMsg', `중복된 방 이름이 존재합니다`);
+    })
+    .then(()=>{
+      return RoomModel.find({namespace : ns._id}) // 모든방을 추가하면 안되고, 조건에 맞는방만 보내주어야 한다 (멤버에게는??)
+        .populate('member', "email name image").select("-history").exec();
+    })
+    .then((rooms) => {
+      (data.isPrivate) ? nsSocket.emit('nsRoomLoad', rooms) : NS_io.emit('nsRoomLoad', rooms) // 비밀방 ? 나한테만 / NS멤버 전부에게
+    })
+    .catch((err)=>{
+      nsSocket.emit('errorMsg', `오류가 발생했습니다 : ${err}`);
     })
   }
 
