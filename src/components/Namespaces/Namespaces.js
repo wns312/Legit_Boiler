@@ -6,10 +6,10 @@ import Chat from '../Chat/Chat'
 import CreateNS from "../CreateNS/CreateNS"
 // import NavBar from "../NavBar/NavBar" 푸시테스트
 import {useSelector, useDispatch} from 'react-redux';
-import {inputCurrentNs, inputNsList, inputCurrentRoom} from '../../_actions/chat_action'
+import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket=""
 const Namespaces = () => {
-  let {nsList, currentNs, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
+  let {nsList, roomList, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
@@ -21,9 +21,10 @@ const Namespaces = () => {
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
     })//완성⭐
 
-    Socket.on('currentNs', (ns)=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
-      dispatch(inputCurrentNs(ns)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다
-      // dispatch(inputCurrentRoom("")); // 클릭시 바로 이거 실행되게 해서 주석잡았음
+    Socket.on('currentNs', ({doc, rooms})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
+      dispatch(inputCurrentNs(doc)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다
+      dispatch(inputRoomList(rooms));
+      // dispatch(inputCurrentRoom("")); // 여기서currentRoom을 비우면 no-op과 history문제때문에 서버가 터진다
     })
 
     Socket.on('errorMsg', (msg)=>{ // 에러출력
@@ -47,10 +48,10 @@ const Namespaces = () => {
   function handleNsList(element){ // 2. 만약에 클릭시 정보를 받아온다고 했을때, 여기서 각 ns에 대한 emit이나 post요청을 해야한다
     let {nsTitle} = element;
     if(Title !== nsTitle) {
-      console.log("새로운 ns로드 실행");
+      // dispatch(inputCurrentNs("")); // 여기서 currentNs와 currentRoom을 비우면 클릭시 바로 방과 방목록항목이 사라진다
       dispatch(inputCurrentRoom(""));
       setTitle(nsTitle);
-      Socket.emit('clickNs', {nsTitle}); // 현재NS 갱신을 위한 요청
+      Socket.emit('clickNs', {nsTitle, NS_id : element._id}); // 현재NS 갱신을 위한 요청
       console.log(`[${nsTitle}] NS에 입장했습니다`);
     }
     // console.log(`[${Title}] / [${title}]`);
@@ -63,7 +64,7 @@ const Namespaces = () => {
         <br/>
         <CreateNS Socket={Socket}></CreateNS>  {/* _id=유저아이디 : 유저아이디를 알아야 생성자를 추가함 (Socket은 axios로 대체 후 삭제가능) */}
       </div>
-      { currentNs && <Rooms></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
+      { roomList && <Rooms></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
       <div className="container-fluid">
         <div className="row">
           { currentRoom ? <Chat></Chat> : null } {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}

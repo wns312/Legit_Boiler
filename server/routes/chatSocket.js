@@ -19,12 +19,23 @@ module.exports = function (io) {
       socket.emit("nsList", nsArray);
     });
     
-    socket.on('clickNs', (data)=>{//클릭한 ns목록을 전송
-      let {nsTitle}= data
+    socket.on('clickNs', (data)=>{
+      //클릭한 ns목록과 그에 맞는 방을 전송
+      let {nsTitle, NS_id}= data
       NsModel.findOne({nsTitle}).populate('nsMember', 'email name socket image').select('nsTitle nsMember')
-      .exec((err, doc)=>{
+      .exec()
+      .then((doc)=>{
+        //본인한테 맞는 방을 가져왔다
+        RoomModel.find({namespace : NS_id, member : _id})
+        .populate('member', "name")
+        .select("-history -createdAt -updatedAt -__v")
+        .exec((err, rooms) => {
+          socket.emit('currentNs', {doc, rooms}) // rooms도 보내야하는데 어캐보내지
+        });
         console.log("클릭한 네임스페이스 : "+doc);
-        socket.emit('currentNs', doc)
+      })
+      .catch((err)=>{
+        console.log(err);
       })
     })
     
@@ -77,13 +88,6 @@ module.exports = function (io) {
   function nsSettings(io, NS_io, nsSocket, ns) {
     let {handshake : {query : {_id}}}= nsSocket
     console.log(ns); // _id, nsTitle
-    //본인한테 맞는 방을 가져왔다
-    RoomModel.find({namespace : ns._id, member : _id})
-    .populate('member', "name")
-    .select("-history -createdAt -updatedAt -__v")
-    .exec((err, rooms) => {
-      nsSocket.emit('nsRoomLoad', rooms);
-    });
 
     nsSocket.on('clickRoom', (_id)=>{
       console.log("클릭한 방 id : "+_id);

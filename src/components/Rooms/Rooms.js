@@ -74,13 +74,13 @@ const Rooms = () => {
     <div className="col-sm-2 rooms"><br/>
       <h3>Rooms</h3>
       <ul className="room-list">
-        {roomList && getroomList()}<br/> {/* 방데이터가 있어야 방목록을 불러온다 */}
+        {getroomList()}<br/> {/* 방데이터가 있어야 방목록을 불러온다 */}
         <CreateRoom></CreateRoom>
       </ul>
       <hr/>
       <h3>Direct Message</h3>
       <ul className="room-list">
-        {roomList && getdmList()}<br/> {/* 마찬가지로 방데이터가 있어야 DM목록을 불러온다 */}
+        {getdmList()}<br/> {/* 마찬가지로 방데이터가 있어야 DM목록을 불러온다 */}
         <CreateDM></CreateDM>
       </ul>
       <hr/> <br/><br/>
