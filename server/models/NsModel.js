@@ -11,10 +11,6 @@ const nsSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  endpoint : { // 소켓생성을 위해 필요
-    type: String,
-    required: true,
-  },
   rooms: [
     { 
       type: mongoose.Schema.Types.ObjectId, 

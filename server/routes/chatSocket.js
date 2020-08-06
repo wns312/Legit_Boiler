@@ -36,7 +36,7 @@ module.exports = function (io) {
       let {nsTitle}= data
       let result= nsTitleList.find( element=>(element ===nsTitle) )
       let img = "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D"
-      let newNs = new NsModel({ endpoint: `/${nsTitle}`, nsMember : [_id], nsTitle, img });
+      let newNs = new NsModel({ nsMember : [_id], nsTitle, img });
       
       newNs.save((err, ns) => { // 새 NS를 DB에 추가
         console.log(err, ns);
@@ -49,7 +49,7 @@ module.exports = function (io) {
           });
 
           if(!result) { //만약 서버에서 생성한 ns의 on이 켜져있다면 if문은 실행되지 않는다
-            let NS_io = io.of(ns.endpoint) //새 네임스페이스와 방에 on 추가
+            let NS_io = io.of(`/${nsTitle}`) //새 네임스페이스와 방에 on 추가
             NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 실시간 데이터를 받아올 수 있다
               nsSettings(io, NS_io, nsSocket, ns);
             });
@@ -60,12 +60,12 @@ module.exports = function (io) {
   });
   //애초에 서버가 켜지는 시점이므로 각 유저 접속시마다 켜면 안된다. 따라서 서버켜질 때 조회가 맞고, 추가되는 Ns는 추가로 켜주는게 맞는 것 같다
   NsModel.find({}) // 최소한의 정보로 ns 소켓서버만 켜주고 안에서는 연결시 다시 ns를 받아와야 맞는거 아닌가?
-  .select('nsTitle endpoint')
+  .select('nsTitle')
   .exec((err, docs) => {
     nsTitleList = docs.map((element)=>element.nsTitle) 
 
     docs.forEach((ns) => { 
-      let NS_io = io.of(ns.endpoint)
+      let NS_io = io.of(`/${ns.nsTitle}`)
       NS_io.on('connection', (nsSocket) => {
         nsSettings(io, NS_io, nsSocket, ns)
       });
@@ -77,7 +77,7 @@ module.exports = function (io) {
   // nsSettings는 클릭한 Ns의 Room목록을 로드 한 뒤 updateRoomInNs, joinRoomInNs, sendMessageToClients를 호출한다
   function nsSettings(io, NS_io, nsSocket, ns) { // 사실 모든방을 받아오는데, 이것도 개인화된 방으로 바꿀 수 있는 여지가 있어보임
     let {handshake : {query : {_id}}}= nsSocket
-    console.log(ns); // _id , endpoint, nsTitle
+    console.log(ns); // _id, nsTitle
     // _id : 얘는 내 유저_id nsSocket.id :  얘는 NS소켓id 
     //본인한테 맞는 방을 가져왔다
     RoomModel.find({namespace : ns._id, member : _id})
@@ -202,10 +202,10 @@ module.exports = function (io) {
   //상대와 나에게만 추가하면된다 (상대에겐 아직 추가안함, 이것도 data해서 나중에 여기서 sort해서 내id와 상대id 구분해서 상대에게도 emit보내주어야함)
   function createDM(NS_io, nsSocket, ns, data) { // dm방 생성임
     let {invitedId} = data; // 상대의 _id(초대받은사람)
-    let {nsTitle, endpoint} = ns
+    let {nsTitle} = ns
     let {handshake : {query : {_id}}}= nsSocket // 만든 사람의 _id(본인)
     let member= [invitedId, _id].sort() // sort한 멤버목록
-    console.log(ns); // 서버 구동 시점의 ns의 정보들 : nsMember / rooms / _id / nstitle / img / endpoint
+    console.log(ns); // 서버 구동 시점의 ns의 정보들 : nsMember / rooms / _id / nstitle / img
     //여기서도 nsSocket에 내 유저_id가 있으므로 상대member꺼만 가져와서 sort해주어서 배열을 만들어주면 된다
     let room = new RoomModel({roomTitle : (member[0]+member[1]) ,namespace: ns._id, member, isDM : true});
     room.save()
@@ -220,12 +220,11 @@ module.exports = function (io) {
       .populate('member', "email name image socket").select("-history -createdAt -updatedAt -__v")
       .exec();
     })
-
     .then((doc)=>{ // 상대아이디 방검색 결과를 뿌려줌
       User.findOne({_id : invitedId})
       .exec((err, user)=>{
-        console.log("네임스페이스의 엔드포인트 : " +endpoint+"#"+user.socket);
-        NS_io.to(`${endpoint}#${user.socket}`).emit('nsRoomLoad', doc) // 된다
+        console.log(`네임스페이스의 엔드포인트 : /${nsTitle}#${user.socket}`);
+        NS_io.to(`/${nsTitle}#${user.socket}`).emit('nsRoomLoad', doc) // 된다
       })
     })
 
@@ -240,7 +239,7 @@ module.exports = function (io) {
 
   function inviteRoom(NS_io, nsSocket, ns, data) {
     let {roomId, invitedUserId} = data
-    let {endpoint} = ns
+    let {nsTitle} = ns
     RoomModel.findOneAndUpdate({_id : roomId}, { $addToSet : {member : invitedUserId}}, { new : true})
     .select('-history -__v -createdAt -updatedAt').exec()
     .then((data)=>{
@@ -256,7 +255,7 @@ module.exports = function (io) {
         .select("-history -createdAt -updatedAt -__v")
         .exec((err, rooms) => {
 
-          NS_io.to(`${endpoint}#${doc.socket}`).emit('nsRoomLoad', rooms) // 된다
+          NS_io.to(`/${nsTitle}#${doc.socket}`).emit('nsRoomLoad', rooms) // 된다
         });
       }
     })
