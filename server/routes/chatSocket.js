@@ -11,14 +11,18 @@ module.exports = function (io) {
   io.on("connection", (socket) => {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
 
-    User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
-
     NsModel.find({nsMember : _id}).select('nsTitle img')//접속시 nsList전송
     .exec((err, nsArray) => {
       if(err) console.log(err);
       socket.emit("nsList", nsArray);
     });
-    
+
+    User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
+
+    socket.on('disconnect', ()=>{//접속해제시 socket을 파기
+      User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).select('socket').exec() // 접속 종료시 socket id를 db에서 제거
+    })
+
     socket.on('clickNs', (data)=>{
       //클릭한 ns목록과 그에 맞는 방을 전송
       let {nsTitle, NS_id}= data
@@ -39,35 +43,34 @@ module.exports = function (io) {
       })
     })
     
-    socket.on('disconnect', ()=>{//접속해제시 socket을 파기
-      User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).select('socket').exec() // 접속 종료시 socket id를 db에서 제거
-    })
-    
+
     socket.on("NewNs", (data) => { //새 ns요청이 왔을 시 생성 후 새 리스트 전송, 각종 ns.on 켜주기
       let {nsTitle}= data
       let result= nsTitleList.find( element=>(element ===nsTitle) )
       let img = "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D"
       let newNs = new NsModel({ nsMember : [_id], nsTitle, img });
       
-      newNs.save((err, ns) => { // 새 NS를 DB에 추가
-        console.log(err, ns);
-        if (err) socket.emit('errorMsg', `네임스페이스가 이미 존재합니다 : ${err}`) // if (err || ns===undefined)
-        else {
-          NsModel.find({nsMember : _id}).select('nsTitle img')
-          .exec((err, nsArray) => {
-            if(err) console.log(err);
-            socket.emit("nsList", nsArray);
+      newNs.save()
+      .then((ns) => { // 새 NS를 DB에 추가
+        console.log(ns);
+        
+        NsModel.find({nsMember : _id}).select('nsTitle img')
+        .exec((err, nsArray) => {
+          if(err) console.log(err);
+          socket.emit("nsList", nsArray);
+        });
+        if(!result) { //만약 서버에서 생성한 ns의 on이 켜져있다면 if문은 실행되지 않는다
+          let NS_io = io.of(`/${nsTitle}`) //새 네임스페이스와 방에 on 추가
+          NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 실시간 데이터를 받아올 수 있다
+            nsSettings(io, NS_io, nsSocket, ns);
           });
-
-          if(!result) { //만약 서버에서 생성한 ns의 on이 켜져있다면 if문은 실행되지 않는다
-            let NS_io = io.of(`/${nsTitle}`) //새 네임스페이스와 방에 on 추가
-            NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 실시간 데이터를 받아올 수 있다
-              nsSettings(io, NS_io, nsSocket, ns);
-            });
-          }
         }
       })
+      .catch((err)=>{
+        socket.emit('errorMsg', `네임스페이스가 이미 존재합니다 : ${err}`) // if (err || ns===undefined)
+      })
     });
+
   });
   //애초에 서버가 켜지는 시점이므로 각 유저 접속시마다 켜면 안된다. 따라서 서버켜질 때 조회가 맞고, 추가되는 Ns는 추가로 켜주는게 맞는 것 같다
   NsModel.find({}) // 최소한의 정보로 ns 소켓서버만 켜주고 안에서는 연결시 다시 ns를 받아와야 맞는거 아닌가?
@@ -214,13 +217,13 @@ module.exports = function (io) {
     //여기서도 nsSocket에 내 유저_id가 있으므로 상대member꺼만 가져와서 sort해주어서 배열을 만들어주면 된다
     let room = new RoomModel({roomTitle : (member[0]+member[1]) ,namespace: ns._id, member, isDM : true});
     room.save()
-
     .then(()=>{
       RoomModel.find({namespace : ns._id, member : _id}) //내아이디로 방검색해서 뿌려줌
       .populate('member', "email name image socket").select("-history -createdAt -updatedAt -__v")
       .exec((err, res)=>{
         nsSocket.emit('nsRoomLoad', res);
       });
+      
       return RoomModel.find({namespace : ns._id, member : invitedId}) //상대아이디로 방검색해서 프로미스전달
       .populate('member', "email name image socket").select("-history -createdAt -updatedAt -__v")
       .exec();
