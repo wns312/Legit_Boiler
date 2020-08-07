@@ -35,8 +35,8 @@ const InviteRoom = () => {
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>방 생성</Modal.Header>
         <Modal.Content>
-          <p style={{ color: "black" }}>멤버목록</p>
-          <p style={{ color: "black" }}>{Email}</p>
+          멤버목록<br/>
+          {Email}<hr/>
           <form onSubmit={invite}>
             {createList(MemberArray)}<br/>
             <input type="text" value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소"/>

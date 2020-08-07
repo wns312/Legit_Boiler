@@ -44,7 +44,7 @@ const CreateRoom = () => {
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header>방 생성</Modal.Header>
           <Modal.Content>
-            <p style={{color : "black"}}>방 이름을 적으세요</p>
+            방 이름을 적으세요<hr/>
             <form onSubmit={createRoom}>
               <input type="text" value={roomTitle} onChange={handleRoomTitle} placeholder="방 이름 입력"/>
               <Checkbox label='비밀방' checked={isPrivate} onClick={handlePrivate} toggle/>

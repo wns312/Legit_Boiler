@@ -36,7 +36,7 @@ const CreateNS = ({Socket}) => {
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header >네임스페이스 생성</Modal.Header>
           <Modal.Content>
-            <p style={{color : "black"}}>네임스페이스 이름 입력 (공백불가)</p>
+            네임스페이스 이름 입력 (공백불가) <hr/>
             <form onSubmit={createNs}>
               <input type="text" value={nsTitle} onChange={handleNstitle} placeholder="네임스페이스 이름 입력"/>
             </form>

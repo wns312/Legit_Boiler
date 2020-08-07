@@ -43,7 +43,7 @@ const InviteNs = () => {
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header >네임스페이스 초대</Modal.Header>
           <Modal.Content>
-            <p style={{color : "black"}}>초대할 유저의 E-mail 주소를 입력하세요</p>
+            초대할 유저의 E-mail 주소를 입력하세요<hr/>
             <form onSubmit={invite}>
               <input type="text" value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소"/>
             </form>
