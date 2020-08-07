@@ -277,13 +277,20 @@ module.exports = function (io) {
     };
     let roomTitle = Object.keys(nsSocket.rooms)[1]; //방엔드포인트 찾아서 할당
 
-    RoomModel.findOneAndUpdate( //메시지 보내기 전, 방 history에 대화내용 저장      
-      { namespace : ns._id, _id: roomTitle },  { $push: { history: fullMsg } }, { new: true }
-    ).exec((err, doc) => {
-      if (err) console.log(err);
-      console.log(doc.history[doc.history.length-1]);
-    });
-    NS_io.to(roomTitle).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송
+    RoomModel.findOneAndUpdate({ namespace : ns._id, _id: roomTitle },  { $push: { history: fullMsg } }, { new: true })
+    .exec()
+    .then((doc) => {
+      if(doc!==null){
+        console.log(doc.history[doc.history.length-1]);
+        NS_io.to(roomTitle).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송
+      }else{
+        nsSocket.emit('errorMsg', `메시지 전송에 실패했습니다 : ${userName} : ${text}`);
+      }
+    })
+    .catch((err)=>{
+      nsSocket.emit('errorMsg', `오류가 발생했습니다 : ${err}`);
+    })
+    
   }
 
   function updateUsersInRoom(NS_io, roomToJoin) {   // 인원수 업데이트 메소드를 따로 빼는이유는 나갈때도 적용시키기 위해
