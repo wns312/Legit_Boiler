@@ -90,7 +90,7 @@ module.exports = function (io) {
   //---------------메소드들-----------------------
   function nsSettings(io, NS_io, nsSocket, ns) {
     let {handshake : {query : {_id}}}= nsSocket
-    console.log(ns); // _id, nsTitle
+    // console.log(ns); // _id, nsTitle
 
     nsSocket.on('clickRoom', (_id)=>{
       console.log("클릭한 방 id : "+_id);
@@ -132,8 +132,59 @@ module.exports = function (io) {
       leaveRoom(NS_io, nsSocket, ns, data)
     })
 
-
+    //NS를 떠나면
+    nsSocket.on('leaveNS', (data) => {
+      leaveNS(NS_io, nsSocket, ns, data)
+    })
   }
+
+
+
+
+  function leaveNS(NS_io, nsSocket, ns, data) {
+    let {userId, roomsIdArray} = data
+    let {_id} = ns
+    console.log(roomsIdArray);
+
+    // id로 방들을 find한 뒤, 모두 업데이트를 해야 그 방들을 보내줄 수 있을거같다.
+    RoomModel.updateMany({namespace : _id, member : userId}, {$pull : {member : userId}}) //정상적으로 방을 퇴장한다
+    .exec()
+    .then((doc)=>{
+      console.log(`발견된 갯수 : ${doc.n}, 수정된 갯수 : ${doc.nModified}`);
+
+      return RoomModel.find({_id : { $in : roomsIdArray }}).populate('member', "email name image")
+      .select("-history -createdAt -updatedAt -__v").exec()
+    })    
+    .then((roomsArray)=>{
+      roomsArray.forEach(room => {
+        NS_io.to(room._id).emit('currentRoomLoad', room)
+      });
+
+      return NsModel.findOneAndUpdate({_id}, {$pull : {nsMember : userId}}, {new : true})
+      .populate('nsMember', 'email name socket image').select('nsTitle nsMember')
+      .exec()
+    })
+    .then((ns)=>{
+      NS_io.emit('updatecurrentNs', ns) // ns전체에 멤버가 바뀐것을 보내준다 (되는 것 확인)
+
+      return NsModel.find({nsMember : userId}).select('nsTitle img').exec() // 새로운 nsList검색
+    })
+    .then((nsList)=>{ // nsList를 제대로 못받아온다
+      
+      nsSocket.emit('currentNsClose', [...nsList]); //새로운 NS리스트
+    })
+    .catch((err)=>{
+      console.log(err); 
+    })
+  }
+
+
+
+
+
+
+
+
 
   function leaveRoom(NS_io, nsSocket, ns, data) {
     let {userId} = data // _id는 방의 _id

@@ -5,7 +5,7 @@ import InviteRoom from "../InviteRoom/InviteRoom"
 import ChatInput from "../ChatInput/ChatInput"
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
-import QuitRoom from '../QuitRoom/QuitRoom';
+import LeaveRoom from '../LeaveRoom/LeaveRoom';
 
 const Chat = () => {
   //방정보를 store에 넣어서 가져올 필요가 있어보임
@@ -77,7 +77,7 @@ const Chat = () => {
       let dataOfOpponent = currentRoom.member.find(ele => {
         return (ele._id !== userData._id)
       })
-      return (<div className="col-sm-3"><span className="curr-room-text">{dataOfOpponent.name}</span></div>)
+      return (<div className="col-sm-3"><span className="curr-room-text">{dataOfOpponent ? dataOfOpponent.name : "나간상대"}</span></div>)
     }
   }
   return (
@@ -86,7 +86,7 @@ const Chat = () => {
         <section>
           <div {...getRootProps()}>
             <div className="chat-panel col-sm-9">
-              <QuitRoom></QuitRoom>
+              <LeaveRoom></LeaveRoom>
               <div className="room-header row col-6"> {/* 방이름, 인원수 자리 */}
                 {roomTitleLoad()}
                 <div className="col-sm-3 search pull-right"> {/* 검색창 자리 */}

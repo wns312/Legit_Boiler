@@ -4,8 +4,9 @@ import { message } from "antd";
 import CreateRoom from "../CreateRoom/CreateRoom";
 import InviteNs from "../InviteNs/InviteNs";
 import CreateDM from "../CreateDM/CreateDM";
+import LeaveNS from "../LeaveNS/LeaveNS";
 import {useDispatch, useSelector} from 'react-redux';
-import {inputSocket, inputCurrentNs, inputCurrentRoom, inputRoomList} from '../../_actions/chat_action'
+import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket = ''
 const Rooms = () => {
   let {_id} = useSelector(state=>state.user.userData)
@@ -42,6 +43,14 @@ const Rooms = () => {
       dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
     })
 
+    Socket.on('currentNsClose', (nsArray)=>{ 
+      console.log('currentNsClose 실행됨');
+      dispatch(inputCurrentRoom("")) 
+      dispatch(inputRoomList(""));
+      dispatch(inputCurrentNs(""));
+      dispatch(inputNsList(nsArray));
+    })
+
     Socket.on('errorMsg', (msg)=>{
       message.error(msg);
     })
@@ -67,7 +76,7 @@ const Rooms = () => {
     const newList= tmproom.map((room, index) => { // 내가 포함된 dm방 전체데이터를 map한다
       let dataOfOpponent = room.member.find(ele=>ele._id !==_id)
       return (dataOfOpponent) // 리스트가 하나라도 있을 경우
-        ? <li className='room' key={index} onClick={()=>{handleList(room)}}> # {dataOfOpponent.name} </li> 
+        ? <li className='room' key={index} onClick={()=>{handleList(room)}}> # {dataOfOpponent ? dataOfOpponent.name : "나간상대"} </li> 
         : null // 리스트가 하나도 없을 경우 (dm방을 하나도 만들지 않은 상태)   
     });
       return newList
@@ -90,10 +99,12 @@ const Rooms = () => {
       <h3>Direct Message</h3>
       <ul className="room-list">
         {getdmList()}<br/> {/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
-        <CreateDM></CreateDM>
+        {/*  currentNs가 있을때만 열리게하고싶은데 조건걸면 ns초대할때 터짐 */}
+        <CreateDM></CreateDM> 
       </ul>
       <hr/> <br/><br/>
       <InviteNs></InviteNs>
+      <LeaveNS></LeaveNS>
     </div>
   );
 };

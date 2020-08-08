@@ -3,7 +3,7 @@ import { Button, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
 
 
-const QuitRoom = () => {
+const LeaveRoom = () => {
   let {userData} = useSelector(state=>state.user)
   let { currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   let {roomTitle} = currentRoom
@@ -46,4 +46,4 @@ const QuitRoom = () => {
   );
 };
 
-export default QuitRoom;
+export default LeaveRoom;
