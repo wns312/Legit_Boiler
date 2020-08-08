@@ -29,10 +29,10 @@ const CreateRoom = () => {
     //+ 네임스페이스 이름을 알아야 조회해서 push하고 업데이트 할 것
     //isPrivate여부에 따라서 data를 다르게 emit할 것?
     if(isPrivate){
-      nsSocket.emit("NewRoom", {roomTitle, isPrivate, _id})
+      nsSocket.emit("NewRoom", {roomTitle, isPrivate, _id, Ns_id : currentNs._id})
     }else{
       let ids = currentNs.nsMember.map(person=>person._id)
-      nsSocket.emit("NewRoom", {roomTitle, isPrivate, ids})
+      nsSocket.emit("NewRoom", {roomTitle, isPrivate, ids, Ns_id : currentNs._id})
     }
     setOpen(false);
     setRoomTitle("");

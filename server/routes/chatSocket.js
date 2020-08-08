@@ -36,7 +36,6 @@ module.exports = function (io) {
         .exec((err, rooms) => {
           socket.emit('currentNs', {doc, rooms}) // rooms도 보내야하는데 어캐보내지
         });
-        console.log("클릭한 네임스페이스 : "+doc);
       })
       .catch((err)=>{
         console.log(err);
@@ -112,7 +111,7 @@ module.exports = function (io) {
     })
     
     nsSocket.on("inviteToNs", (data)=>{
-      inviteNS(io, NS_io, nsSocket, ns, data);
+      inviteNS(io, NS_io, nsSocket, data);
     });
 
     nsSocket.on("NewDM", (data)=>{
@@ -166,6 +165,7 @@ module.exports = function (io) {
     })
     .then((ns)=>{
       NS_io.emit('updatecurrentNs', ns) // ns전체에 멤버가 바뀐것을 보내준다 (되는 것 확인)
+      //ns멤버바뀐건 그렇다치고, 저 멤버가 들어가있는 방은 어캐해?
 
       return NsModel.find({nsMember : userId}).select('nsTitle img').exec() // 새로운 nsList검색
     })
@@ -237,20 +237,20 @@ module.exports = function (io) {
   //방을 만들때 방유저목록에 생성한 유저를 추가
   function createRoomInNs(NS_io, nsSocket, ns, data) {
     //공개방일 경우 모든 멤버를 방에 추가. (따라서 nsMember를받아와야함? 모름)
-    let {roomTitle, isPrivate} = data; // _id와 ids
+    let {roomTitle, isPrivate, Ns_id} = data; // _id와 ids
     let member;
     data.isPrivate ? (member = [data._id]) : (member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
-    let room = new RoomModel({roomTitle, isPrivate, namespace : ns._id, member});
+    let room = new RoomModel({roomTitle, isPrivate, namespace : Ns_id, member});
     //방이름이 중복되지 않으면 save하기? 혹은 조건부저장방법찾아보기
     // find-save-find?? 극혐
-    RoomModel.countDocuments({roomTitle, namespace : ns._id}).exec()
+    RoomModel.countDocuments({roomTitle, namespace : Ns_id}).exec()
     .then((count)=>{
       console.log(`중복된 방 갯수 : ${count}`);
       if(!count) return room.save()
       nsSocket.emit('errorMsg', `중복된 방 이름이 존재합니다`);
     })
     .then(()=>{
-      return RoomModel.find({namespace : ns._id}) // 모든방을 추가하면 안되고, 조건에 맞는방만 보내주어야 한다 (멤버에게는??)
+      return RoomModel.find({namespace : Ns_id}) // 모든방을 추가하면 안되고, 조건에 맞는방만 보내주어야 한다 (멤버에게는??)
         .populate('member', "email name image").select("-history").exec();
     })
     .then((rooms) => {
@@ -261,25 +261,27 @@ module.exports = function (io) {
     })
   }
 
-  function inviteNS(io, NS_io, nsSocket, ns, data) {
-    let {email, nsId} = data //이메일을 입력하면, nsMember에 당연히 없으므로 DB에서 검색 먼저 해야한다
-    let {_id} = ns
+  function inviteNS(io, NS_io, nsSocket, data) {
+    let {email, _id} = data //nsId
     //(이건 진짜로 라우터로 먼저 유저 찾고나서 그다음 socket.emit 해도 될거같은데..)
     User.findOne({email}).select('email name socket').exec()
     .then((doc)=>{ //공개방 유저목록에 초대받은 유저 추가
-      RoomModel.updateMany({ namespace: nsId, isPrivate:false }, { $addToSet : { member : doc._id} }) 
+      RoomModel.updateMany({ namespace: _id, isPrivate:false }, { $addToSet : { member : doc._id} }) 
       .exec((err, res)=>{
         console.log(`검색된 공개방 갯수 : ${res.n} / 수정된 공개방 갯수 : ${res.nModified}`);
       })
       return doc
     })
     .then((doc)=>{//네임스페이스의 유저목록에 신규유저 추가하고 접속중인 ns유저들에게 새 목록을 보내준다
+      console.log(`초대유저 검색 결과 : ${doc}`);
       NsModel.findOneAndUpdate({_id}, {$addToSet : {nsMember : doc._id}}, {new : true} )
       .populate('nsMember', 'email name socket image').select('nsTitle nsMember')
       .exec((err, ns)=>{
+        console.log(`ns : ${ns}`);
         NS_io.emit('updatecurrentNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)
 
         NsModel.find({nsMember : doc._id}).select('nsTitle img').exec((err, nsArray)=>{
+          console.log(`ns초대 후 nsList결과 : ${nsArray}`);
           console.log("NS초대 시 조회가 제대로 되었는가? : "+nsArray[nsArray.length-1]);
           console.log("NS초대시 보내려는 socket id : "+doc.socket);
           if(doc.socket) io.to(doc.socket).emit("nsList", nsArray);

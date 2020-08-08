@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 const InviteNs = () => {
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
-  let {nsMember} = currentNs // nsId
+  let {nsMember, _id} = currentNs // nsId
   const [Open, setOpen] = useState(false);
   const [Size, setSize] = useState();
   const [Email, setEmail] = useState("");
@@ -27,7 +27,7 @@ const InviteNs = () => {
     if (invitedMember) {
       message.error("이미 초대된 멤버입니다")
     }else{
-      nsSocket.emit("inviteToNs", {email : Email});
+      nsSocket.emit("inviteToNs", {email : Email, _id});
     }
     setOpen(false);
     setEmail("");
