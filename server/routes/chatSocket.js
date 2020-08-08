@@ -61,7 +61,7 @@ module.exports = function (io) {
         if(!result) { //만약 서버에서 생성한 ns의 on이 켜져있다면 if문은 실행되지 않는다
           let NS_io = io.of(`/${nsTitle}`) //새 네임스페이스와 방에 on 추가
           NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 실시간 데이터를 받아올 수 있다
-            nsSettings(io, NS_io, nsSocket, ns);
+            nsSettings(io, NS_io, nsSocket);
           });
         }
       })
@@ -80,16 +80,14 @@ module.exports = function (io) {
     docs.forEach((ns) => { 
       let NS_io = io.of(`/${ns.nsTitle}`)
       NS_io.on('connection', (nsSocket) => {
-        nsSettings(io, NS_io, nsSocket, ns)
+        nsSettings(io, NS_io, nsSocket)
       });
     });
   })
   return router
 } 
   //---------------메소드들-----------------------
-  function nsSettings(io, NS_io, nsSocket, ns) {
-    let {handshake : {query : {_id}}}= nsSocket
-    // console.log(ns); // _id, nsTitle
+  function nsSettings(io, NS_io, nsSocket) {
 
     nsSocket.on('clickRoom', (_id)=>{
       console.log("클릭한 방 id : "+_id);
@@ -102,12 +100,12 @@ module.exports = function (io) {
       });
     })
 
-    nsSocket.on('joinRoom', (roomToJoin, numberOfUsersCallback) => {
-      joinRoomInNs(NS_io, nsSocket,  ns, roomToJoin, numberOfUsersCallback)
+    nsSocket.on('joinRoom', (NS_id, roomToJoin, numberOfUsersCallback) => {
+      joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback)
     });
 
     nsSocket.on("NewRoom", (data)=>{
-      createRoomInNs(NS_io, nsSocket, ns, data)
+      createRoomInNs(NS_io, nsSocket, data)
     })
     
     nsSocket.on("inviteToNs", (data)=>{
@@ -115,34 +113,30 @@ module.exports = function (io) {
     });
 
     nsSocket.on("NewDM", (data)=>{
-      createDM(NS_io, nsSocket, ns, data)
+      createDM(NS_io, nsSocket, data)
     })
 
     nsSocket.on('inviteToRoom', (data)=>{
-      inviteRoom(NS_io, nsSocket, ns, data);
+      inviteRoom(NS_io, nsSocket, data);
     })
 
     nsSocket.on('newMessageToServer', (data) => {//방에서 메시지를 받아서 '그 방으로' 메시지 보내기
-    sendMessageToClients(NS_io, nsSocket, ns, data)
+    sendMessageToClients(NS_io, nsSocket, data)
     })
 
     //방을 떠나면
     nsSocket.on('leaveRoom', (data) => {
-      leaveRoom(NS_io, nsSocket, ns, data)
+      leaveRoom(NS_io, nsSocket, data)
     })
 
     //NS를 떠나면
     nsSocket.on('leaveNS', (data) => {
-      leaveNS(NS_io, nsSocket, ns, data)
+      leaveNS(NS_io, nsSocket, data)
     })
   }
 
-
-
-
-  function leaveNS(NS_io, nsSocket, ns, data) {
-    let {userId, roomsIdArray} = data
-    let {_id} = ns
+  function leaveNS(NS_io, nsSocket, data) {
+    let {userId, _id, roomsIdArray} = data
     console.log(roomsIdArray);
 
     // id로 방들을 find한 뒤, 모두 업데이트를 해야 그 방들을 보내줄 수 있을거같다.
@@ -178,16 +172,8 @@ module.exports = function (io) {
     })
   }
 
-
-
-
-
-
-
-
-
-  function leaveRoom(NS_io, nsSocket, ns, data) {
-    let {userId} = data // _id는 방의 _id
+  function leaveRoom(NS_io, nsSocket, data) {
+    let {userId, _id} = data // _id는 ns의 _id
     let roomId = Object.keys(nsSocket.rooms)[1]
     RoomModel.findOneAndUpdate({_id : roomId}, {$pull : {member : userId}}, {new : true})
     .populate('member', "email name image")
@@ -197,7 +183,7 @@ module.exports = function (io) {
       console.log(room);
       NS_io.to(roomId).emit('currentRoomLoad', room); // to room이므로 current 해도됨
       //추가로, 나는 방을 나갔으므로 방을 꺼줘야한다 = ns리스트를 검색해야한다
-      return RoomModel.find({namespace : ns._id}) //네임스페이스 아이디 어떻게찾더라
+      return RoomModel.find({namespace : _id}) //네임스페이스 아이디 어떻게찾더라
         .populate('member', "email name image").select("-history").exec();
     })
     .then((rooms)=>{
@@ -209,10 +195,8 @@ module.exports = function (io) {
     })
   }
 
-
-
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
-  function joinRoomInNs(NS_io, nsSocket,  ns, roomToJoin, numberOfUsersCallback) {
+  function joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback) {
     let roomToLeave = Object.keys(nsSocket.rooms)[1];
     console.log("참여하려는 방 이름 : "+roomToJoin);
     if (roomToLeave !== roomToJoin) {   // if문에 전체 명령을 넣어서 조건이 안맞을시 아무 코드도 실행 x
@@ -224,7 +208,7 @@ module.exports = function (io) {
         numberOfUsersCallback(client.length);
       });
       
-      RoomModel.findOne({namespace : ns._id, _id : roomToJoin})
+      RoomModel.findOne({namespace : NS_id, _id : roomToJoin})
       .select('history -_id')
       .exec((err, doc)=>{ //history를 방채팅에 적용
         if(err) console.error(err);
@@ -235,9 +219,9 @@ module.exports = function (io) {
   }
 
   //방을 만들때 방유저목록에 생성한 유저를 추가
-  function createRoomInNs(NS_io, nsSocket, ns, data) {
+  function createRoomInNs(NS_io, nsSocket, data) {
     //공개방일 경우 모든 멤버를 방에 추가. (따라서 nsMember를받아와야함? 모름)
-    let {roomTitle, isPrivate, Ns_id} = data; // _id와 ids
+    let {roomTitle, isPrivate, Ns_id} = data; // _id와 ids가 data안에있음 조건부로
     let member;
     data.isPrivate ? (member = [data._id]) : (member = data.ids) // 비밀방 ? 비밀방일때 : 공개방일때
     let room = new RoomModel({roomTitle, isPrivate, namespace : Ns_id, member});
@@ -294,23 +278,21 @@ module.exports = function (io) {
   }
 
   //상대와 나에게만 추가하면된다 (상대에겐 아직 추가안함, 이것도 data해서 나중에 여기서 sort해서 내id와 상대id 구분해서 상대에게도 emit보내주어야함)
-  function createDM(NS_io, nsSocket, ns, data) { // dm방 생성임
-    let {invitedId} = data; // 상대의 _id(초대받은사람)
-    let {nsTitle} = ns
+  function createDM(NS_io, nsSocket, data) { // dm방 생성임
+    let {invitedId, NS_id, nsTitle} = data; // 상대의 _id(초대받은사람)
     let {handshake : {query : {_id}}}= nsSocket // 만든 사람의 _id(본인)
     let member= [invitedId, _id].sort() // sort한 멤버목록
-    console.log(ns); // 서버 구동 시점의 ns의 정보들 : nsMember / rooms / _id / nstitle / img
     //여기서도 nsSocket에 내 유저_id가 있으므로 상대member꺼만 가져와서 sort해주어서 배열을 만들어주면 된다
-    let room = new RoomModel({roomTitle : (member[0]+member[1]) ,namespace: ns._id, member, isDM : true});
+    let room = new RoomModel({roomTitle : (member[0]+member[1]) ,namespace: NS_id, member, isDM : true});
     room.save()
     .then(()=>{
-      RoomModel.find({namespace : ns._id, member : _id}) //내아이디로 방검색해서 뿌려줌
+      RoomModel.find({namespace : NS_id, member : _id}) //내아이디로 방검색해서 뿌려줌
       .populate('member', "email name image socket").select("-history -createdAt -updatedAt -__v")
       .exec((err, res)=>{
         nsSocket.emit('nsRoomLoad', res);
       });
       
-      return RoomModel.find({namespace : ns._id, member : invitedId}) //상대아이디로 방검색해서 프로미스전달
+      return RoomModel.find({namespace : NS_id, member : invitedId}) //상대아이디로 방검색해서 프로미스전달
       .populate('member', "email name image socket").select("-history -createdAt -updatedAt -__v")
       .exec();
     })
@@ -326,10 +308,9 @@ module.exports = function (io) {
     })
   }
 
-  function inviteRoom(NS_io, nsSocket, ns, data) {
-    let {_id} = data
+  function inviteRoom(NS_io, nsSocket, data) {
+    let {nsTitle, NS_id, _id} = data // 유저id
     let roomId = Object.keys(nsSocket.rooms)[1]
-    let {nsTitle} = ns
     RoomModel.findOneAndUpdate({_id : roomId}, { $addToSet : {member : _id}}, { new : true})
     .populate('member', "email name image")
     .select('-history -__v -createdAt -updatedAt').exec()
@@ -342,7 +323,7 @@ module.exports = function (io) {
     })
     .then((doc)=>{
       if(doc.socket){    
-        RoomModel.find({namespace : ns._id, member : _id}) // 엔드포인트가없잖아
+        RoomModel.find({namespace : NS_id, member : _id}) // 엔드포인트가없잖아
         .populate('member', "email name image")
         .select("-history -createdAt -updatedAt -__v")
         .exec((err, rooms) => {
@@ -356,8 +337,8 @@ module.exports = function (io) {
     })
   }
 
-  function sendMessageToClients(NS_io, nsSocket, ns, data) {    
-    let {text, type, userName, filename, userImg } = data
+  function sendMessageToClients(NS_io, nsSocket, data) {    
+    let {NS_id, text, type, userName, filename, userImg } = data
     const fullMsg = { //메시지 객체
       text, type, userName, filename,
       time: Date.now(),
@@ -365,7 +346,7 @@ module.exports = function (io) {
     };
     let roomTitle = Object.keys(nsSocket.rooms)[1]; //방엔드포인트 찾아서 할당
 
-    RoomModel.findOneAndUpdate({ namespace : ns._id, _id: roomTitle },  { $push: { history: fullMsg } }, { new: true })
+    RoomModel.findOneAndUpdate({ namespace : NS_id, _id: roomTitle },  { $push: { history: fullMsg } }, { new: true })
     .exec()
     .then((doc) => {
       if(doc!==null){

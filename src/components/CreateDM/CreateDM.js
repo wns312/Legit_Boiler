@@ -31,7 +31,7 @@ const CreateDM = () => {
         return room.roomTitle === (member[0]+member[1])
       })
       sameroom===undefined // DM방이 존재여부 (없을때)
-        ? nsSocket.emit("NewDM", {invitedId}) // DM방이 존재하지 않으면
+        ? nsSocket.emit("NewDM", {invitedId, NS_id : currentNs._id, nsTitle : currentNs.nsTitle}) // DM방이 존재하지 않으면
         : message.error("이미 방이 존재합니다") // DM방이 존재하면      
     }else{ // 이메일이 일치하는 멤버가 없으면
       message.error("이메일을 바르게 입력했는지 확인하세요");

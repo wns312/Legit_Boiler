@@ -46,12 +46,12 @@ const Rooms = () => {
 
     Socket.on('currentNsClose', (nsArray)=>{ 
       console.log('currentNsClose 실행됨');
-      dispatch(inputCurrentRoom("")) 
+      dispatch(inputCurrentRoom(""));
       dispatch(inputRoomList(""));
+      dispatch(inputCurrentNs(""));
       dispatch(inputNsList(nsArray));
-      setTimeout(() => { //순서때문에 오류나서
-        dispatch(inputCurrentNs(""));
-      }, 200);
+      // setTimeout(() => { //순서때문에 오류나서
+      // }, 200);
     })
 
     Socket.on('errorMsg', (msg)=>{

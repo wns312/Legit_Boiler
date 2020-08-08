@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 const ChatInput = () => { 
   let {userData} = useSelector(state=>state.user) 
-  let {nsSocket} = useSelector(state=>state.chatInfo)
+  let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   const [InputText, setInputText] = useState(""); // 얘는 메모해주어야 할 것 같다
 
   //메시지를 state에 저장
@@ -17,7 +17,7 @@ const ChatInput = () => {
     inputTag.setAttribute('disabled', true);
     if(InputText!=="") {
       let {name, image} = userData
-      nsSocket.emit("newMessageToServer", { text: InputText, type : "text", userName : name, userImg : image, filename : ""});
+      nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, text: InputText, type : "text", userName : name, userImg : image, filename : ""});
       setInputText("");
     }
     inputTag.removeAttribute('disabled')

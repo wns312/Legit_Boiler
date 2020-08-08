@@ -67,7 +67,7 @@ const Namespaces = () => {
       { roomList && <Rooms></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
       <div className="container-fluid">
         <div className="row">
-          { currentRoom ? <Chat></Chat> : null } {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+          { currentRoom && <Chat></Chat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </div>
       </div>
     </>

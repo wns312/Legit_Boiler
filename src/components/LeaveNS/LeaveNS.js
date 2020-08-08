@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 const LeaveNS = () => {
   let {userData} = useSelector(state=>state.user)
   let { currentNs, roomList, nsSocket } = useSelector(state => state.chatInfo)
-  let {nsTitle} = currentNs
+  let {nsTitle, _id} = currentNs
   let userId = userData._id
   const [Open, setOpen] = useState(false);
   const [Size, setSize] = useState();
@@ -21,7 +21,7 @@ const LeaveNS = () => {
     let roomsIdArray = roomList.map((room)=>{
       return room._id
     })
-    nsSocket.emit('leaveNS', {userId, roomsIdArray});
+    nsSocket.emit('leaveNS', {userId, _id, roomsIdArray});
     setOpen(false);
   }
 
