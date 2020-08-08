@@ -74,7 +74,7 @@ const Rooms = () => {
   }
 
   function handleList(room) {
-    console.log(room); // _id , member, roomTitle, namespace(_id)
+    // console.log(room); // _id , member, roomTitle, namespace(_id)
     Socket.emit('clickRoom', room._id);
     // dispatch(inputCurrentRoom(room))
   }
