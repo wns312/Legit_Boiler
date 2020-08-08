@@ -126,7 +126,39 @@ module.exports = function (io) {
     nsSocket.on('newMessageToServer', (data) => {//방에서 메시지를 받아서 '그 방으로' 메시지 보내기
     sendMessageToClients(NS_io, nsSocket, ns, data)
     })
+
+    //방을 떠나면
+    nsSocket.on('leaveRoom', (data) => {
+      leaveRoom(NS_io, nsSocket, ns, data)
+    })
+
+
   }
+
+  function leaveRoom(NS_io, nsSocket, ns, data) {
+    let {userId} = data // _id는 방의 _id
+    let roomId = Object.keys(nsSocket.rooms)[1]
+    RoomModel.findOneAndUpdate({_id : roomId}, {$pull : {member : userId}}, {new : true})
+    .populate('member', "email name image")
+    .select("-history -createdAt -updatedAt -__v")
+    .exec()
+    .then((room)=>{
+      console.log(room);
+      NS_io.to(roomId).emit('currentRoomLoad', room); // to room이므로 current 해도됨
+      //추가로, 나는 방을 나갔으므로 방을 꺼줘야한다 = ns리스트를 검색해야한다
+      return RoomModel.find({namespace : ns._id}) //네임스페이스 아이디 어떻게찾더라
+        .populate('member', "email name image").select("-history").exec();
+    })
+    .then((rooms)=>{
+      nsSocket.emit('nsRoomLoad', rooms); // 나간 방 목록에서 없애기
+      nsSocket.emit('currentRoomClose'); // 나갔으니까 채팅방 닫아주기
+    })
+    .catch((err)=>{
+      nsSocket.emit('errorMsg', `에러가 발생했습니다 : ${err}`);
+    })
+  }
+
+
 
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
   function joinRoomInNs(NS_io, nsSocket,  ns, roomToJoin, numberOfUsersCallback) {
@@ -242,19 +274,22 @@ module.exports = function (io) {
   }
 
   function inviteRoom(NS_io, nsSocket, ns, data) {
-    let {roomId, invitedUserId} = data
+    let {_id} = data
+    let roomId = Object.keys(nsSocket.rooms)[1]
     let {nsTitle} = ns
-    RoomModel.findOneAndUpdate({_id : roomId}, { $addToSet : {member : invitedUserId}}, { new : true})
+    RoomModel.findOneAndUpdate({_id : roomId}, { $addToSet : {member : _id}}, { new : true})
+    .populate('member', "email name image")
     .select('-history -__v -createdAt -updatedAt').exec()
     .then((data)=>{
-      nsSocket.emit('currentRoomLoad', data) // 나는 비밀방에 있으므로 나에게 방 업데이트를 적용해준다 (멤버정보는 클릭시 보도록 바꿀거니까 이정도만하기)
+      console.log("초대시 방 데이터 :" +data);
+      NS_io.to(roomId).emit('currentRoomLoad', data) // 나말고도 비밀방에 사람이 있을 수 있으므로, nsio toroom current가되어야한다
     })
     .then(()=>{
-      return User.findOne({_id: invitedUserId}).select('socket').exec()
+      return User.findOne({_id}).select('socket').exec()
     })
     .then((doc)=>{
       if(doc.socket){    
-        RoomModel.find({namespace : ns._id, member : invitedUserId}) // 엔드포인트가없잖아
+        RoomModel.find({namespace : ns._id, member : _id}) // 엔드포인트가없잖아
         .populate('member', "email name image")
         .select("-history -createdAt -updatedAt -__v")
         .exec((err, rooms) => {

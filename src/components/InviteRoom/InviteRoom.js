@@ -9,26 +9,31 @@ const InviteRoom = () => {
   const [Size, setSize] = useState();
   const [Email, setEmail] = useState("");
   let MemberArray = list(currentNs.nsMember, currentRoom.member) // 방멤버가 아닌배열 (초대목록) (정상) image, _id, email, name
+
   function show(size) {
     setSize(()=>size);
     setOpen(true);
   }
+
   function close() { setOpen(false) }
+
   function invite(e){
     e.preventDefault();
     //이메일을 알아야한다 (Email state)
     let invitedMembers = MemberArray.find(member=> (member.email===Email) )
     if (invitedMembers !== undefined) {
       //네임스페이스 식별자도 보내야함
-      nsSocket.emit('inviteToRoom', {roomId : currentRoom._id , invitedUserId : invitedMembers._id})
+      nsSocket.emit('inviteToRoom', {_id : invitedMembers._id})
     }else {
       message.error("이미 초대된 유저이거나 일치하는 유저가 없습니다");
     }
     setOpen(false);
   }
+
   function handleEmail(e) {
     setEmail(e.target.value)
   }
+
   return (
     <>
       <Button onClick={() => { show("small") }}>멤버 초대</Button>

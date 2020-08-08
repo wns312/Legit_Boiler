@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 
 
 const QuitRoom = () => {
+  let {userData} = useSelector(state=>state.user)
   let { currentRoom, nsSocket } = useSelector(state => state.chatInfo)
-  let {roomTitle, _id} = currentRoom
-
+  let {roomTitle} = currentRoom
+  let userId = userData._id
   const [Open, setOpen] = useState(false);
   const [Size, setSize] = useState();
 
@@ -18,7 +19,7 @@ const QuitRoom = () => {
   function close() { setOpen(false) }
 
   function leave() {
-    // nsSocket.emit('leaveRoom', {roomTitle, _id});
+    nsSocket.emit('leaveRoom', {userId});
     setOpen(false);
   }
 

@@ -24,7 +24,7 @@ const Rooms = () => {
       dispatch(inputCurrentNs(ns));
     })
 
-    Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대하고 나서 (전체룸로드)
+    Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대, 누군가 퇴장하고 나서 (전체룸로드)
       console.log("nsRoomLoad 실행");
       let myRooms = rooms.filter((room)=>{
         return room.member.find(mem=> (mem._id ===_id))
@@ -35,6 +35,11 @@ const Rooms = () => {
     Socket.on('currentRoomLoad', (room)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
       console.log('currentRoomLoad 실행됨');
       dispatch(inputCurrentRoom(room)) // 방클릭시 리턴도 여기로 해준다
+    })
+
+    Socket.on('currentRoomClose', ()=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
+      console.log('currentRoomClose 실행됨');
+      dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
     })
 
     Socket.on('errorMsg', (msg)=>{
