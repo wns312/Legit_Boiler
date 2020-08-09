@@ -41,12 +41,12 @@ const Rooms = () => {
 
     Socket.on('currentRoomClose', (rooms)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
       console.log('currentRoomClose 실행됨');
-      
-      dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
       let myRooms = rooms.filter((room)=>{
         return room.member.find(mem=> (mem._id ===_id))
       })
       dispatch(inputRoomList(myRooms));
+      
+      // dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
     })
 
     Socket.on('currentNsClose', (nsArray)=>{ 
