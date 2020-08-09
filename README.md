@@ -12,6 +12,7 @@
 ### 필요목록
 
 currentRoom이 Rooms에서 업데이트가 되었는데, Chat컴포넌트에서 이를 참조하기 때문에 일어난 일인것 같다.
+(Namespace가 닫기전에 Chat에서 이미 state변화를 적용시작해서?)
 (맞는거같음)(isRoomLoad해줘야되나?)
 
 
