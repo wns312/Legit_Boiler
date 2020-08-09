@@ -13,18 +13,20 @@ const Chat = () => {
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   // member, _id,  namespace, nsEndpoint 도 있음
   let { roomTitle, isPrivate, _id } = currentRoom; //roomindex를 버릴경우 여기서 에러남
-
+  let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
-    nsSocket.emit('joinRoom', currentNs._id, _id, (numberOfMembers) => {
+    nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
       setAmountOfUsers(numberOfMembers);
     });
-
-    return () => { console.log(`[${_id}]에서 나갔습니다`); }
-  }, [nsSocket, _id, currentNs._id])
+    return () => { 
+      console.log(`[${_id}]에서 나갔습니다`);
+      //isPrivate을 false만들기
+    }
+  }, [nsSocket, _id, NS_id])
 
   useEffect(() => {
     //히스토리 추가 : 방 변경시 socket.on중복실행방지로 새 effect로정의

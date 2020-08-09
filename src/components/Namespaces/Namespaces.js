@@ -16,6 +16,9 @@ const Namespaces = () => {
 
   useEffect(()=>{
     Socket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:9000`, { query :  {_id} } );
+  }, [_id])
+
+  useEffect(()=>{
 
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
@@ -31,7 +34,7 @@ const Namespaces = () => {
       message.error(msg);
     })
 
-  }, [dispatch, _id]);                
+  }, [dispatch]);                
   
   function getnsList(){
     let list = nsList.map((element,index)=>{
@@ -67,7 +70,7 @@ const Namespaces = () => {
       { roomList && <Rooms></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
       <div className="container-fluid">
         <div className="row">
-          { currentRoom && <Chat></Chat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+          { currentRoom ? <Chat></Chat> : null} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </div>
       </div>
     </>

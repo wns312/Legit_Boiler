@@ -172,28 +172,46 @@ module.exports = function (io) {
     })
   }
 
+
+
+
+  //내가 나가는게 먼저로 순서를 변경하고 테스트
   function leaveRoom(NS_io, nsSocket, data) {
     let {userId, _id} = data // _id는 ns의 _id
-    let roomId = Object.keys(nsSocket.rooms)[1]
+    let roomId = Object.keys(nsSocket.rooms)[1] // 방아이디를 그냥 따로 받아올까?
+    nsSocket.leave(roomId); //여기
     RoomModel.findOneAndUpdate({_id : roomId}, {$pull : {member : userId}}, {new : true})
     .populate('member', "email name image")
     .select("-history -createdAt -updatedAt -__v")
     .exec()
     .then((room)=>{
-      console.log(room);
-      NS_io.to(roomId).emit('currentRoomLoad', room); // to room이므로 current 해도됨
-      //추가로, 나는 방을 나갔으므로 방을 꺼줘야한다 = ns리스트를 검색해야한다
-      return RoomModel.find({namespace : _id}) //네임스페이스 아이디 어떻게찾더라
-        .populate('member', "email name image").select("-history").exec();
+      RoomModel.find({namespace : _id}) //네임스페이스 아이디 어떻게찾더라
+      .populate('member', "email name image").select("-history -createdAt -updatedAt -__v")
+      .exec()
+      .then((rooms)=>{
+        nsSocket.emit('currentRoomClose', rooms); // 나갔으니까 채팅방 닫아주고 목록에서 없애기
+      })
+      .catch((err)=>{
+        nsSocket.emit('errorMsg', `에러가 발생했습니다 : ${err}`);
+      })
+
+      return room
     })
-    .then((rooms)=>{
-      nsSocket.emit('nsRoomLoad', rooms); // 나간 방 목록에서 없애기
-      nsSocket.emit('currentRoomClose'); // 나갔으니까 채팅방 닫아주기
+    .then((room)=>{
+        NS_io.to(roomId).emit('currentRoomLoad', room); // 이거 잘못됐음 : 더이상 방멤버가 아닌데 왜 방을 받아오는가?
     })
     .catch((err)=>{
       nsSocket.emit('errorMsg', `에러가 발생했습니다 : ${err}`);
     })
   }
+
+
+
+
+
+
+
+
 
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
   function joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback) {
@@ -235,7 +253,7 @@ module.exports = function (io) {
     })
     .then(()=>{
       return RoomModel.find({namespace : Ns_id}) // 모든방을 추가하면 안되고, 조건에 맞는방만 보내주어야 한다 (멤버에게는??)
-        .populate('member', "email name image").select("-history").exec();
+        .populate('member', "email name image").select("-history -createdAt -updatedAt -__v").exec();
     })
     .then((rooms) => {
       (data.isPrivate) ? nsSocket.emit('nsRoomLoad', rooms) : NS_io.emit('nsRoomLoad', rooms) // 비밀방 ? 나한테만 / NS멤버 전부에게
