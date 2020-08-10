@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import { useDispatch } from 'react-redux';
 // import { registerUser } from '../../_actions/user_action';
+import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 
 const UserModify = () => {
   // const dispatch = useDispatch();
@@ -28,20 +29,25 @@ const UserModify = () => {
 
   }
   return (
-    <div style={{display : "flex", justifyContent : "center", alignItems : "center"}}>
-      <form id='registerform' onSubmit={onSubmitHandler}>
-        <label>Email</label>
-        <input type="email" value={Email} onChange={onEmailHandler}/>
-        <label>Name</label>
-        <input type="text" value={Name} onChange={onNameHandler}/>
-        <label>Password</label>
-        <input type="password" value={Password} onChange={onPasswordHandler}/>
-        <label>Confirm</label>
-        <input type="password" value={Confirm} onChange={onConfirmHandler}/>
-        <br/>
-        <button>정보 수정</button>
-      </form>
-    </div>
+    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+    <Grid.Column style={{ maxWidth: 450 }}>
+      <Header as='h2' color='teal' textAlign='center'>
+        회원정보 수정
+      </Header>
+      <Form size='large' onSubmit={onSubmitHandler}>
+        <Segment stacked>
+          <Form.Input fluid icon='user' iconPosition='left' placeholder='E-mail address' value={Email} onChange={onEmailHandler}/>
+          <Form.Input fluid icon='user' iconPosition='left' placeholder='Name' value={Name} onChange={onNameHandler}/>
+          <Form.Input fluid icon='lock' iconPosition='left' placeholder='Password' type='password' value={Password} onChange={onPasswordHandler}/>
+          <Form.Input fluid icon='lock' iconPosition='left' placeholder='Confirm Password' type='password' value={Confirm} onChange={onConfirmHandler}/>
+
+          <Button color='teal' fluid size='large'>
+            확인
+          </Button>
+        </Segment>
+      </Form>
+    </Grid.Column>
+    </Grid>
   );
 };
 

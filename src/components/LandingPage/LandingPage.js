@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { Dimmer, Loader} from 'semantic-ui-react'
 
-const LandingPage = () => {
+const LandingPage = (props) => {
   let {userData}= useSelector((state)=>state.user)
   const [isStoreLoaded, setStoreLoad] = useState(false);
 
@@ -15,7 +15,7 @@ const LandingPage = () => {
   return (
     <>
       {isStoreLoaded 
-      ? <Namespaces></Namespaces>
+      ? <Namespaces{...props}></Namespaces>
       : <Dimmer active> <Loader /> </Dimmer>
       }
     </>

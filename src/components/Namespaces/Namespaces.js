@@ -4,11 +4,11 @@ import { message } from "antd";
 import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import CreateNS from "../CreateNS/CreateNS"
-// import NavBar from "../NavBar/NavBar" 푸시테스트
+import NavBar from "../NavBar/NavBar" 
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket=""
-const Namespaces = () => {
+const Namespaces = (props) => {
   let {nsList, roomList, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
@@ -61,7 +61,7 @@ const Namespaces = () => {
   }
   return (
     <>
-      {/* <NavBar></NavBar> */}
+      <NavBar {...props}></NavBar>
       <div className="col-sm-1 namespaces">
         {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
         <br/>
