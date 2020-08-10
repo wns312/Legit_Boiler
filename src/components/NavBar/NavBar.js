@@ -46,8 +46,8 @@ const NavBar = (props) => {
           </Dropdown.Menu>
         </Dropdown>
       </Container>
-      <Button onClick={handleButton}>회원정보 수정</Button>
-      <Button onClick={onClickHandler}>로그아웃</Button>
+      <Menu.Item onClick={handleButton} as='a'>회원정보 수정</Menu.Item>
+      <Menu.Item onClick={onClickHandler} as='a'>로그아웃</Menu.Item>
     </Menu>
       {isClicked && props.history.push("/usermodify")}
     </div>
