@@ -51,7 +51,7 @@ const Rooms = () => {
         return room.member.find(mem=> (mem._id ===_id))
       })
       dispatch(inputRoomList(myRooms));
-      // dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
+      dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
     })
 
     Socket.on('currentNsClose', (nsArray)=>{ 

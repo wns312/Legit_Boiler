@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './LoginPage.css'
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import { useDispatch } from "react-redux"
 import {loginUser} from '../../_actions/user_action'
+import { Link } from 'react-router-dom';
 
 const LoginPage = (props) => {
   const dispatch = useDispatch();
@@ -31,16 +33,34 @@ const LoginPage = (props) => {
     }) 
   }
   return (
-    <div id ='logindiv'>
-      <form id='loginform' onSubmit={onSubmitHandler}>
-        <label>Email</label>
-        <input type="email" value={Email} onChange={onEmailHandler}/>
-        <label>Password</label>
-        <input type="password" value={Password} onChange={onPasswordHandler}/>
-        <br/>
-        <button>로그인</button>
-      </form>
-    </div>
+    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+    <Grid.Column style={{ maxWidth: 450 }}>
+      <Header as='h2' color='teal' textAlign='center'>
+        Log-in to your account
+      </Header>
+      <Form size='large' onSubmit={onSubmitHandler}>
+        <Segment stacked>
+          <Form.Input fluid icon='user' iconPosition='left' placeholder='E-mail address' value={Email} onChange={onEmailHandler}/>
+          <Form.Input
+            fluid
+            icon='lock'
+            iconPosition='left'
+            placeholder='Password'
+            type='password'
+            value={Password} 
+            onChange={onPasswordHandler}
+          />
+
+          <Button color='teal' fluid size='large'>
+            Login
+          </Button>
+        </Segment>
+      </Form>
+      <Message>
+        계정이 없나요? <Link to='/register'>Sign Up</Link>
+      </Message>
+    </Grid.Column>
+    </Grid>
   );
 };
 

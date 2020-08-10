@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import InviteRoom from "../InviteRoom/InviteRoom"
 import ChatInput from "../ChatInput/ChatInput"
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import LeaveRoom from '../LeaveRoom/LeaveRoom';
+import { inputCurrentRoom } from '../../_actions/chat_action';
 
 const Chat = () => {
   //방정보를 store에 넣어서 가져올 필요가 있어보임
@@ -16,6 +17,7 @@ const Chat = () => {
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
+  const dispatch =useDispatch();
 
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
@@ -25,8 +27,9 @@ const Chat = () => {
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
       //isPrivate을 false만들기
+      dispatch(inputCurrentRoom(""))
     }
-  }, [nsSocket, _id, NS_id])
+  }, [nsSocket, _id, NS_id, dispatch])
 
   useEffect(() => {
     //히스토리 추가 : 방 변경시 socket.on중복실행방지로 새 effect로정의

@@ -172,9 +172,6 @@ module.exports = function (io) {
     })
   }
 
-
-
-
   //내가 나가는게 먼저로 순서를 변경하고 테스트
   function leaveRoom(NS_io, nsSocket, data) {
     let {userId, _id} = data // _id는 ns의 _id
@@ -204,14 +201,6 @@ module.exports = function (io) {
       nsSocket.emit('errorMsg', `에러가 발생했습니다 : ${err}`);
     })
   }
-
-
-
-
-
-
-
-
 
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
   function joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback) {
