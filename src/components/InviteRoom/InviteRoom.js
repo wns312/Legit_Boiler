@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { message } from "antd";
-import { Button, Modal, Icon } from 'semantic-ui-react'
+import { Button, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
 const InviteRoom = () => {
   //필요한 것 : Ns멤버목록(멤버선택을 위해), NsSocket(emit을 위해)

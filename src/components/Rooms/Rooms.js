@@ -10,6 +10,7 @@ import NsSettings from "../NsSettings/NsSettings";
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket = ''
+
 const Rooms = () => {
   let {_id} = useSelector(state=>state.user.userData)
   let {roomList, currentNs} = useSelector(state=>state.chatInfo)
@@ -50,7 +51,6 @@ const Rooms = () => {
         return room.member.find(mem=> (mem._id ===_id))
       })
       dispatch(inputRoomList(myRooms));
-      
       // dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
     })
 
@@ -101,7 +101,6 @@ const Rooms = () => {
     Socket.emit('clickRoom', room._id);
     // dispatch(inputCurrentRoom(room))
   }
-  
   return (
     <div className="col-sm-2 rooms"><br/>
       {isAdmin}

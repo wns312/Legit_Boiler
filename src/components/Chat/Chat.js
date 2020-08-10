@@ -12,7 +12,7 @@ const Chat = () => {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   // member, _id,  namespace, nsEndpoint 도 있음
-  let { roomTitle, _id } = currentRoom; //roomindex를 버릴경우 여기서 에러남
+  let { roomTitle, _id, isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
@@ -88,7 +88,7 @@ const Chat = () => {
         <section>
           <div {...getRootProps()}>
             <div className="chat-panel col-sm-9">
-              <LeaveRoom></LeaveRoom>
+              {isDM || <LeaveRoom></LeaveRoom>}
               <div className="room-header row col-6"> {/* 방이름, 인원수 자리 */}
                 {roomTitleLoad()}
                 <div className="col-sm-3 search pull-right"> {/* 검색창 자리 */}
