@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { message } from "antd";
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Modal, Icon } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
 const InviteRoom = () => {
   //필요한 것 : Ns멤버목록(멤버선택을 위해), NsSocket(emit을 위해)
@@ -36,7 +36,7 @@ const InviteRoom = () => {
 
   return (
     <>
-      <Button onClick={() => { show("small") }}>멤버 초대</Button>
+      <Button onClick={() => { show("small") }}>Invite Room</Button>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>방 생성</Modal.Header>
         <Modal.Content>

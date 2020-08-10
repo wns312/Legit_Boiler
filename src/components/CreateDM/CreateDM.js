@@ -41,7 +41,7 @@ const CreateDM = () => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>DM 생성</Button>
+      <Button onClick={() => { show('small') }}>Create DM</Button>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header>DM 생성</Modal.Header>
           <Modal.Content>

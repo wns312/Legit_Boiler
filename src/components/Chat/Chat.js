@@ -12,7 +12,7 @@ const Chat = () => {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   // member, _id,  namespace, nsEndpoint 도 있음
-  let { roomTitle, isPrivate, _id } = currentRoom; //roomindex를 버릴경우 여기서 에러남
+  let { roomTitle, _id } = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
@@ -72,7 +72,7 @@ const Chat = () => {
         <div className="col-sm-3">
           <span className="curr-room-text">{roomTitle}</span>
           <span className="curr-room-num-users"> {amountOfUsers} <span className="glyphicon glyphicon-user"></span></span>&emsp;
-          {isPrivate && <InviteRoom></InviteRoom>}
+          <InviteRoom></InviteRoom>
         </div>
       )
     } else { // dm이면

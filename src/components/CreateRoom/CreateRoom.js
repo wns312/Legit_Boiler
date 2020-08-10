@@ -40,7 +40,7 @@ const CreateRoom = () => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>방 생성</Button>
+      <Button onClick={() => { show('small') }}>Create Room</Button>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header>방 생성</Modal.Header>
           <Modal.Content>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Modal,Icon } from 'semantic-ui-react'
 
 const NsSettings = () => {
   const [Open, setOpen] = useState(false);
@@ -24,7 +24,7 @@ const NsSettings = () => {
   }
 
   return (<>
-      <i className="setting icon" onClick={()=>{ show('small') }} onMouseEnter={handlecursor} onMouseLeave={handlecursor} ></i>
+      <Icon name='setting' onClick={()=>{ show('small') }} onMouseEnter={handlecursor} onMouseLeave={handlecursor}></Icon>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>NS 설정</Modal.Header>
         <Modal.Content>

@@ -26,7 +26,7 @@ const LeaveRoom = () => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>방나가는 버튼</Button>
+      <Button onClick={() => { show('small') }}>Leave Room</Button>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>{roomTitle} 에서 나가시겠습니까?</Modal.Header>
           {/* <Modal.Content>

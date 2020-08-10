@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Modal, Icon } from 'semantic-ui-react'
 import { message } from "antd";
 import { useSelector } from 'react-redux';
 
@@ -39,7 +39,8 @@ const InviteNs = () => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>NS초대</Button>
+      
+      <Button onClick={() => { show('small') }}>Invite NS</Button>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header >네임스페이스 초대</Modal.Header>
           <Modal.Content>
