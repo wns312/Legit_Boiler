@@ -20,13 +20,13 @@ module.exports = function (io) {
     User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
 
     socket.on('disconnect', ()=>{//접속해제시 socket을 파기
-      User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).select('socket').exec() // 접속 종료시 socket id를 db에서 제거
+      User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).select('socket').exec() // 접속 종료시 socket id를 db에서 
     })
 
     socket.on('clickNs', (data)=>{
       //클릭한 ns목록과 그에 맞는 방을 전송
       let {nsTitle, NS_id}= data
-      NsModel.findOne({nsTitle}).populate('nsMember', 'email name socket image').select('nsTitle nsMember')
+      NsModel.findOne({nsTitle}).populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
       .exec()
       .then((doc)=>{
         //본인한테 맞는 방을 가져왔다
@@ -47,13 +47,13 @@ module.exports = function (io) {
       let {nsTitle}= data
       let result= nsTitleList.find( element=>(element ===nsTitle) )
       let img = "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D"
-      let newNs = new NsModel({ nsMember : [_id], nsTitle, img });
+      let newNs = new NsModel({ admin : _id, nsMember : [_id], nsTitle, img});
       
       newNs.save()
       .then((ns) => { // 새 NS를 DB에 추가
         console.log(ns);
         
-        NsModel.find({nsMember : _id}).select('nsTitle img')
+        NsModel.find({nsMember : _id}).select('nsTitle img admin')
         .exec((err, nsArray) => {
           if(err) console.log(err);
           socket.emit("nsList", nsArray);
@@ -154,7 +154,7 @@ module.exports = function (io) {
       });
 
       return NsModel.findOneAndUpdate({_id}, {$pull : {nsMember : userId}}, {new : true})
-      .populate('nsMember', 'email name socket image').select('nsTitle nsMember')
+      .populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
       .exec()
     })
     .then((ns)=>{
@@ -277,7 +277,7 @@ module.exports = function (io) {
     .then((doc)=>{//네임스페이스의 유저목록에 신규유저 추가하고 접속중인 ns유저들에게 새 목록을 보내준다
       console.log(`초대유저 검색 결과 : ${doc}`);
       NsModel.findOneAndUpdate({_id}, {$addToSet : {nsMember : doc._id}}, {new : true} )
-      .populate('nsMember', 'email name socket image').select('nsTitle nsMember')
+      .populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
       .exec((err, ns)=>{
         console.log(`ns : ${ns}`);
         NS_io.emit('updatecurrentNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)

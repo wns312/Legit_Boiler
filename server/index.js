@@ -33,5 +33,5 @@ server.listen(port, ()=>{
 
 app.use('/uploads', express.static('uploads'));
 app.use('/api/users',userRouter);
-app.use('/api/chat',chatRouter);
+app.use('/api/chat',chatRouter(io));
 app.use('/api/chatSocket', chatSocket(io)); // 소켓처리 담당

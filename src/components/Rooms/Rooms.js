@@ -1,20 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { message } from "antd";
 import CreateRoom from "../CreateRoom/CreateRoom";
 import InviteNs from "../InviteNs/InviteNs";
 import CreateDM from "../CreateDM/CreateDM";
 import LeaveNS from "../LeaveNS/LeaveNS";
+import NsSettings from "../NsSettings/NsSettings";
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket = ''
 const Rooms = () => {
   let {_id} = useSelector(state=>state.user.userData)
   let {roomList, currentNs} = useSelector(state=>state.chatInfo)
-  let {nsTitle} = currentNs // nsId
-  const dispatch =useDispatch();
+  let { nsTitle, admin } = currentNs // nsId
 
+  const [isAdmin, setIsAdmin] = useState(false)
+  const dispatch =useDispatch();
   useEffect(()=>{ // 네임스페이스를 클릭할 때 마다 실행되어야 한다
+    setIsAdmin((_id===admin) ? true : false)
+    
     if (Socket)  Socket.close(); 
     if (`/${nsTitle}`!==Socket.nsp) {
       Socket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${nsTitle}`, { query :  {_id} });
@@ -64,7 +68,7 @@ const Rooms = () => {
     })
     
     return ()=>{ console.log(`[${nsTitle}] NS에서 나갔습니다`); }// 왜 나가지도 않았는데 실행되는가?? 함수안에서 사용하지 않았기 때문이다
-  }, [nsTitle, _id, dispatch])
+  }, [nsTitle, _id, admin, dispatch])
 
   function getroomList() {
     let tmproom = roomList.filter((room)=> (room.isDM === undefined) )
@@ -96,6 +100,7 @@ const Rooms = () => {
   
   return (
     <div className="col-sm-2 rooms"><br/>
+      {isAdmin}
       <h3>Rooms</h3>
       <ul className="room-list">
         {getroomList()}<br/> {/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
@@ -110,7 +115,8 @@ const Rooms = () => {
       </ul>
       <hr/> <br/><br/>
       <InviteNs></InviteNs>
-      <LeaveNS></LeaveNS>
+      <LeaveNS></LeaveNS><br/><br/>
+      {isAdmin && <NsSettings></NsSettings> }
     </div>
   );
 };
