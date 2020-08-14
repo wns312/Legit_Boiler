@@ -25,9 +25,9 @@ const ChatInput = () => {
   }
   return (
     <> 
-      <form onSubmit={handleForm}>
-        <input id='input_message' placeholder='Message' value={InputText} onSubmit={handleForm} onChange={handleInput}></input> 
-        <div id='input_etc'><button >전송</button></div>
+      <form id='input' onSubmit={handleForm}>
+        <input id='input_message' placeholder='Message' value={InputText} onSubmit={handleForm} onChange={handleInput} autoComplete="off"></input>
+        <div id='input_etc'><button>전송</button></div>
       </form>
     </>
   );

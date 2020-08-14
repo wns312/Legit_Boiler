@@ -7,7 +7,7 @@ import InviteRoom from "../InviteRoom/InviteRoom"
 import Dropzone from 'react-dropzone';
 import LeaveRoom from '../LeaveRoom/LeaveRoom';
 
-const Chat = () => {
+const Chat = ({handleAside}) => {
   //방정보를 store에 넣어서 가져올 필요가 있어보임
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
@@ -16,7 +16,6 @@ const Chat = () => {
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
-  let Aside = useRef();
   let chat_messages = useRef();
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
@@ -74,16 +73,12 @@ const Chat = () => {
       return (dataOfOpponent ? dataOfOpponent.name : "나간상대")
     }
   }
-  function handleAside() {
-    Aside.current.style.display==='block'
-      ? Aside.current.style.display = 'none' 
-      : Aside.current.style.display = 'block'
-  }
+
 
 
   return (
     <>
-      <section id='chat'> {/* 채팅 */}
+       {/* 채팅 */}
         <div id='chat_header'>
           <div id="roomtitle">
             {roomTitleLoad()}
@@ -97,9 +92,7 @@ const Chat = () => {
           </ul>
         </div>
         <ChatInput></ChatInput>
-      </section>
-      <aside ref={Aside} id='info' onClick={handleAside}>aside</aside>
-      {/* {isDM || <LeaveRoom></LeaveRoom>} */}
+    {/* {isDM || <LeaveRoom></LeaveRoom>} */}
     </>
     // <Dropzone onDrop={onDrop}>
     //   {({ getRootProps }) => (

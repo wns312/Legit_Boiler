@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client'
 import './Namespaces.css';
 import { message } from "antd";
-import Modal from '../Modal/Modal'
 import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
+import EmptyChat from '../EmptyChat/EmptyChat'
 import CreateNS from "../CreateNS/CreateNS"
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
@@ -15,9 +15,9 @@ const Namespaces = (props) => {
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
 
-  let RightArrow = useRef()
-  let Aside = useRef()
-  let List = useRef()
+  let RightArrow = useRef();
+  let List = useRef();
+  let Aside = useRef();
   function showList() {
     List.current.style.display = 'block'
     RightArrow.current.style.display = "none"
@@ -71,6 +71,11 @@ const Namespaces = (props) => {
     }
     // console.log(`[${Title}] / [${title}]`);
   }
+  function handleAside() {
+    Aside.current.style.display==='block'
+      ? Aside.current.style.display = 'none' 
+      : Aside.current.style.display = 'block'
+  }
 
   return (
     <div id='bpp'>
@@ -86,20 +91,15 @@ const Namespaces = (props) => {
             </svg>
             {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
           </ul>
-          {/* _id=유저아이디 : 유저아이디를 알아야 생성자를 추가함 (Socket은 axios로 대체 후 삭제가능) */}
           {/* <CreateNS Socket={Socket}></CreateNS>  나중에 모달에추가 */}
         </section>
         <section ref={List} id='list'>
-          <section id='list_header'>
-            { roomList && <Modal></Modal> }
-            <svg onClick={hideList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-left sidebar_iconleft" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M5.854 4.646a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L3.207 8l2.647-2.646a.5.5 0 0 0 0-.708z" />
-              <path fillRule="evenodd" d="M10 8a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0 0 1h6.5A.5.5 0 0 0 10 8zm2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z" />
-            </svg>
-          </section>
-          { roomList && <Rooms></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
+          { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         </section>
-        { currentRoom ? <Chat></Chat> : null} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+        <section id='chat'>
+        { currentRoom ? <Chat handleAside={handleAside}></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+        </section>
+        <aside ref={Aside} id='info' onClick={handleAside}>aside</aside>
       </div>
     </div>
   );
