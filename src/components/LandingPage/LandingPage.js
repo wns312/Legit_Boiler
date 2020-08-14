@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './LandingPage.css'
 import Namespaces from '../Namespaces/Namespaces'
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';

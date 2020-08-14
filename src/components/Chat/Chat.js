@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import InviteRoom from "../InviteRoom/InviteRoom"
 import ChatInput from "../ChatInput/ChatInput"
-import Dropzone from 'react-dropzone';
 import axios from 'axios';
+import InviteRoom from "../InviteRoom/InviteRoom"
+import Dropzone from 'react-dropzone';
 import LeaveRoom from '../LeaveRoom/LeaveRoom';
 
 const Chat = () => {
@@ -16,7 +16,8 @@ const Chat = () => {
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
-
+  let Aside = useRef();
+  let chat_messages = useRef();
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
     nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
@@ -44,9 +45,6 @@ const Chat = () => {
     });
   }, [nsSocket]);
 
-  //검색 : 어려움
-  function handleSearch(event) {
-  }
 
   function onDrop(files) {
     let formData = new FormData();
@@ -68,43 +66,50 @@ const Chat = () => {
 
   function roomTitleLoad() {
     if (currentRoom.isDM === undefined) { // dm이 아니면
-      return (
-        <div className="col-sm-3">
-          <span className="curr-room-text">{roomTitle}</span>
-          <span className="curr-room-num-users"> {amountOfUsers} <span className="glyphicon glyphicon-user"></span></span>&emsp;
-          <InviteRoom></InviteRoom>
-        </div>
-      )
+      return (roomTitle)
     } else { // dm이면
       let dataOfOpponent = currentRoom.member.find(ele => {
         return (ele._id !== userData._id)
       })
-      return (<div className="col-sm-3"><span className="curr-room-text">{dataOfOpponent ? dataOfOpponent.name : "나간상대"}</span></div>)
+      return (dataOfOpponent ? dataOfOpponent.name : "나간상대")
     }
   }
+  function handleAside() {
+    Aside.current.style.display==='block'
+      ? Aside.current.style.display = 'none' 
+      : Aside.current.style.display = 'block'
+  }
+
+
   return (
-    <Dropzone onDrop={onDrop}>
-      {({ getRootProps }) => (
-        <section>
-          <div {...getRootProps()}>
-            <div className="chat-panel col-sm-9">
-              {isDM || <LeaveRoom></LeaveRoom>}
-              <div className="room-header row col-6"> {/* 방이름, 인원수 자리 */}
-                {roomTitleLoad()}
-                <div className="col-sm-3 search pull-right"> {/* 검색창 자리 */}
-                  <span className="glyphicon glyphicon-search"></span>
-                  <input type="text" id="search-box" onChange={handleSearch} placeholder="Search" />
-                </div>
-              </div>
-              <ul id="messages" className="col-sm-12" style={{ height: '800px' }}>
-                {newChatList(messages)} {/* 채팅목록 */}
-              </ul>
-              <ChatInput></ChatInput> {/* 메시지 전송 자리 */}
-            </div>
+    <>
+      <section id='chat'> {/* 채팅 */}
+        <div id='chat_header'>
+          <div id="roomtitle">
+            {roomTitleLoad()}
+            {/* <InviteRoom></InviteRoom> */}
           </div>
-        </section>
-      )}
-    </Dropzone>
+          <i onClick={handleAside} className="large info circle icon aside_icon"></i>
+        </div>
+        <div ref={chat_messages} id='chat_messages'>
+          <ul id='chatset_ul'>
+            {newChatList(messages)} {/* 채팅목록 */}
+          </ul>
+        </div>
+        <ChatInput></ChatInput>
+      </section>
+      <aside ref={Aside} id='info' onClick={handleAside}>aside</aside>
+      {/* {isDM || <LeaveRoom></LeaveRoom>} */}
+    </>
+    // <Dropzone onDrop={onDrop}>
+    //   {({ getRootProps }) => (
+    //     <section>
+    //       <div {...getRootProps()}>
+            
+    //       </div>
+    //     </section>
+    //   )}
+    // </Dropzone>
   );
 }
 export default React.memo(Chat);
@@ -116,10 +121,10 @@ function newChatList(messages) {
 
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
     return (
-      <li className="user-chat-set" key={index}>
-        <div className="user-image"><img src={avatar} alt="아바타" /></div>
-        <div className="user-message">
-          <div className="user-name-time">{userName}<span> {convertedDate}</span></div>
+      <li className="chatset_li" key={index}>
+        <img className="chatset_image" src={avatar} alt="아바타" />
+        <div className="chatset_message">
+          <div className="chatset_name">{userName}<small className="chatset_time">&ensp;{convertedDate}</small></div>
           {convertedMsg}
         </div>
       </li>
@@ -132,7 +137,7 @@ function convertMsg(text, type, filename) {
   let tag = "";
   switch (type) {
     case 'text':
-      tag = <div className="message-text">{text}</div>
+      tag = text
       break;
 
     case 'image/png': case 'image/jpeg': case 'image/gif':

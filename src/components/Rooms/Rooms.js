@@ -89,7 +89,7 @@ const Rooms = () => {
     const newList= tmproom.map((room, index) => { // 내가 포함된 dm방 전체데이터를 map한다
       let dataOfOpponent = room.member.find(ele=>ele._id !==_id)
       return (
-      <li className='room' key={index} onClick={()=>{handleList(room)}}> 
+      <li key={index} onClick={()=>{handleList(room)}}> 
         <Icon name='user'></Icon>{dataOfOpponent ? dataOfOpponent.name : "나간상대"} 
       </li>)
     });
@@ -101,26 +101,36 @@ const Rooms = () => {
     Socket.emit('clickRoom', room._id);
     // dispatch(inputCurrentRoom(room))
   }
+  
   return (
-    <div className="col-sm-2 rooms"><br/>
-      {isAdmin}
-      <h3>Rooms</h3>
-      <ul className="room-list">
-        {getroomList()}<br/> {/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
-        <CreateRoom></CreateRoom>
-      </ul>
-      <hr/>
-      <h3>Direct Message</h3>
-      <ul className="room-list">
-        {getdmList()}<br/> {/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
-        {/*  currentNs가 있을때만 열리게하고싶은데 조건걸면 ns초대할때 터짐 */}
-        <CreateDM></CreateDM> 
-      </ul>
-      <hr/> <br/><br/>
-      <InviteNs></InviteNs>
-      <LeaveNS></LeaveNS><br/><br/>
-      {isAdmin && <NsSettings></NsSettings> }
-    </div>
+      <section id='list_body'>
+        <section id='list_body_schedule'>
+          <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
+          <ul>
+            <li># 스케쥴러1</li>
+            <li># 스케쥴러2</li>
+          </ul>
+        </section>
+        <section id='list_body_channel'>
+          <strong>&nbsp;&emsp;Channels</strong>
+          <ul>
+            {getroomList()}{/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
+            
+          </ul>
+        </section>
+        <section id='list_body_directmessage'>
+          <strong>&nbsp;&emsp;Direct Messages</strong>
+          <ul>
+            {getdmList()}{/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
+            {/*  currentNs가 있을때만 열리게하고싶은데 조건걸면 ns초대할때 터짐 */}
+          </ul>
+        </section>
+              {/* <CreateRoom></CreateRoom> */}
+      {/* <CreateDM></CreateDM>  */}
+      {/* <InviteNs></InviteNs>
+      <LeaveNS></LeaveNS><br/><br/>*/}
+      {/* {isAdmin && <NsSettings></NsSettings> }  */}
+      </section>
   );
 };
 export default Rooms;

@@ -12,8 +12,8 @@ const ChatInput = () => {
   }
   //메시지발신
   function handleForm(event) {
-    let inputTag = event.currentTarget.childNodes[0].childNodes[0]
     event.preventDefault();
+    let inputTag = event.currentTarget.childNodes[0]
     inputTag.setAttribute('disabled', true);
     if(InputText!=="") {
       let {name, image} = userData
@@ -24,14 +24,14 @@ const ChatInput = () => {
     setTimeout(()=>{inputTag.focus()}, 100);
   }
   return (
-  <div className="message-form">
-    <form id="user-input" onSubmit={handleForm} >
-      <div className="col-sm-12">
-        <input id="user-message" type="text" onChange={handleInput} value={InputText} placeholder="Enter your message" />
-      </div>
-    </form>
-  </div>
+    <> 
+      <form onSubmit={handleForm}>
+        <input id='input_message' placeholder='Message' value={InputText} onSubmit={handleForm} onChange={handleInput}></input> 
+        <div id='input_etc'><button >전송</button></div>
+      </form>
+    </>
   );
 };
+
 
 export default ChatInput;
