@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-const ChatInput = () => { 
+const ChatInput = ({scrollBottom}) => { 
   let {userData} = useSelector(state=>state.user) 
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   const [InputText, setInputText] = useState(""); // 얘는 메모해주어야 할 것 같다
@@ -21,6 +21,8 @@ const ChatInput = () => {
       setInputText("");
     }
     inputTag.removeAttribute('disabled')
+    
+    setTimeout(()=>{scrollBottom()}, 50);
     setTimeout(()=>{inputTag.focus()}, 100);
   }
   return (

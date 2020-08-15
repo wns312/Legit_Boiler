@@ -17,11 +17,13 @@ const Chat = ({handleAside}) => {
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
   let chat_messages = useRef();
+  let ulTag = useRef();
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
     nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
       setAmountOfUsers(numberOfMembers);
     });
+
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
       //isPrivate을 false만들기
@@ -32,6 +34,7 @@ const Chat = ({handleAside}) => {
     //히스토리 추가 : 방 변경시 socket.on중복실행방지로 새 effect로정의
     nsSocket.on('historyCatchUp', (history) => {
       setMessages(history)
+      chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
     });
     //메시지 수신
     nsSocket.on('messageToClients', (message) => {
@@ -73,9 +76,13 @@ const Chat = ({handleAside}) => {
       return (dataOfOpponent ? dataOfOpponent.name : "나간상대")
     }
   }
+  function scrollBottom() {
+    // scrollIntoView는 true일시 자신의 맨 위, false일시 자신의 맨 아래를 보여주게된다
+    // ulTag.current.scrollIntoView(false)
+    chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
+  }
 
-
-
+  
   return (
     <>
        {/* 채팅 */}
@@ -87,11 +94,11 @@ const Chat = ({handleAside}) => {
           <i onClick={handleAside} className="large info circle icon aside_icon"></i>
         </div>
         <div ref={chat_messages} id='chat_messages'>
-          <ul id='chatset_ul'>
+          <ul ref={ulTag} id='chatset_ul'>
             {newChatList(messages)} {/* 채팅목록 */}
           </ul>
         </div>
-        <ChatInput></ChatInput>
+        <ChatInput scrollBottom={scrollBottom}></ChatInput>
     {/* {isDM || <LeaveRoom></LeaveRoom>} */}
     </>
     // <Dropzone onDrop={onDrop}>

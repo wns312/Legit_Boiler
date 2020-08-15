@@ -34,6 +34,7 @@ const Namespaces = (props) => {
 
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
+      Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
     })//완성⭐
 
     Socket.on('currentNs', ({doc, rooms})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
