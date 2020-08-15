@@ -6,9 +6,10 @@ import InviteNs from "../InviteNs/InviteNs";
 import NsSettings from "../NsSettings/NsSettings";
 import LeaveNS from "../LeaveNS/LeaveNS";
 import CreateRoom from "../CreateRoom/CreateRoom";
-import CreateDM from "../CreateDM/CreateDM";
+// import CreateDM from "../CreateDM/CreateDM";
 import ModalMenu from '../ModalMenu/ModalMenu'
 import ModalCentered from '../ModalCentered/ModalCentered'
+import CreateDM from '../ModalCentered/CreateDM'
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket = ''
@@ -116,14 +117,6 @@ const Rooms = ({hideList}) => {
             여기에 헤더적기
           </>
           <>
-            여기에 바디적기
-            여기에 바디적기
-            여기에 바디적기
-            여기에 바디적기
-            여기에 바디적기
-            여기에 바디적기
-            여기에 바디적기
-            여기에 바디적기
             여기에 바디적기
             여기에 바디적기
             

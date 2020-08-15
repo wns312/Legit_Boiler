@@ -6,7 +6,7 @@ const ModalCentered = ({children}) => {
   let modal = useRef();
   function Open() { modal.current.classList.remove(styles.hidden) }
   function Close() { modal.current.classList.add(styles.hidden) }
-  
+
   return (
     <>
     {/* 버튼에 onClick={Open} 달기 */}
