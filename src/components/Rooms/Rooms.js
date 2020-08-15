@@ -7,7 +7,8 @@ import NsSettings from "../NsSettings/NsSettings";
 import LeaveNS from "../LeaveNS/LeaveNS";
 import CreateRoom from "../CreateRoom/CreateRoom";
 import CreateDM from "../CreateDM/CreateDM";
-import Modal from '../Modal/Modal'
+import ModalMenu from '../ModalMenu/ModalMenu'
+import ModalCentered from '../ModalCentered/ModalCentered'
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket = ''
@@ -106,7 +107,28 @@ const Rooms = ({hideList}) => {
   return (
     <>
       <section id='list_header'>
-        { roomList && <Modal isAdmin={isAdmin}></Modal> }
+        {/* { roomList && <ModalMenu isAdmin={isAdmin}></ModalMenu> } */}
+        <ModalCentered >
+          <>
+            여기에 클릭할 내용적기
+          </>
+          <>
+            여기에 헤더적기
+          </>
+          <>
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            여기에 바디적기
+            
+          </>
+        </ModalCentered>
         <svg onClick={hideList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-left sidebar_iconleft" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path fillRule="evenodd" d="M5.854 4.646a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L3.207 8l2.647-2.646a.5.5 0 0 0 0-.708z" />
           <path fillRule="evenodd" d="M10 8a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0 0 1h6.5A.5.5 0 0 0 10 8zm2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z" />
@@ -117,7 +139,6 @@ const Rooms = ({hideList}) => {
           <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
           <ul>
             <li># 스케쥴러1</li>
-            <li># 스케쥴러2</li>
           </ul>
         </section>
         <section id='list_body_channel'>

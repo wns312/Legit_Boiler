@@ -1,5 +1,5 @@
 import React from 'react';
-import './Modal.css';
+import styles from './ModalMenu.module.css';
 import { useRef } from 'react';
 import InviteNs from "../InviteNs/InviteNs";
 import NsSettings from "../NsSettings/NsSettings";
@@ -7,18 +7,18 @@ import LeaveNS from "../LeaveNS/LeaveNS";
 import CreateRoom from "../CreateRoom/CreateRoom";
 import CreateDM from "../CreateDM/CreateDM";
 
-const Modal = ({isAdmin}) => {
+const ModalMenu = ({isAdmin}) => {
   let modal = useRef();
   let overlay = useRef();
   
 
   function Open() {
     console.log(modal.current.classList);
-    modal.current.classList.remove("hidden") // 클래스리스트에서 특정 클래스네임제거
+    modal.current.classList.remove(styles.hidden) // 클래스리스트에서 특정 클래스네임제거
   }
   function Close() {
     console.log(modal.current.classList.value);
-    modal.current.classList.add("hidden")
+    modal.current.classList.add(styles.hidden)
   }
 
   return (
@@ -27,9 +27,9 @@ const Modal = ({isAdmin}) => {
         <span id='list_header_teamname'>Legit</span>
         <span id='list_header_username'># 김준영</span>
       </div>
-      <div ref={modal} className="modal hidden" onClick={Close}>
-        <div ref={overlay} className="modal__overlay"></div>
-        <div className="modal__content">
+      <div ref={modal} className={`${styles.modal} ${styles.hidden}`} >
+        <div ref={overlay} className={styles.overlay} onClick={Close}></div>
+        <div className={styles.content} >
           <CreateRoom></CreateRoom>
           <CreateDM></CreateDM> 
           <InviteNs></InviteNs>
@@ -42,4 +42,4 @@ const Modal = ({isAdmin}) => {
   );
 };
 
-export default Modal;
+export default ModalMenu;
