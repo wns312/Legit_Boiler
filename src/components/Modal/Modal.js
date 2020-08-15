@@ -1,7 +1,13 @@
 import React from 'react';
 import './Modal.css';
 import { useRef } from 'react';
-const Modal = () => {
+import InviteNs from "../InviteNs/InviteNs";
+import NsSettings from "../NsSettings/NsSettings";
+import LeaveNS from "../LeaveNS/LeaveNS";
+import CreateRoom from "../CreateRoom/CreateRoom";
+import CreateDM from "../CreateDM/CreateDM";
+
+const Modal = ({isAdmin}) => {
   let modal = useRef();
   let overlay = useRef();
   
@@ -24,6 +30,11 @@ const Modal = () => {
       <div ref={modal} className="modal hidden" onClick={Close}>
         <div ref={overlay} className="modal__overlay"></div>
         <div className="modal__content">
+          <CreateRoom></CreateRoom>
+          <CreateDM></CreateDM> 
+          <InviteNs></InviteNs>
+          <LeaveNS></LeaveNS><br/><br/>
+          {isAdmin && <NsSettings></NsSettings> } 
         </div>
       </div>
       
