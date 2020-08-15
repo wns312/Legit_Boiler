@@ -6,7 +6,6 @@ import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import EmptyChat from '../EmptyChat/EmptyChat'
 import CreateNS from "../CreateNS/CreateNS"
-import Modal from '../Modal/Modal'
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket=""
