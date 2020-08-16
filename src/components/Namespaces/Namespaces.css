@@ -106,91 +106,6 @@
   border-color: rgb(56, 104, 154);
 }
 
-#list_header {
-  
-  grid-row: 1;
-  display: grid;
-  grid-template-columns: 160px 60px;
-  max-width: 220px;
-  border-style: solid;
-  border-width: 0px 0px 1px 0px;
-  border-color: rgb(56, 104, 154);
-}
-
-#list_header_button {
-  cursor: pointer;
-  grid-column: 1;
-  display: grid;
-  grid-template-rows: 20px 20px;
-  grid-template-columns: 130px;
-  padding: 15px 15px 15px 20px;
-}
-#list_header_button:hover {
-  background-color: rgb(82, 127, 171);
-  color: white;
-}
-
-
-.sidebar_iconleft {
-  cursor: pointer;
-  margin: 22px 0px 0px 15.5px;
-  grid-column: 2;
-}
-.sidebar_iconleft:hover {
-  background-color: rgb(82, 127, 171);
-  color: white;
-  border-radius: 4px;
-}
-
-#list_header_teamname {
-  grid-row : 1;
-  font-weight: 600;
-}
-
-#list_header_username {
-  grid-row : 2;
-  font-size: 0.9rem;
-  padding: 0px 0px 0px 1px;
-}
-
-#list_body {
-  grid-row: 2;
-  display: grid;
-  grid-template-rows: 20px auto auto 1fr;
-  overflow-y: auto;
-  overflow-x: auto;
-}
-
-#list_body_schedule{
-  grid-row : 2;
-}
-
-#list_body_channel{
-  grid-row : 3;
-}
-#list_body_directmessage{
-  grid-row : 4;
-}
-
-#list_body strong{
-  font-size: 15px;
-}
-
-#list_body ul{
-  padding-left: 0px;
-  margin-bottom: 1.2rem;
-}
-
-#list_body li{
-  padding: 5px 0px 5px 27px;
-  cursor: pointer;
-  list-style-type: none;
-}
-
-#list_body li:hover {
-  background-color: rgb(82, 127, 171);
-  color: white;
-}
 /* ----------------------------------------------- */
 
 #chat{
@@ -278,38 +193,6 @@
   color: grey;
 }
 
-/* ----------------------------------------------- */
-#input {
-  border-radius: 4px;
-  border-width: 2px 2px 2px 2px;
-  border-style: solid;
-  border-color: darkgrey;
-  outline: none;
-
-  grid-row: 3 / 6;
-  grid-column: 2;
-
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-}
-#input_message {
-  width: 100%;
-  border: none;
-  padding: 2px 0px 0px 7px;
-  grid-row: 1;
-  border-width: 0px 0px 2px 0px;
-  border-style: solid;
-  border-color: darkgrey;
-  outline: none;
-}
-
-#input_etc {
-  width: 100%;
-  padding: 4px 0px 0px 0px;
-  grid-row: 2;
-  background-color:rgb(255, 255, 255);
-  text-align: center;
-}
 /* ----------------------------------------------- */
 aside {
   display: none;

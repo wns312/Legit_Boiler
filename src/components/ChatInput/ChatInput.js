@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './ChatInput.module.css';
 import { useSelector } from 'react-redux';
 
 const ChatInput = ({scrollBottom}) => { 
@@ -27,9 +28,9 @@ const ChatInput = ({scrollBottom}) => {
   }
   return (
     <> 
-      <form id='input' onSubmit={handleForm}>
-        <input id='input_message' placeholder='Message' value={InputText} onSubmit={handleForm} onChange={handleInput} autoComplete="off"></input>
-        <div id='input_etc'><button>전송</button></div>
+      <form id={styles.input} onSubmit={handleForm}>
+        <input id={styles.message} placeholder='Message' value={InputText} onSubmit={handleForm} onChange={handleInput} autoComplete="off"></input>
+        <div id={styles.etc}><button>전송</button></div>
       </form>
     </>
   );

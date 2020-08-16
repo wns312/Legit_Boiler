@@ -18,9 +18,9 @@ const ModalMenu = ({isAdmin, nsTitle, username}) => {
 
   return (
     <>
-      <div id='list_header_button' onClick={Open}>
-        <span id='list_header_teamname'>{nsTitle}</span>
-        <span id='list_header_username'># {username}</span>
+      <div id={styles.header_button} onClick={Open}>
+        <span id={styles.header_teamname}>{nsTitle}</span>
+        <span id={styles.header_username}># {username}</span>
       </div>
       <div ref={modal} className={`${styles.modal} ${styles.hidden}`} >
         <div ref={overlay} className={styles.overlay} onClick={Close}></div>

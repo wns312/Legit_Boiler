@@ -5,6 +5,7 @@ import { Icon } from 'semantic-ui-react'
 import {CreateRoom, CreateDM, ModalMenu} from "../modals";
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
+import styles from './Rooms.module.css';
 let Socket = ''
 
 const Rooms = ({hideList}) => {
@@ -72,7 +73,7 @@ const Rooms = ({hideList}) => {
     const newList= tmproom.map((room, index) => {
       let isPrivateLogo = (room.isPrivate ? "lock" : "globe")
       return (
-        <li className='room' key={index} onClick={()=>{handleList(room)}}>
+        <li key={index} onClick={()=>{handleList(room)}}>
           <Icon name={isPrivateLogo}></Icon> {room.roomTitle}
         </li> 
       )
@@ -100,21 +101,15 @@ const Rooms = ({hideList}) => {
   
   return (
     <>
-
-      <section id='list_header'>
+      <section id={styles.header}>
         <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name}></ModalMenu>
         {/* { roomList && <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name}></ModalMenu> } */}
         <ArrowIcon hideList={hideList}></ArrowIcon>
       </section>
-      <section id='list_body'>
+      <section id={styles.body}>
         <Schedule isAdmin={isAdmin}></Schedule>
         <Channel getroomList={getroomList}></Channel>
         <DM getdmList={getdmList}></DM>
-        {/* <CreateRoom></CreateRoom> */}
-        
-        {/* <InviteNs></InviteNs>*/}
-        {/*<LeaveNS></LeaveNS><br/><br/>*/}
-        {/* {isAdmin && <NsSettings></NsSettings> }  */}
       </section>
     </>
   );
@@ -124,7 +119,7 @@ export default Rooms;
 
 const Schedule = ({isAdmin}) => {
   return (
-    <section id='list_body_schedule'>
+    <section id={styles.body_schedule}>
     <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
     <ul>
       <li># 스케쥴러1</li>
@@ -135,7 +130,7 @@ const Schedule = ({isAdmin}) => {
 
 const Channel = ({getroomList}) => {
   return (
-    <section id='list_body_channel'>
+    <section id={styles.body_channel}>
     <strong>&nbsp;&emsp;Channels &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;<CreateRoom><i className='fas fa-plus'/></CreateRoom></strong>
     <ul>
       {getroomList()}{/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
@@ -146,7 +141,7 @@ const Channel = ({getroomList}) => {
 
 const DM = ({getdmList}) => {
   return (
-    <section id='list_body_directmessage'>
+    <section id={styles.body_directmessage}>
     <strong>&nbsp;&emsp;Direct Messages &emsp;&emsp;&ensp;&ensp;<CreateDM><i className='fas fa-plus'/></CreateDM></strong>
     <ul>
       {getdmList()}{/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
@@ -158,10 +153,10 @@ const DM = ({getdmList}) => {
 
 const ArrowIcon = ({hideList}) => {
   return (
-    <svg onClick={hideList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-left sidebar_iconleft" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd" d="M5.854 4.646a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L3.207 8l2.647-2.646a.5.5 0 0 0 0-.708z" />
-    <path fillRule="evenodd" d="M10 8a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0 0 1h6.5A.5.5 0 0 0 10 8zm2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z" />
-  </svg>
+    <svg onClick={hideList} width="2em" height="2em" viewBox="0 0 16 16" className={`bi bi-arrow-bar-left ${styles.sidebar_iconleft}`} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" d="M5.854 4.646a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L3.207 8l2.647-2.646a.5.5 0 0 0 0-.708z" />
+      <path fillRule="evenodd" d="M10 8a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0 0 1h6.5A.5.5 0 0 0 10 8zm2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z" />
+    </svg>
   );
 };
 

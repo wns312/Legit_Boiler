@@ -1,4 +1,29 @@
 
+
+#header_button {
+  cursor: pointer;
+  grid-column: 1;
+  display: grid;
+  grid-template-rows: 20px 20px;
+  grid-template-columns: 130px;
+  padding: 15px 15px 15px 20px;
+}
+#header_button:hover {
+  background-color: rgb(82, 127, 171);
+  color: white;
+}
+
+#header_teamname {
+  grid-row : 1;
+  font-weight: 600;
+}
+
+#header_username {
+  grid-row : 2;
+  font-size: 0.9rem;
+  padding: 0px 0px 0px 1px;
+}
+
 .modal {
   top: 0;
   left: 0;

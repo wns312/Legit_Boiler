@@ -17,6 +17,7 @@ const Chat = ({handleAside}) => {
   const [messages, setMessages] = useState([]);
   let chat_messages = useRef();
   let ulTag = useRef();
+  
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
     nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
