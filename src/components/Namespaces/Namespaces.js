@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client'
-import './Namespaces.css';
 import { message } from "antd";
 import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import EmptyChat from '../EmptyChat/EmptyChat'
-import CreateNS from "../CreateNS/CreateNS"
+import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket=""
@@ -86,10 +85,7 @@ const Namespaces = (props) => {
       <div id="container">
         <section id='namespace'>
           <ul>
-            <svg ref={RightArrow} onClick={showList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-right sidebar_iconright" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M10.146 4.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 8l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
-              <path fillRule="evenodd" d="M6 8a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H6.5A.5.5 0 0 1 6 8zm-2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z"/>
-            </svg>
+            <ArrowIcon RightArrow={RightArrow} showList={showList}></ArrowIcon>
             {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
           </ul>
           {/* <CreateNS Socket={Socket}></CreateNS>  나중에 모달에추가 */}
@@ -98,7 +94,7 @@ const Namespaces = (props) => {
           { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         </section>
         <section id='chat'>
-        { currentRoom ? <Chat handleAside={handleAside}></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+          { currentRoom ? <Chat handleAside={handleAside}></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </section>
         <aside ref={Aside} id='info' onClick={handleAside}>aside</aside>
       </div>
@@ -106,3 +102,13 @@ const Namespaces = (props) => {
   );
 };
 export default Namespaces;
+
+
+const ArrowIcon = ({RightArrow, showList}) => {
+  return (
+    <svg ref={RightArrow} onClick={showList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-right sidebar_iconright" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" d="M10.146 4.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 8l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
+    <path fillRule="evenodd" d="M6 8a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H6.5A.5.5 0 0 1 6 8zm-2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z"/>
+  </svg>
+  );
+};

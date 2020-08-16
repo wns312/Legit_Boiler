@@ -175,9 +175,6 @@
 #list_body strong{
   font-size: 15px;
 }
-#list_body strong:hover{
-  cursor: pointer;
-}
 
 #list_body ul{
   padding-left: 0px;

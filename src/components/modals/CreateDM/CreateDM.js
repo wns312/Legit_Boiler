@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Modal, Input } from 'semantic-ui-react'
 import { message } from "antd";
 import {useSelector} from 'react-redux';
 
-const CreateDM = () => {
+const CreateDM = ({children}) => {
   let {_id} = useSelector(state=>state.user.userData) // 본인의 아이디
   let {nsSocket, currentNs, roomList} = useSelector(state=>state.chatInfo)
   let memberList = currentNs.nsMember // 이 네임스페이스의 멤버리스트
@@ -38,10 +38,10 @@ const CreateDM = () => {
     }
     setOpen(false);
   }
-
   return (
     <>
-      <Button onClick={() => { show('small') }}>Create DM</Button>
+      <span onClick={() => { show('small') }} style={{cursor : 'pointer'}}>{children}</span>
+      {/* <Button onClick={() => { show('small') }}>Create DM</Button> */}
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header>DM 생성</Modal.Header>
           <Modal.Content>
@@ -49,7 +49,7 @@ const CreateDM = () => {
             {Email}<hr/>
             <form onSubmit={createDM}>
             {createList(MemberArray)}<br/>
-              <input type="text" value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소"/>
+              <Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />
             </form>
           </Modal.Content>
           <Modal.Actions>

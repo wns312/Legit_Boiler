@@ -61,11 +61,11 @@
 }
 
 .closeicon {
-  margin: 20px 5px;
+  margin: 26px 14px;
   cursor: pointer;
   grid-row: 1;
   grid-column: 2;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
 }
 
 .hidden {

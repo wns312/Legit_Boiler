@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from 'react';
+import axios from 'axios';
+import ChatInput from "../ChatInput/ChatInput"
+import {InviteRoom, LeaveRoom} from "../modals";
+import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import ChatInput from "../ChatInput/ChatInput"
-import axios from 'axios';
-import InviteRoom from "../InviteRoom/InviteRoom"
-import Dropzone from 'react-dropzone';
-import LeaveRoom from '../LeaveRoom/LeaveRoom';
 
 const Chat = ({handleAside}) => {
   //방정보를 store에 넣어서 가져올 필요가 있어보임
@@ -34,7 +33,6 @@ const Chat = ({handleAside}) => {
     //히스토리 추가 : 방 변경시 socket.on중복실행방지로 새 effect로정의
     nsSocket.on('historyCatchUp', (history) => {
       setMessages(history)
-      chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
     });
     //메시지 수신
     nsSocket.on('messageToClients', (message) => {
@@ -46,7 +44,9 @@ const Chat = ({handleAside}) => {
       setAmountOfUsers(numberOfMembers);
     });
   }, [nsSocket]);
-
+  useEffect(()=>{
+    setTimeout(()=>{chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)}, 50)
+  }, [_id])
 
   function onDrop(files) {
     let formData = new FormData();
@@ -85,11 +85,10 @@ const Chat = ({handleAside}) => {
   
   return (
     <>
-       {/* 채팅 */}
         <div id='chat_header'>
           <div id="roomtitle">
             {roomTitleLoad()}
-            {/* <InviteRoom></InviteRoom> */}
+            &ensp;<InviteRoom></InviteRoom> &ensp;{isDM || <LeaveRoom></LeaveRoom>}
           </div>
           <i onClick={handleAside} className="large info circle icon aside_icon"></i>
         </div>
@@ -99,7 +98,7 @@ const Chat = ({handleAside}) => {
           </ul>
         </div>
         <ChatInput scrollBottom={scrollBottom}></ChatInput>
-    {/* {isDM || <LeaveRoom></LeaveRoom>} */}
+    
     </>
     // <Dropzone onDrop={onDrop}>
     //   {({ getRootProps }) => (

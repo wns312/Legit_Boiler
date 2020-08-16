@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Modal} from 'semantic-ui-react'
+import { Button, Modal, Input} from 'semantic-ui-react'
 import { message } from "antd";
 import { useSelector } from 'react-redux';
 
-const InviteNs = () => {
+const InviteNS = ({Close}) => {
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   let {nsMember, _id} = currentNs // nsId
   const [Open, setOpen] = useState(false);
@@ -13,9 +13,10 @@ const InviteNs = () => {
   function show(size) {
     setSize(()=>size);
     setOpen(true);
+    Close()
   }
 
-  function close() { setOpen(false); }
+  function close() { setOpen(false);}
 
   function invite(e){
     e.preventDefault();
@@ -41,7 +42,7 @@ const InviteNs = () => {
         <Modal.Content>
           초대할 유저의 E-mail 주소를 입력하세요<hr/>
           <form onSubmit={invite}>
-            <input type="text" value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소"/>
+            <Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />&emsp;
           </form>
         </Modal.Content>
         <Modal.Actions>
@@ -59,4 +60,4 @@ const InviteNs = () => {
   );
 };
 
-export default InviteNs;
+export default InviteNS;

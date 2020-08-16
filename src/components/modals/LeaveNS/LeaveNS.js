@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
 
-const LeaveNS = () => {
+const LeaveNS = ({Close}) => {
   let {userData} = useSelector(state=>state.user)
   let { currentNs, roomList, nsSocket } = useSelector(state => state.chatInfo)
   let {nsTitle, _id} = currentNs
@@ -13,6 +13,7 @@ const LeaveNS = () => {
   function show(size) {
     setSize(()=>size);
     setOpen(true);
+    Close()
   }
 
   function close() { setOpen(false) }

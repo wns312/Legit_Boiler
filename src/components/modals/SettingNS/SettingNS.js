@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { Button, Modal,Icon } from 'semantic-ui-react'
 
-const NsSettings = () => {
+const SettingNS = ({Close}) => {
   const [Open, setOpen] = useState(false);
   const [Size, setSize] = useState();
 
   function show(size) {
     setSize(size);
     setOpen(true);
+    Close()
   }
-  function close() {
-    setOpen(false);
-  }
+  function close() { setOpen(false); }
 
   function submitSetttings() {
     console.log(`세팅!`);
@@ -44,4 +43,4 @@ const NsSettings = () => {
   </>);
 };
 
-export default NsSettings;
+export default SettingNS;

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Modal, Checkbox } from 'semantic-ui-react'
+import { Button, Modal, Input, Checkbox } from 'semantic-ui-react'
 import {useSelector} from 'react-redux';
 
-const CreateRoom = () => {
+const CreateRoom = ({children}) => {
   let {_id} = useSelector(state=>state.user.userData) //유저아이디
   let {nsSocket, currentNs} = useSelector(state=>state.chatInfo)
   const [Open, setOpen] = useState(false);
@@ -13,9 +13,7 @@ const CreateRoom = () => {
     setSize(size);
     setOpen(true);
   }
-  function close() {
-    setOpen(false);
-  }
+  function close() { setOpen(false); }
   function handlePrivate(e) {
     setIsPrivate(value=>!value)
   }
@@ -40,13 +38,13 @@ const CreateRoom = () => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>Create Room</Button>
+      <span onClick={() => { show('small') }} style={{cursor : 'pointer'}}>{children}</span>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header>방 생성</Modal.Header>
           <Modal.Content>
             방 이름을 적으세요<hr/>
             <form onSubmit={createRoom}>
-              <input type="text" value={roomTitle} onChange={handleRoomTitle} placeholder="방 이름 입력"/>
+              <Input focus value={roomTitle} onChange={handleRoomTitle} placeholder="방 이름" />&emsp;
               <Checkbox label='비밀방' checked={isPrivate} onClick={handlePrivate} toggle/>
             </form>
           </Modal.Content>

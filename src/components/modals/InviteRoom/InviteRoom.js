@@ -38,7 +38,7 @@ const InviteRoom = () => {
     <>
       <Button onClick={() => { show("small") }}>Invite Room</Button>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
-        <Modal.Header>방 생성</Modal.Header>
+        <Modal.Header>방 초대</Modal.Header>
         <Modal.Content>
           멤버목록<br/>
           {Email}<hr/>

@@ -2,20 +2,13 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { message } from "antd";
 import { Icon } from 'semantic-ui-react'
-import InviteNs from "../InviteNs/InviteNs";
-import NsSettings from "../NsSettings/NsSettings";
-import LeaveNS from "../LeaveNS/LeaveNS";
-import CreateRoom from "../CreateRoom/CreateRoom";
-// import CreateDM from "../CreateDM/CreateDM";
-import ModalMenu from '../ModalMenu/ModalMenu'
-import ModalCentered from '../ModalCentered/ModalCentered'
-import CreateDM from '../ModalCentered/CreateDM'
+import {CreateRoom, CreateDM, ModalMenu} from "../modals";
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
 let Socket = ''
 
 const Rooms = ({hideList}) => {
-  let {_id} = useSelector(state=>state.user.userData)
+  let {_id, name} = useSelector(state=>state.user.userData)
   let {roomList, currentNs} = useSelector(state=>state.chatInfo)
   let { nsTitle, admin } = currentNs // nsId
 
@@ -107,54 +100,69 @@ const Rooms = ({hideList}) => {
   
   return (
     <>
+
       <section id='list_header'>
-        {/* { roomList && <ModalMenu isAdmin={isAdmin}></ModalMenu> } */}
-        <ModalCentered >
-          <>
-            여기에 클릭할 내용적기
-          </>
-          <>
-            여기에 헤더적기
-          </>
-          <>
-            여기에 바디적기
-            여기에 바디적기
-            
-          </>
-        </ModalCentered>
-        <svg onClick={hideList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-left sidebar_iconleft" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" d="M5.854 4.646a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L3.207 8l2.647-2.646a.5.5 0 0 0 0-.708z" />
-          <path fillRule="evenodd" d="M10 8a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0 0 1h6.5A.5.5 0 0 0 10 8zm2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z" />
-        </svg>
+        <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name}></ModalMenu>
+        {/* { roomList && <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name}></ModalMenu> } */}
+        <ArrowIcon hideList={hideList}></ArrowIcon>
       </section>
       <section id='list_body'>
-        <section id='list_body_schedule'>
-          <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
-          <ul>
-            <li># 스케쥴러1</li>
-          </ul>
-        </section>
-        <section id='list_body_channel'>
-          <strong>&nbsp;&emsp;Channels</strong>
-          <ul>
-            {getroomList()}{/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
-            
-          </ul>
-        </section>
-        <section id='list_body_directmessage'>
-          <strong>&nbsp;&emsp;Direct Messages</strong>
-          <ul>
-            {getdmList()}{/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
-            {/*  currentNs가 있을때만 열리게하고싶은데 조건걸면 ns초대할때 터짐 */}
-          </ul>
-        </section>
-      {/* <CreateRoom></CreateRoom> */}
-      {/* <CreateDM></CreateDM>  */}
-      {/* <InviteNs></InviteNs>*/}
-      {/*<LeaveNS></LeaveNS><br/><br/>*/}
-      {/* {isAdmin && <NsSettings></NsSettings> }  */}
+        <Schedule isAdmin={isAdmin}></Schedule>
+        <Channel getroomList={getroomList}></Channel>
+        <DM getdmList={getdmList}></DM>
+        {/* <CreateRoom></CreateRoom> */}
+        
+        {/* <InviteNs></InviteNs>*/}
+        {/*<LeaveNS></LeaveNS><br/><br/>*/}
+        {/* {isAdmin && <NsSettings></NsSettings> }  */}
       </section>
     </>
   );
 };
 export default Rooms;
+
+
+const Schedule = ({isAdmin}) => {
+  return (
+    <section id='list_body_schedule'>
+    <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
+    <ul>
+      <li># 스케쥴러1</li>
+    </ul>
+  </section>
+  );
+};
+
+const Channel = ({getroomList}) => {
+  return (
+    <section id='list_body_channel'>
+    <strong>&nbsp;&emsp;Channels &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;<CreateRoom><i className='fas fa-plus'/></CreateRoom></strong>
+    <ul>
+      {getroomList()}{/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
+    </ul>
+  </section>
+  );
+};
+
+const DM = ({getdmList}) => {
+  return (
+    <section id='list_body_directmessage'>
+    <strong>&nbsp;&emsp;Direct Messages &emsp;&emsp;&ensp;&ensp;<CreateDM><i className='fas fa-plus'/></CreateDM></strong>
+    <ul>
+      {getdmList()}{/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
+      {/*  currentNs가 있을때만 열리게하고싶은데 조건걸면 ns초대할때 터짐 */}
+    </ul>
+  </section>
+  );
+};
+
+const ArrowIcon = ({hideList}) => {
+  return (
+    <svg onClick={hideList} width="2em" height="2em" viewBox="0 0 16 16" className="bi bi-arrow-bar-left sidebar_iconleft" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" d="M5.854 4.646a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L3.207 8l2.647-2.646a.5.5 0 0 0 0-.708z" />
+    <path fillRule="evenodd" d="M10 8a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0 0 1h6.5A.5.5 0 0 0 10 8zm2.5 6a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 1 0v11a.5.5 0 0 1-.5.5z" />
+  </svg>
+  );
+};
+
+
