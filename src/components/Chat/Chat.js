@@ -23,6 +23,7 @@ const Chat = ({handleAside}) => {
     nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
       setAmountOfUsers(numberOfMembers);
     });
+    setTimeout(()=>{ chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight) }, 70)
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
       //isPrivate을 false만들기
@@ -38,16 +39,14 @@ const Chat = ({handleAside}) => {
     nsSocket.on('messageToClients', (message) => {
       setMessages(messages => [...messages, message]);
       //스크롤부분 넣어주어야한다
+      let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
+      scrollTop+offsetHeight >(scrollHeight-200) && chat_messages.current.scrollTo(0,scrollHeight)
     });
     //인원수 추가
     nsSocket.on('updateMembers', numberOfMembers => {
       setAmountOfUsers(numberOfMembers);
     });
   }, [nsSocket]);
-
-  useEffect(()=>{
-    setTimeout(()=>{chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)}, 50)
-  }, [_id])
 
   function onDrop(files) {
     let formData = new FormData();
@@ -83,6 +82,12 @@ const Chat = ({handleAside}) => {
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
 
+    // let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
+    // console.log(scrollTop); // 현재 스크롤 위치(위 높이)
+    // console.log(offsetHeight); // 눈에보이는 스크롤 높이 (고정)
+    // console.log(scrollTop+offsetHeight); // 아래높이
+    // console.log(scrollHeight); // 전체높이 (안보이는거 포함) (채팅이 늘어나면 같이늘어남)
+
   return (
     <>
       <div id="chat_header">
@@ -102,7 +107,7 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className="dropzone">
               <div ref={chat_messages} id="chat_messages">
                 <ul ref={ulTag} id="chatset_ul">
-                  {newChatList(messages)} {/* 채팅목록 */}
+                  {newChatList(messages, chat_messages)} {/* 채팅목록 */}
                 </ul>
               </div>
             </div>
