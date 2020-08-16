@@ -86,30 +86,32 @@ const Chat = ({handleAside}) => {
   
   return (
     <>
-        <div id='chat_header'>
-          <div id="roomtitle">
-            {roomTitleLoad()}
-            &ensp;<InviteRoom></InviteRoom> &ensp;{isDM || <LeaveRoom></LeaveRoom>}
-          </div>
-          <i onClick={handleAside} className="large info circle icon aside_icon"></i>
+      <div id="chat_header">
+        <div id="roomtitle">
+          {roomTitleLoad()}
+          &ensp;<InviteRoom></InviteRoom> &ensp;
+          {isDM || <LeaveRoom></LeaveRoom>}
         </div>
-        <div ref={chat_messages} id='chat_messages'>
-          <ul ref={ulTag} id='chatset_ul'>
-            {newChatList(messages)} {/* 채팅목록 */}
-          </ul>
-        </div>
-        <ChatInput scrollBottom={scrollBottom}></ChatInput>
-    
+        <i
+          onClick={handleAside}
+          className="large info circle icon aside_icon"
+        ></i>
+      </div>
+      <Dropzone onDrop={onDrop}>
+        {({ getRootProps }) => (
+          <section className="dropzone">
+            <div {...getRootProps()} className="dropzone">
+              <div ref={chat_messages} id="chat_messages">
+                <ul ref={ulTag} id="chatset_ul">
+                  {newChatList(messages)} {/* 채팅목록 */}
+                </ul>
+              </div>
+            </div>
+          </section>
+        )}
+      </Dropzone>
+      <ChatInput scrollBottom={scrollBottom}></ChatInput>
     </>
-    // <Dropzone onDrop={onDrop}>
-    //   {({ getRootProps }) => (
-    //     <section>
-    //       <div {...getRootProps()}>
-            
-    //       </div>
-    //     </section>
-    //   )}
-    // </Dropzone>
   );
 }
 export default React.memo(Chat);
