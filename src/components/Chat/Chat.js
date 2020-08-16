@@ -23,7 +23,6 @@ const Chat = ({handleAside}) => {
     nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
       setAmountOfUsers(numberOfMembers);
     });
-
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
       //isPrivate을 false만들기
@@ -45,6 +44,7 @@ const Chat = ({handleAside}) => {
       setAmountOfUsers(numberOfMembers);
     });
   }, [nsSocket]);
+
   useEffect(()=>{
     setTimeout(()=>{chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)}, 50)
   }, [_id])
@@ -52,21 +52,21 @@ const Chat = ({handleAside}) => {
   function onDrop(files) {
     let formData = new FormData();
     formData.append('file', files[0]);
-
     const config = {
       header: { 'content-type': 'multipart/form-data' }
     }
-
     axios.post('/api/chat/uploadfiles', formData, config)
       .then((res) => {
         let { url, mimetype, filename, success } = res.data
         let { name, image } = userData
-        success
-          ? nsSocket.emit('newMessageToServer', { NS_id : currentNs._id, text: url, type: mimetype, filename, userName: name, userImg: image })
-          : console.log(res)
+        if(success){
+          nsSocket.emit('newMessageToServer', { NS_id : currentNs._id, text: url, type: mimetype, filename, userName: name, userImg: image })
+          setTimeout(()=>{scrollBottom()}, 300);
+        }else{
+          console.log(res)
+        }
       })
   }
-
   function roomTitleLoad() {
     if (currentRoom.isDM === undefined) { // dm이 아니면
       return (roomTitle)
@@ -83,7 +83,6 @@ const Chat = ({handleAside}) => {
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
 
-  
   return (
     <>
       <div id="chat_header">
@@ -141,15 +140,12 @@ function convertMsg(text, type, filename) {
     case 'text':
       tag = text
       break;
-
     case 'image/png': case 'image/jpeg': case 'image/gif':
       tag = <img src={text} alt={text}></img>
       break;
-
     case 'video/mp4':
       tag = <video src={text} width='400' controls></video>
       break;
-
     default:
       tag = <a href={text} download>{filename}</a>
       break;

@@ -13,7 +13,6 @@ const Namespaces = (props) => {
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
-
   let RightArrow = useRef();
   let List = useRef();
   let Aside = useRef();

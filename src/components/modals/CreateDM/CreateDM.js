@@ -42,27 +42,27 @@ const CreateDM = ({children}) => {
     <>
       <span onClick={() => { show('small') }} style={{cursor : 'pointer'}}>{children}</span>
       {/* <Button onClick={() => { show('small') }}>Create DM</Button> */}
-        <Modal size={Size} open={Open} onClose={close} centered={true}>
-          <Modal.Header>DM 생성</Modal.Header>
-          <Modal.Content>
-            멤버목록<br/>
-            {Email}<hr/>
-            <form onSubmit={createDM}>
-            {createList(MemberArray)}<br/>
-              <Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />
-            </form>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button negative onClick={close}>닫기</Button>
-            <Button
-              positive
-              icon='checkmark'
-              labelPosition='right'
-              content='생성'
-              onClick={createDM}
-            />
-          </Modal.Actions>
-        </Modal>
+      <Modal size={Size} open={Open} onClose={close} centered={true}>
+        <Modal.Header>DM 생성</Modal.Header>
+        <Modal.Content>
+          멤버목록<br/>
+          {Email}<hr/>
+          <form onSubmit={createDM}>
+          {createList(MemberArray)}<br/>
+            <Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />
+          </form>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button negative onClick={close}>닫기</Button>
+          <Button
+            positive
+            icon='checkmark'
+            labelPosition='right'
+            content='생성'
+            onClick={createDM}
+          />
+        </Modal.Actions>
+      </Modal>
     </>
   );
 };

@@ -15,6 +15,7 @@ const Rooms = ({hideList}) => {
 
   const [isAdmin, setIsAdmin] = useState(false)
   const dispatch =useDispatch();
+  
   useEffect(()=>{ // 네임스페이스를 클릭할 때 마다 실행되어야 한다
     setIsAdmin((_id===admin) ? true : false)
     
@@ -115,7 +116,6 @@ const Rooms = ({hideList}) => {
   );
 };
 export default Rooms;
-
 
 const Schedule = ({isAdmin}) => {
   return (

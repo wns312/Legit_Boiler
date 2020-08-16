@@ -14,8 +14,8 @@ const LandingPage = (props) => {
   return (
     <>
       {isStoreLoaded 
-      ? <Namespaces {...props}></Namespaces>
-      : <Dimmer active> <Loader /> </Dimmer>
+        ? <Namespaces {...props}></Namespaces>
+        : <Dimmer active> <Loader /> </Dimmer>
       }
     </>
   );
