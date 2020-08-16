@@ -28,7 +28,7 @@ const LeaveNS = ({Close}) => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>Leave NS</Button>
+      <div onClick={() => { show('small') }}>Leave</div>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>{nsTitle} 에서 나가시겠습니까?</Modal.Header>
           {/* <Modal.Content>

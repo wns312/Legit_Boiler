@@ -25,9 +25,11 @@ const ModalMenu = ({isAdmin, nsTitle, username}) => {
       <div ref={modal} className={`${styles.modal} ${styles.hidden}`} >
         <div ref={overlay} className={styles.overlay} onClick={Close}></div>
         <div className={styles.content} >
+          <p>Namespace Settings</p>
           <InviteNS Close={Close}></InviteNS>
-          <LeaveNS Close={Close}></LeaveNS><br/><br/>
+          <LeaveNS Close={Close}></LeaveNS>
           {isAdmin && <SettingNS Close={Close}></SettingNS> } 
+          <hr/>
         </div>
       </div>
       

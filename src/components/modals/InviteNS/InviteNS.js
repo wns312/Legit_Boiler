@@ -36,7 +36,7 @@ const InviteNS = ({Close}) => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>Invite NS</Button>
+      <div onClick={() => { show('small') }}>Invite</div>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header >네임스페이스 초대</Modal.Header>
         <Modal.Content>

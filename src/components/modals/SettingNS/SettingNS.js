@@ -23,7 +23,8 @@ const SettingNS = ({Close}) => {
   }
 
   return (<>
-      <Icon name='setting' onClick={()=>{ show('small') }} onMouseEnter={handlecursor} onMouseLeave={handlecursor}></Icon>
+      {/* <Icon name='setting' onClick={()=>{ show('small') }}></Icon> */}
+      <div onClick={() => { show('small') }}>Settings</div>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>NS 설정</Modal.Header>
         <Modal.Content>
