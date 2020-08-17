@@ -100,7 +100,7 @@ const Namespaces = (props) => {
           { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </section>
         <aside ref={Aside}>
-          <Sidebar Close={Close}></Sidebar>
+          {currentRoom && <Sidebar Close={Close}></Sidebar>}
         </aside>
       </div>
     </div>

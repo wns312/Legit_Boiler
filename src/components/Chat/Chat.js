@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import axios from 'axios';
 import ChatInput from "../ChatInput/ChatInput"
-import {InviteRoom, LeaveRoom} from "../modals";
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,7 +10,7 @@ const Chat = ({handleAside}) => {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   // member, _id,  namespace, nsEndpoint 도 있음
-  let { roomTitle, _id, isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
+  let { roomTitle, _id} = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
@@ -87,8 +86,6 @@ const Chat = ({handleAside}) => {
       <div id="chat_header">
         <div id="roomtitle">
           {roomTitleLoad()}
-          {/* &ensp;<InviteRoom></InviteRoom> &ensp;
-          {isDM || <LeaveRoom></LeaveRoom>} */}
         </div>
         <i
           onClick={handleAside}

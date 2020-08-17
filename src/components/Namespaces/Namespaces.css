@@ -4,6 +4,8 @@
   color : rgb(178, 196, 216);
   height: 100%;
   background-color:rgb(26, 61, 110);
+  cursor: default;
+  user-select: none;
 }
 
 /* border-width*/
