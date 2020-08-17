@@ -8,12 +8,6 @@
   user-select: none;
 }
 
-/* border-width*/
-/* 하나 : 네방향 */
-/* 둘 : 위아래, 좌우 */
-/* 셋 : 위, 좌우, 아래 */
-/* 하나 : 위 오 아래 왼 */
-
 #namespace {
   display : grid;
   grid-template-rows: 1fr;
@@ -95,9 +89,7 @@
   flex : 1;
   overflow-y : hidden
 }
-
-/* ----------------------------------------------- */
-
+/* -------------------------- */
 #list{
   flex: 0 0 221px;
   display: grid;
@@ -108,8 +100,6 @@
   border-color: rgb(56, 104, 154);
 }
 
-/* ----------------------------------------------- */
-
 #chat{
   display: grid;
   color : rgb(29, 28, 29);
@@ -118,102 +108,6 @@
   flex : 1;
   background-color:rgb(255, 255, 255);
 }
-
-#emptychat {
-  flex : 1;
-  background-color:rgb(255, 255, 255);
-  text-align: center;
-}
-
-#chat_header {
-  grid-row: 1;
-  grid-column: 1 / 4;
-
-  display: grid;
-  grid-template-columns: 1fr 70px 70px;
-
-  border-style: solid;
-  border-width: 0px 0px 1px 0px;
-  border-color: rgb(226, 226, 226);
-  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
-  overflow-x: hidden;
-}
-.aside_icon {
-  cursor: pointer;
-  grid-column: 3;
-  padding: 25px 0px 0px 27px;
-  color:rgb(17, 81, 148);
-}
-
-.aside_icon:hover {
-  border-radius: 3px;
-  color:rgb(11, 51, 94);
-}
-
-#roomtitle {
-  padding: 24px 0px 0px 22px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  
-}
-
-#chat_messages {
-  grid-row: 2;
-  grid-column: 1 / 4;
-  overflow-y: auto;
-  width : 100%;
-  height : 100%;
-}
-
-#chatset_ul {
-  padding-left: 13px;
-  margin-top: 15px;
-
-}
-
-.chatset_li {
-  display: grid;
-  padding : 0px 15px 11px 3px; /* 위 / 오 / 아래 / 왼 */
-  grid-template-columns: 48px 1fr;
-}
-
-.chatset_image {
-  display : block;
-  border-radius: 5px;
-  width: 45px;
-  height: 45px;
-  grid-column: 1;
-}
-
-.chatset_message {
-  grid-column: 2;
-  padding-left: 5px;
-}
-
-.chatset_name {
-  font-weight: 600;
-  padding-bottom : 4px
-}
-
-.chatset_time {
-  font-weight: 100;
-  color: grey;
-}
-
-.chatset_message img, video {
-  max-width:65vw;
-}
-
-.dropzone {
-  grid-row: 2;
-  grid-column: 1 / 4;
-  width : 100%;
-  height : 100%;
-  overflow-y: auto;
-  outline: none;
-}
-
-/* ----------------------------------------------- */
 
 aside {
   color : rgb(29, 28, 29);

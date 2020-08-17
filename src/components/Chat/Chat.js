@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import styles from './Chat.module.css'
 import axios from 'axios';
 import ChatInput from "../ChatInput/ChatInput"
 import Dropzone from 'react-dropzone';
@@ -83,21 +84,21 @@ const Chat = ({handleAside}) => {
 
   return (
     <>
-      <div id="chat_header">
-        <div id="roomtitle">
+      <div id={styles.chat_header}>
+        <div id={styles.roomtitle}>
           {roomTitleLoad()}
         </div>
         <i
           onClick={handleAside}
-          className="large info circle icon aside_icon"
+          className={`large info circle icon ${styles.aside_icon}`}
         ></i>
       </div>
       <Dropzone onDrop={onDrop}>
         {({ getRootProps }) => (
-          <section className="dropzone">
-            <div {...getRootProps()} className="dropzone">
-              <div ref={chat_messages} id="chat_messages">
-                <ul ref={ulTag} id="chatset_ul">
+          <section className={styles.dropzone}>
+            <div {...getRootProps()} className={styles.dropzone}>
+              <div ref={chat_messages} id={styles.chat_messages}>
+                <ul ref={ulTag} id={styles.chatset_ul}>
                   {newChatList(messages, chat_messages)} {/* 채팅목록 */}
                 </ul>
               </div>
@@ -118,10 +119,10 @@ function newChatList(messages) {
 
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
     return (
-      <li className="chatset_li" key={index}>
-        <img className="chatset_image" src={avatar} alt="아바타" />
-        <div className="chatset_message">
-          <div className="chatset_name">{userName}<small className="chatset_time">&ensp;{convertedDate}</small></div>
+      <li className={styles.chatset_li} key={index}>
+        <img className={styles.chatset_image} src={avatar} alt="아바타" />
+        <div className={styles.chatset_message}>
+          <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
           {convertedMsg}
         </div>
       </li>
