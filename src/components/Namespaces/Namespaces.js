@@ -14,9 +14,9 @@ const Namespaces = (props) => {
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
-  const [isSidebarLoad, setIsSidebarLoad] = useState(false); //네임스페이스 이름
   let RightArrow = useRef();
   let List = useRef();
+  let Aside = useRef();
 
   function showList() {
     List.current.style.display = 'block'
@@ -67,8 +67,17 @@ const Namespaces = (props) => {
     }
     // console.log(`[${Title}] / [${title}]`);
   }
+  // function handleAside() {
+  //   setIsSidebarLoad((bool)=>!bool)
+  // }  
   function handleAside() {
-    setIsSidebarLoad((bool)=>!bool)
+    Aside.current.style.display==='grid'
+      ? Aside.current.style.display = 'none' 
+      : Aside.current.style.display = 'grid'
+  }
+
+  function Close() {
+    Aside.current.style.display = 'none' 
   }
 
   return (
@@ -90,7 +99,9 @@ const Namespaces = (props) => {
         <section id='chat'>
           { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </section>
-        {isSidebarLoad && <Sidebar setIsSidebarLoad={setIsSidebarLoad}></Sidebar>}
+        <aside ref={Aside}>
+          <Sidebar Close={Close}></Sidebar>
+        </aside>
       </div>
     </div>
   );

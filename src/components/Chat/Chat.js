@@ -82,19 +82,13 @@ const Chat = ({handleAside}) => {
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
 
-    // let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
-    // console.log(scrollTop); // 현재 스크롤 위치(위 높이)
-    // console.log(offsetHeight); // 눈에보이는 스크롤 높이 (고정)
-    // console.log(scrollTop+offsetHeight); // 아래높이
-    // console.log(scrollHeight); // 전체높이 (안보이는거 포함) (채팅이 늘어나면 같이늘어남)
-
   return (
     <>
       <div id="chat_header">
         <div id="roomtitle">
           {roomTitleLoad()}
-          &ensp;<InviteRoom></InviteRoom> &ensp;
-          {isDM || <LeaveRoom></LeaveRoom>}
+          {/* &ensp;<InviteRoom></InviteRoom> &ensp;
+          {isDM || <LeaveRoom></LeaveRoom>} */}
         </div>
         <i
           onClick={handleAside}
@@ -143,10 +137,10 @@ function convertMsg(text, type, filename) {
   let tag = "";
   switch (type) {
     case 'text':
-      tag = text
+      tag = <p>{text}</p>
       break;
     case 'image/png': case 'image/jpeg': case 'image/gif':
-      tag = <img src={text} alt={text}></img>
+      tag = <img src={text} alt="이미지"></img>
       break;
     case 'video/mp4':
       tag = <video src={text} width='400' controls></video>
@@ -166,3 +160,9 @@ function convertMsg(text, type, filename) {
 //         ? (message.style.display = "none")
 //         : (message.style.display = "block");
 //     });
+// let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
+// console.log(scrollTop); // 현재 스크롤 위치(위 높이)
+// console.log(offsetHeight); // 눈에보이는 스크롤 높이 (고정)
+// console.log(scrollTop+offsetHeight); // 아래높이
+// console.log(scrollHeight); // 전체높이 (안보이는거 포함) (채팅이 늘어나면 같이늘어남)
+
