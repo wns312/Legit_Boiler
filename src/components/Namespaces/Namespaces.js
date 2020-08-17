@@ -17,7 +17,6 @@ const Namespaces = (props) => {
   const [isSidebarLoad, setIsSidebarLoad] = useState(false); //네임스페이스 이름
   let RightArrow = useRef();
   let List = useRef();
-  let Aside = useRef();
 
   function showList() {
     List.current.style.display = 'block'
@@ -32,7 +31,6 @@ const Namespaces = (props) => {
   }, [_id])
 
   useEffect(()=>{
-
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
       Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
@@ -40,14 +38,10 @@ const Namespaces = (props) => {
 
     Socket.on('currentNs', ({doc, rooms})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
       dispatch(inputCurrentNs(doc)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다
-      dispatch(inputRoomList(rooms));
-      // dispatch(inputCurrentRoom("")); // 여기서currentRoom을 비우면 no-op과 history문제때문에 서버가 터진다
+      dispatch(inputRoomList(rooms)); // dispatch(inputCurrentRoom("")); // 여기서currentRoom을 비우면 no-op과 history문제때문에 서버가 터진다
     })
 
-    Socket.on('errorMsg', (msg)=>{ // 에러출력
-      message.error(msg);
-    })
-
+    Socket.on('errorMsg', (msg)=>{ message.error(msg); }) // 에러출력
   }, [dispatch]);                
   
   function getnsList(){
@@ -75,9 +69,6 @@ const Namespaces = (props) => {
   }
   function handleAside() {
     setIsSidebarLoad((bool)=>!bool)
-    // Aside.current.style.display==='block'
-    //   ? Aside.current.style.display = 'none' 
-    //   : Aside.current.style.display = 'block'
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal,Icon } from 'semantic-ui-react'
+import { Button, Modal } from 'semantic-ui-react'
 
 const SettingNS = ({Close}) => {
   const [Open, setOpen] = useState(false);
@@ -15,11 +15,6 @@ const SettingNS = ({Close}) => {
   function submitSetttings() {
     console.log(`세팅!`);
     setOpen(false);
-  }
-
-  function handlecursor(event) {
-    if (event.type==='mouseenter') event.target.style.cursor = 'pointer'
-    else if(event.type==='mouseleave') event.target.style.cursor = 'default'
   }
 
   return (<>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ModalMenu.module.css';
 import { useRef } from 'react';
-import {InviteNS, CreateRoom, LeaveNS, SettingNS} from "../";
+import {InviteNS, LeaveNS, SettingNS} from "../";
 const ModalMenu = ({isAdmin, nsTitle, username}) => {
   let modal = useRef();
   let overlay = useRef();
