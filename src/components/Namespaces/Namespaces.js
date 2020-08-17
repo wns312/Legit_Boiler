@@ -4,6 +4,7 @@ import { message } from "antd";
 import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import EmptyChat from '../EmptyChat/EmptyChat'
+import Sidebar from '../Sidebar/Sidebar'
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
@@ -13,9 +14,11 @@ const Namespaces = (props) => {
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
+  const [isSidebarLoad, setIsSidebarLoad] = useState(false); //네임스페이스 이름
   let RightArrow = useRef();
   let List = useRef();
   let Aside = useRef();
+
   function showList() {
     List.current.style.display = 'block'
     RightArrow.current.style.display = "none"
@@ -71,9 +74,10 @@ const Namespaces = (props) => {
     // console.log(`[${Title}] / [${title}]`);
   }
   function handleAside() {
-    Aside.current.style.display==='block'
-      ? Aside.current.style.display = 'none' 
-      : Aside.current.style.display = 'block'
+    setIsSidebarLoad((bool)=>!bool)
+    // Aside.current.style.display==='block'
+    //   ? Aside.current.style.display = 'none' 
+    //   : Aside.current.style.display = 'block'
   }
 
   return (
@@ -93,9 +97,9 @@ const Namespaces = (props) => {
           { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         </section>
         <section id='chat'>
-          { currentRoom ? <Chat handleAside={handleAside}></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+          { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </section>
-        <aside ref={Aside} id='info' onClick={handleAside}>aside</aside>
+        {isSidebarLoad && <Sidebar setIsSidebarLoad={setIsSidebarLoad}></Sidebar>}
       </div>
     </div>
   );

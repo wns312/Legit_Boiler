@@ -58,12 +58,12 @@
 
   display: inline-flex;
   flex-direction: column;
-  padding: 0.9rem 0rem;
+  padding: 0.8rem 0rem;
   
 }
 .content p{
   font-size: 1rem;
-  padding : 0.5rem 0 0.5rem 12px;
+  padding : 0.4rem 0 0.4rem 12px;
   font-weight: 500;
   margin-bottom: 0px;
   color : rgb(50, 50, 50);

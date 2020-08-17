@@ -133,6 +133,7 @@
   border-style: solid;
   border-width: 0px 0px 1px 0px;
   border-color: rgb(226, 226, 226);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
 }
 .aside_icon {
   cursor: pointer;
@@ -143,13 +144,14 @@
 
 .aside_icon:hover {
   border-radius: 3px;
-  color:rgb(29, 28, 29);
+  color:rgb(11, 51, 94);
 }
 
 #roomtitle {
   padding: 20px 0px 0px 22px;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
+  
 }
 
 #chat_messages {
@@ -204,16 +206,6 @@
 }
 
 /* ----------------------------------------------- */
-aside {
-  display: none;
-  color : rgb(29, 28, 29);
-  flex: 1;
-  max-width: 350px;
-  background-color:rgb(255, 255, 255);
-  border-style: solid;
-  border-width: 0px 0px 0px 1px;
-  border-color: rgb(226, 226, 226);
-}
 
 @media screen and (max-width: 768px) {
   aside {

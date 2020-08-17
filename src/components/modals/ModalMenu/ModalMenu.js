@@ -29,7 +29,7 @@ const ModalMenu = ({isAdmin, nsTitle, username}) => {
           <InviteNS Close={Close}></InviteNS>
           <LeaveNS Close={Close}></LeaveNS>
           {isAdmin && <SettingNS Close={Close}></SettingNS> } 
-          <hr/>
+          {/* <hr/> */}
         </div>
       </div>
       
