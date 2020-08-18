@@ -49,7 +49,6 @@ function Scheduler() {
     })
   }, [nsSocket])
 
-
   function addEvent({start, end}) {
     const title = window.prompt("일정을 추가하세요");
     const desc = window.prompt("내용을 추가하세요");

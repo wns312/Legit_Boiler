@@ -25,12 +25,14 @@ ns클릭시 clickNs가 방목록을 보내주는데, 이때 스케쥴러 목록�
 
 <!-- 6. 스케쥴러를 띄우는데는 성공했지만, 현재 스케쥴러id에 맞는 정보를 적용시키고 소켓요청도 보내도록 하기 -->
 
-7. 현재 quitRoom / joinRoomInNs / inviteRoom / sendMessageToClients 에서 Object.keys로 방을 찾거나 하던것을, _id를 보내는 방식으로 바꾸기
+7. 더블클릭(일정삭제)시 삭제구현도 완료하기 (가능하면 x버튼을 추가시켜서 그걸 눌렀을 때 삭제할 수 있도록 하기)
+
+8. 현재 quitRoom / joinRoomInNs / inviteRoom / sendMessageToClients 에서 Object.keys로 방을 찾거나 하던것을, _id를 보내는 방식으로 바꾸기
 (스케쥴러가 추가되면서 이 방식으로 다룰경우 스케쥴러도 join하기때문에 메시지가 전송되지 않거나 오류가 생기는 경우가 있음)
 
-8. 스케쥴러랑 room을 x를 눌러 끌 수 있도록 하기
+9. 스케쥴러랑 room을 x를 눌러 끌 수 있도록 하기
 
-9. room에서 버튼을 눌러 현재 방의 스케쥴러를 불러올 수 있도록 하기
+10. room에서 버튼을 눌러 현재 방의 스케쥴러를 불러올 수 있도록 하기
 
 
 
