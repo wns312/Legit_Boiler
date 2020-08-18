@@ -15,9 +15,6 @@
   background-color:rgb(34, 87, 143);
 }
 
-#schedule {
-  background-color:rgb(255, 255, 255);}
-
 .sidebar_iconright {
   display: none;
   cursor: pointer;
@@ -102,6 +99,12 @@
   border-width: 0px 1px 0px 1px;
   border-color: rgb(56, 104, 154);
 }
+
+#schedule {
+  flex: 2;
+  background-color:rgb(255, 255, 255);
+}
+
 
 #chat{
   display: grid;
