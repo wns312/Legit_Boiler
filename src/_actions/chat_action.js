@@ -1,4 +1,4 @@
-import {SOCKET,  CURRENT_ROOM, ROOM_LIST, NS_LIST, CURRENT_NS} from './types'
+import {SOCKET,  CURRENT_ROOM, ROOM_LIST, NS_LIST, CURRENT_NS, SCHEDULE_LIST, CURRENT_SCHEDULE} from './types'
 //소켓
 export function inputSocket(nsSocket) {
   return {
@@ -30,5 +30,18 @@ export function inputCurrentRoom(currentRoom) {
   return {
     type : CURRENT_ROOM,
     payload : currentRoom
+  }
+}
+//캘린더 관련
+export function inputScheduleList(scheduleList) {
+  return {
+    type : SCHEDULE_LIST,
+    payload : scheduleList
+  }
+}
+export function inputCurrentSchedule(currentSchedule) {
+  return {
+    type : CURRENT_SCHEDULE,
+    payload : currentSchedule
   }
 }
