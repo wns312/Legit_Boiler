@@ -5,11 +5,15 @@ import moment_timezone from "moment-timezone";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.scss";
+import { useSelector } from 'react-redux';
 
 moment_timezone.tz.setDefault("Asia/Seoul");
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 function Scheduler() {
+  let { userData } = useSelector(state => state.user)
+  let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
+  
   const [Events, setEvents] = useState([]);
   const [dayLayoutAlgorithm, setdayLayoutAlgorithm] = useState("no-overlap");
 

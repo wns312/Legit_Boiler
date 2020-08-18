@@ -102,24 +102,20 @@ const Rooms = ({hideList}) => {
     let newList = scheduleList.map((scheduler, index)=>{
       if(!scheduler.room) return (<li key={index} onClick={()=>{handleSchedule(scheduler)}}> <Icon name='calendar'></Icon> {nsTitle} </li>)
       else return (<li key={index} onClick={()=>{handleSchedule(scheduler)}}> <Icon name='calendar'></Icon> {scheduler.room.roomTitle} </li>)
-
     })
     return newList
   }
-
 
   function handleSchedule(scheduler) {
     console.log(scheduler);
     Socket.emit('clickSchedule', scheduler._id);
   }
 
-
   function handleList(room) {
     // console.log(room); // _id , member, roomTitle, namespace(_id)
     Socket.emit('clickRoom', room._id);
     // dispatch(inputCurrentRoom(room))
   }
-  
   return (
     <>
       <section id={styles.header}>
