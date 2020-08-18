@@ -15,7 +15,7 @@ const roomSchema = mongoose.Schema({
     },
   ],
   namespace: { 
-    type: mongoose.Schema.Types.ObjectId, ref: 'Namespaces'
+    type: mongoose.Schema.Types.ObjectId, ref: 'Namespace'
   },
   member : [
     { 

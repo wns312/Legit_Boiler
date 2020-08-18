@@ -23,5 +23,5 @@ const nsSchema = mongoose.Schema({
   ]
 }, {timestamps: true});
 
-const NsModel = mongoose.model("Namespaces", nsSchema); // (모델의 이름, 스키마)
+const NsModel = mongoose.model("Namespace", nsSchema); // (모델의 이름, 스키마)
 module.exports = { NsModel };

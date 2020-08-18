@@ -1,5 +1,6 @@
 const express = require('express');
-const { Event } = require("../models/event");
+const { Event } = require("../models/Event");
+const { Schedule } = require("../models/Schedule");
 const { NsModel } = require('../models/NsModel');
 const { RoomModel } = require("../models/RoomModel");
 const { User } = require("../models/User");
