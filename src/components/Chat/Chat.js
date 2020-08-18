@@ -26,7 +26,7 @@ const Chat = ({handleAside}) => {
     setTimeout(()=>{ chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight) }, 70)
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
-      //isPrivate을 false만들기
+      nsSocket.emit('leaveRoom', {_id})
     }
   }, [nsSocket, _id, NS_id])
 

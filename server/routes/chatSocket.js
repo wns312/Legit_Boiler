@@ -131,18 +131,72 @@ module.exports = function (io) {
       })
     })
 
+    nsSocket.on('joinSchedule', ({_id})=>{
+      nsSocket.join(_id);
+    })
+
+    nsSocket.on('handleEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
+      let { title, end, start, desc} = event;
+      if (event._id === undefined) { // 새이벤트라면
+        let newEvent = new Event({scheduler : _id, title, end, start, desc})
+        console.log(newEvent);
+        newEvent.save()
+        .then((doc)=>{
+          Schedule.findOneAndUpdate({_id}, {$push : {event : doc._id}}, {new : true})
+          .exec()
+          .then((res)=>{
+            console.log(res);
+            NS_io.to(_id).emit('updateSchedule', doc, true)
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
+        })
+      }else{ //새이벤트가 아니라면
+        Event.findOneAndUpdate({_id : event._id}, event, { new : true })
+        .exec()
+        .then((doc)=>{
+          console.log(doc);
+          NS_io.to(_id).emit('updateSchedule', doc, false)
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+      }
+    })
+
+    nsSocket.on('removeEvent', (event, _id)=>{
+      NS_io.to(_id).emit('updateSchedule', event)
+    })
+
+    nsSocket.on('leaveSchedule', ({_id})=>{
+      nsSocket.leave(_id);
+    })
+
+    nsSocket.on("NewRoom", (data)=>{
+      createRoomInNs(NS_io, nsSocket, data)
+    })
 
     nsSocket.on('joinRoom', (NS_id, roomToJoin, numberOfUsersCallback) => {
       joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback)
     });
 
-    nsSocket.on("NewRoom", (data)=>{
-      createRoomInNs(NS_io, nsSocket, data)
+    nsSocket.on('leaveRoom', ({_id})=>{
+      nsSocket.leave(_id);
+    });
+    //방을 떠나면
+    nsSocket.on('quitRoom', (data) => {
+      quitRoom(NS_io, nsSocket, data)
     })
     
     nsSocket.on("inviteToNs", (data)=>{
       inviteNS(io, NS_io, nsSocket, data);
     });
+    
+    //NS를 떠나면
+    nsSocket.on('leaveNS', (data) => {
+      leaveNS(NS_io, nsSocket, data)
+    })
 
     nsSocket.on("NewDM", (data)=>{
       createDM(NS_io, nsSocket, data)
@@ -154,16 +208,6 @@ module.exports = function (io) {
 
     nsSocket.on('newMessageToServer', (data) => {//방에서 메시지를 받아서 '그 방으로' 메시지 보내기
     sendMessageToClients(NS_io, nsSocket, data)
-    })
-
-    //방을 떠나면
-    nsSocket.on('leaveRoom', (data) => {
-      leaveRoom(NS_io, nsSocket, data)
-    })
-
-    //NS를 떠나면
-    nsSocket.on('leaveNS', (data) => {
-      leaveNS(NS_io, nsSocket, data)
     })
   }
 
@@ -205,7 +249,7 @@ module.exports = function (io) {
   }
 
   //내가 나가는게 먼저로 순서를 변경하고 테스트
-  function leaveRoom(NS_io, nsSocket, data) {
+  function quitRoom(NS_io, nsSocket, data) {
     let {userId, _id} = data // _id는 ns의 _id
     let roomId = Object.keys(nsSocket.rooms)[1] // 방아이디를 그냥 따로 받아올까?
     nsSocket.leave(roomId); //여기
@@ -237,9 +281,7 @@ module.exports = function (io) {
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
   function joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback) {
     let roomToLeave = Object.keys(nsSocket.rooms)[1];
-    console.log("참여하려는 방 이름 : "+roomToJoin);
-    if (roomToLeave !== roomToJoin) {   // if문에 전체 명령을 넣어서 조건이 안맞을시 아무 코드도 실행 x
-      nsSocket.leave(roomToLeave); //같은방 두번클릭시 leave만 되고 join이 안됨
+    if (roomToLeave !== roomToJoin) {
       (roomToLeave !== undefined) && updateUsersInRoom(NS_io, roomToLeave); // 나갈때 적용
       nsSocket.join(roomToJoin);
       

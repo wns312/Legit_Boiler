@@ -11,7 +11,7 @@ import {CreateNS} from "../modals";
 
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
-import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom, inputScheduleList} from '../../_actions/chat_action'
+import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom, inputScheduleList, inputCurrentSchedule} from '../../_actions/chat_action'
 let Socket=""
 const Namespaces = (props) => {
   let {nsList, roomList, currentRoom, currentSchedule} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
@@ -66,6 +66,7 @@ const Namespaces = (props) => {
     if(Title !== nsTitle) {
       // dispatch(inputCurrentNs("")); // 여기서 currentNs와 currentRoom을 비우면 클릭시 바로 방과 방목록항목이 사라진다
       dispatch(inputCurrentRoom(""));
+      dispatch(inputCurrentSchedule(""));
       setTitle(nsTitle);
       Socket.emit('clickNs', {nsTitle, NS_id : element._id}); // 현재NS 갱신을 위한 요청
       console.log(`[${nsTitle}] NS에 입장했습니다`);
