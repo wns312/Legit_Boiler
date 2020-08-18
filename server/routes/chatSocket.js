@@ -3,6 +3,8 @@ const express = require('express');
 const { NsModel } = require('../models/NsModel');
 const { RoomModel } = require("../models/RoomModel");
 const { User } = require("../models/User");
+const { Event } = require("../models/Event");
+const { Schedule } = require("../models/Schedule");
 
 module.exports = function (io) {
   const router = express.Router();
@@ -33,13 +35,18 @@ module.exports = function (io) {
         RoomModel.find({namespace : NS_id, member : _id})
         .populate('member', "name")
         .select("-history -createdAt -updatedAt -__v")
-        .exec((err, rooms) => {
-          socket.emit('currentNs', {doc, rooms}) // rooms도 보내야하는데 어캐보내지
-        });
+        .exec()
+        .then((rooms) => {
+          //여기서 스케쥴러를 불러와야한다
+          Schedule.find({namespace : NS_id})
+          .populate('room', "roomTitle")
+          .exec((err, schedules)=>{
+            socket.emit('currentNs', {doc, rooms, schedules})
+          })
+        })
+        .catch((err)=>{ console.log(err); })
       })
-      .catch((err)=>{
-        console.log(err);
-      })
+      .catch((err)=>{ console.log(err); })
     })
     
 
@@ -58,6 +65,16 @@ module.exports = function (io) {
           if(err) console.log(err);
           socket.emit("nsList", nsArray);
         });
+        let schedule = new Schedule({namespace: ns._id})
+        schedule.save()
+        .then((scdl)=>{
+          console.log(scdl);
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+
+
         if(!result) { //만약 서버에서 생성한 ns의 on이 켜져있다면 if문은 실행되지 않는다
           let NS_io = io.of(`/${nsTitle}`) //새 네임스페이스와 방에 on 추가
           NS_io.on('connection', (nsSocket) => { //여기에서 DB요청을 하고 추가해야 실시간 데이터를 받아올 수 있다

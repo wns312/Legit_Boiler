@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 // //start랑 end number일수도 있음
 const scheduleSchema = mongoose.Schema({
-  ns : {
-    type: mongoose.Schema.Types.ObjectId,
-    ref : 'Namespace' 
+  namespace : {
+    type: mongoose.Schema.Types.ObjectId
   },
   room: {
     type: mongoose.Schema.Types.ObjectId,

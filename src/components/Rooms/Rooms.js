@@ -58,8 +58,6 @@ const Rooms = ({hideList}) => {
       dispatch(inputRoomList(""));
       dispatch(inputCurrentNs(""));
       dispatch(inputNsList(nsArray));
-      // setTimeout(() => { //순서때문에 오류나서
-      // }, 200);
     })
 
     Socket.on('errorMsg', (msg)=>{

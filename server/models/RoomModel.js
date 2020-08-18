@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const roomSchema = mongoose.Schema({
   roomTitle : { type: String },
-  isPrivate :{ type: Boolean },//비밀방 공개방 여부
+  isPrivate :{ type: Boolean }, //비밀방 공개방 여부
   isDM : { type: Boolean },
   history: [// 채팅내용
     {

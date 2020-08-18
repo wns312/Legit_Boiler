@@ -6,9 +6,12 @@ import Chat from '../Chat/Chat'
 import EmptyChat from '../EmptyChat/EmptyChat'
 import Sidebar from '../Sidebar/Sidebar'
 import Scheduler from '../Scheduler/Scheduler'
+
+import {CreateNS} from "../modals";
+
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
-import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
+import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom, inputScheduleList} from '../../_actions/chat_action'
 let Socket=""
 const Namespaces = (props) => {
   let {nsList, roomList, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
@@ -37,9 +40,10 @@ const Namespaces = (props) => {
       // Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
     })//완성⭐
 
-    Socket.on('currentNs', ({doc, rooms})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
+    Socket.on('currentNs', ({doc, rooms, schedules})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
       dispatch(inputCurrentNs(doc)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다
       dispatch(inputRoomList(rooms)); // dispatch(inputCurrentRoom("")); // 여기서currentRoom을 비우면 no-op과 history문제때문에 서버가 터진다
+      dispatch(inputScheduleList(schedules));
     })
 
     Socket.on('errorMsg', (msg)=>{ message.error(msg); }) // 에러출력
@@ -91,15 +95,18 @@ const Namespaces = (props) => {
           <ul>
             <ArrowIcon RightArrow={RightArrow} showList={showList}></ArrowIcon>
             {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
+            <li>
+              <CreateNS Socket={Socket}></CreateNS>
+            </li>
           </ul>
           {/* <CreateNS Socket={Socket}></CreateNS>  나중에 모달에추가 */}
         </section>
         <section ref={List} id='list'>
           { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         </section>
-        <section id='schedule'>
+        {/* <section id='schedule'>
         <Scheduler></Scheduler>
-        </section>
+        </section> */}
         <section id='chat'>
           { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </section>
