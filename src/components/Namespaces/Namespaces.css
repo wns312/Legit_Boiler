@@ -15,6 +15,9 @@
   background-color:rgb(34, 87, 143);
 }
 
+#schedule {
+  background-color:rgb(255, 255, 255);}
+
 .sidebar_iconright {
   display: none;
   cursor: pointer;

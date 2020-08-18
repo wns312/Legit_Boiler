@@ -5,6 +5,7 @@ import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import EmptyChat from '../EmptyChat/EmptyChat'
 import Sidebar from '../Sidebar/Sidebar'
+import Scheduler from '../Scheduler/Scheduler'
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom} from '../../_actions/chat_action'
@@ -33,7 +34,7 @@ const Namespaces = (props) => {
   useEffect(()=>{
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
-      Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
+      // Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
     })//완성⭐
 
     Socket.on('currentNs', ({doc, rooms})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
@@ -95,6 +96,9 @@ const Namespaces = (props) => {
         </section>
         <section ref={List} id='list'>
           { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
+        </section>
+        <section id='schedule'>
+        <Scheduler></Scheduler>
         </section>
         <section id='chat'>
           { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
