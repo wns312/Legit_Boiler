@@ -4,13 +4,13 @@ import { message } from "antd";
 import { Icon } from 'semantic-ui-react'
 import {CreateRoom, CreateDM, ModalMenu} from "../modals";
 import {useDispatch, useSelector} from 'react-redux';
-import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom} from '../../_actions/chat_action'
+import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom, inputScheduleList, inputCurrentSchedule} from '../../_actions/chat_action'
 import styles from './Rooms.module.css';
 let Socket = ''
 
 const Rooms = ({hideList}) => {
   let {_id, name} = useSelector(state=>state.user.userData)
-  let {roomList, currentNs} = useSelector(state=>state.chatInfo)
+  let {currentNs, roomList, scheduleList} = useSelector(state=>state.chatInfo)
   let { nsTitle, admin } = currentNs // nsId
 
   const [isAdmin, setIsAdmin] = useState(false)
@@ -25,11 +25,6 @@ const Rooms = ({hideList}) => {
       dispatch(inputSocket(Socket));
     }
 
-    Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
-      console.log(ns); // null뜸
-      dispatch(inputCurrentNs(ns));
-    })
-
     Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대, 누군가 퇴장하고 나서 (전체룸로드)
       console.log("nsRoomLoad 실행");
       let myRooms = rooms.filter((room)=>{
@@ -37,10 +32,20 @@ const Rooms = ({hideList}) => {
       })
       dispatch(inputRoomList(myRooms));
     });
+    
+    Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
+      console.log(ns); // null뜸
+      dispatch(inputCurrentNs(ns));
+    })
 
     Socket.on('currentRoomLoad', (room)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
       console.log('currentRoomLoad 실행됨');
       dispatch(inputCurrentRoom(room)) // 방클릭시 리턴도 여기로 해준다
+    })
+
+    Socket.on('currentScheduleLoad', (schedules)=>{
+      console.log('currentScheduleLoad 실행됨');
+      dispatch(inputCurrentSchedule(schedules)) 
     })
 
     Socket.on('currentRoomClose', (rooms)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
@@ -55,7 +60,9 @@ const Rooms = ({hideList}) => {
     Socket.on('currentNsClose', (nsArray)=>{ 
       console.log('currentNsClose 실행됨');
       dispatch(inputCurrentRoom(""));
+      dispatch(inputCurrentSchedule(""));
       dispatch(inputRoomList(""));
+      dispatch(inputScheduleList(""));
       dispatch(inputCurrentNs(""));
       dispatch(inputNsList(nsArray));
     })
@@ -63,7 +70,6 @@ const Rooms = ({hideList}) => {
     Socket.on('errorMsg', (msg)=>{
       message.error(msg);
     })
-    
     return ()=>{ console.log(`[${nsTitle}] NS에서 나갔습니다`); }// 왜 나가지도 않았는데 실행되는가?? 함수안에서 사용하지 않았기 때문이다
   }, [nsTitle, _id, admin, dispatch])
 
@@ -92,6 +98,22 @@ const Rooms = ({hideList}) => {
       return newList
   }
 
+  function getScheduleList() {
+    let newList = scheduleList.map((scheduler, index)=>{
+      if(!scheduler.room) return (<li key={index} onClick={()=>{handleSchedule(scheduler)}}> <Icon name='calendar'></Icon> {nsTitle} </li>)
+      else return (<li key={index} onClick={()=>{handleSchedule(scheduler)}}> <Icon name='calendar'></Icon> {scheduler.room.roomTitle} </li>)
+
+    })
+    return newList
+  }
+
+
+  function handleSchedule(scheduler) {
+    console.log(scheduler);
+    Socket.emit('clickSchedule', scheduler._id);
+  }
+
+
   function handleList(room) {
     // console.log(room); // _id , member, roomTitle, namespace(_id)
     Socket.emit('clickRoom', room._id);
@@ -106,7 +128,7 @@ const Rooms = ({hideList}) => {
         <ArrowIcon hideList={hideList}></ArrowIcon>
       </section>
       <section id={styles.body}>
-        <Schedule isAdmin={isAdmin}></Schedule>
+        <Schedule isAdmin={isAdmin} getScheduleList={getScheduleList}></Schedule>
         <Channel getroomList={getroomList}></Channel>
         <DM getdmList={getdmList}></DM>
       </section>
@@ -115,12 +137,12 @@ const Rooms = ({hideList}) => {
 };
 export default Rooms;
 
-const Schedule = ({isAdmin}) => {
+const Schedule = ({isAdmin, getScheduleList}) => {
   return (
     <section id={styles.body_schedule}>
     <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
     <ul>
-      <li># 스케쥴러1</li>
+      {getScheduleList()}
     </ul>
   </section>
   );

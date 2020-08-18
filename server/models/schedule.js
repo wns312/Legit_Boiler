@@ -10,7 +10,7 @@ const scheduleSchema = mongoose.Schema({
     ref : 'Room' 
   },
   event: [{ 
-    type: mongoose.Schema.Types.ObjectId, ref: 'Calender' 
+    type: mongoose.Schema.Types.ObjectId, ref: 'Event' 
   }],
 });
             //아틀라스나 db 들거가는 모델이름 아틀라스 들어가면 

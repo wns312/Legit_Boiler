@@ -14,7 +14,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom, inputScheduleList} from '../../_actions/chat_action'
 let Socket=""
 const Namespaces = (props) => {
-  let {nsList, roomList, currentRoom} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
+  let {nsList, roomList, currentRoom, currentSchedule} = useSelector(state=>state.chatInfo); // state.루트리듀서에 지정한 이름
   let {_id} = useSelector(state=>state.user.userData); //유저아이디
   const dispatch =useDispatch();
   const [Title, setTitle] = useState(); //네임스페이스 이름
@@ -42,8 +42,8 @@ const Namespaces = (props) => {
 
     Socket.on('currentNs', ({doc, rooms, schedules})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
       dispatch(inputCurrentNs(doc)); // 전체방로드는 클릭시 Rooms.js에서 해주므로 신경쓰지 않는다
-      dispatch(inputRoomList(rooms)); // dispatch(inputCurrentRoom("")); // 여기서currentRoom을 비우면 no-op과 history문제때문에 서버가 터진다
       dispatch(inputScheduleList(schedules));
+      dispatch(inputRoomList(rooms)); // dispatch(inputCurrentRoom("")); // 여기서currentRoom을 비우면 no-op과 history문제때문에 서버가 터진다
     })
 
     Socket.on('errorMsg', (msg)=>{ message.error(msg); }) // 에러출력
@@ -104,9 +104,7 @@ const Namespaces = (props) => {
         <section ref={List} id='list'>
           { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         </section>
-        {/* <section id='schedule'>
-        <Scheduler></Scheduler>
-        </section> */}
+        {currentSchedule &&<section id='schedule'><Scheduler></Scheduler></section>}
         <section id='chat'>
           { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         </section>

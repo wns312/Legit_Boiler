@@ -40,6 +40,7 @@ module.exports = function (io) {
           //여기서 스케쥴러를 불러와야한다
           Schedule.find({namespace : NS_id})
           .populate('room', "roomTitle")
+          .select('-namespace -__v -event')
           .exec((err, schedules)=>{
             socket.emit('currentNs', {doc, rooms, schedules})
           })
@@ -116,6 +117,20 @@ module.exports = function (io) {
         nsSocket.emit('currentRoomLoad', room)
       });
     })
+
+    nsSocket.on('clickSchedule', (_id)=>{
+      console.log(`스케쥴러 id : ${_id}`);
+      Schedule.findOne({_id})
+      .populate('event')
+      .exec()
+      .then((doc)=>{
+        nsSocket.emit('currentScheduleLoad', doc)
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    })
+
 
     nsSocket.on('joinRoom', (NS_id, roomToJoin, numberOfUsersCallback) => {
       joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback)
