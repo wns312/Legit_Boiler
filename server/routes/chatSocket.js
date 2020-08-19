@@ -166,7 +166,16 @@ module.exports = function (io) {
     })
 
     nsSocket.on('removeEvent', (event, _id)=>{
-      NS_io.to(_id).emit('updateSchedule', event)
+      Event.findOneAndDelete({scheduler : _id}, {_id : event._id })
+      .exec()
+      .then((doc)=>{
+        console.log("독 : "+doc);
+        NS_io.to(_id).emit('deleteSchedule', event)
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+      
     })
 
     nsSocket.on('leaveSchedule', ({_id})=>{

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styles from './Scheduler.module.css'
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment_timezone from "moment-timezone";
@@ -15,10 +14,8 @@ function Scheduler() {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
   let {_id, event, namespace} = currentSchedule
-  
   const [Events, setEvents] = useState([]);
   const [dayLayoutAlgorithm, setdayLayoutAlgorithm] = useState("no-overlap");
-
 
   useEffect(() => {
     nsSocket.emit('joinSchedule', {_id});
@@ -33,7 +30,8 @@ function Scheduler() {
   }, [_id, event, nsSocket]);
 
   useEffect(()=>{
-    nsSocket.on('updateSchedule', (event, isNew)=>{
+
+    nsSocket.on('updateSchedule', (event, isNew)=>{ // 추가 변경
       let {title, desc, start, end, _id} = event
       if(isNew){
         setEvents((events)=>{
@@ -47,6 +45,15 @@ function Scheduler() {
         })
       }
     })
+
+    nsSocket.on('deleteSchedule', (event)=>{ // 삭제
+      setEvents((events)=>{
+        let result = events.filter((ele)=>{
+          return ele._id !==event._id
+        })
+        return result
+      })
+    }) 
   }, [nsSocket])
 
   function addEvent({start, end}) {
@@ -71,7 +78,6 @@ function Scheduler() {
   }
 
   function removeEvent(event) {
-    console.log(event);
     const result = window.confirm("일정을 취소합니다.");
     result && nsSocket.emit('removeEvent', event, _id);
   }
