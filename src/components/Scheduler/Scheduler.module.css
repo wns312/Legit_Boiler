@@ -1,0 +1,44 @@
+
+#chat_header {
+
+  grid-column: 1 / 4;
+
+  display: grid;
+  grid-template-columns: 1fr 70px 70px;
+
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: rgb(226, 226, 226);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
+  overflow-x: hidden;
+}
+
+#header {
+  grid-row: 1;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: rgb(226, 226, 226);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
+  overflow-x: hidden;
+}
+
+#body {
+  grid-row: 2;
+  padding : 5px;
+  overflow-x: auto;
+}
+
+/* rbc-event도 같이 변경해야함 : 이벤트부분*/
+.event {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.event span {
+  flex : 1;
+}
+.event button {
+  color: rgb(29, 28, 29);
+  flex : 0 0 50px;
+  max-width: 30px;
+}

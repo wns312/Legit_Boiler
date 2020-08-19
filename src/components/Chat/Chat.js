@@ -86,7 +86,7 @@ const Chat = ({handleAside}) => {
         <div id={styles.roomtitle}>
           {roomTitleLoad()}
         </div>
-        <i
+        <i 
           onClick={handleAside}
           className={`large info circle icon ${styles.aside_icon}`}
         ></i>
