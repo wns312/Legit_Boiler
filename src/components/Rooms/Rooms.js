@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { message } from "antd";
 import { Icon } from 'semantic-ui-react'
-import {CreateRoom, CreateDM, ModalMenu} from "../modals";
+import {CreateRoom, CreateDM, ModalMenu, } from "../modals";
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom, inputScheduleList, inputCurrentSchedule} from '../../_actions/chat_action'
 import styles from './Rooms.module.css';
-let Socket = ''
+let nsSocket = ''
 
-const Rooms = ({hideList}) => {
+const Rooms = ({hideList, Socket}) => {
   let {_id, name} = useSelector(state=>state.user.userData)
   let {currentNs, roomList, scheduleList} = useSelector(state=>state.chatInfo)
   let { nsTitle, admin } = currentNs // nsId
@@ -19,13 +19,13 @@ const Rooms = ({hideList}) => {
   useEffect(()=>{ // 네임스페이스를 클릭할 때 마다 실행되어야 한다
     setIsAdmin((_id===admin) ? true : false)
     
-    if (Socket)  Socket.close(); 
-    if (`/${nsTitle}`!==Socket.nsp) {
-      Socket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${nsTitle}`, { query :  {_id} });
-      dispatch(inputSocket(Socket));
+    if (nsSocket)  nsSocket.close(); 
+    if (`/${nsTitle}`!==nsSocket.nsp) {
+      nsSocket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${nsTitle}`, { query :  {_id} });
+      dispatch(inputSocket(nsSocket));
     }
 
-    Socket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대, 누군가 퇴장하고 나서 (전체룸로드)
+    nsSocket.on("nsRoomLoad", (rooms) => { // 클릭시나, 초대, 누군가 퇴장하고 나서 (전체룸로드)
       console.log("nsRoomLoad 실행");
       let myRooms = rooms.filter((room)=>{
         return room.member.find(mem=> (mem._id ===_id))
@@ -33,22 +33,22 @@ const Rooms = ({hideList}) => {
       dispatch(inputRoomList(myRooms));
     });
     
-    Socket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
+    nsSocket.on('updatecurrentNs', (ns)=>{ // 누군가 NS에 초대되면 모두에게 멤버 업데이트
       console.log(ns); // null뜸
       dispatch(inputCurrentNs(ns));
     })
 
-    Socket.on('currentRoomLoad', (room)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
+    nsSocket.on('currentRoomLoad', (room)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
       console.log('currentRoomLoad 실행됨');
       dispatch(inputCurrentRoom(room)) // 방클릭시 리턴도 여기로 해준다
     })
 
-    Socket.on('currentScheduleLoad', (schedules)=>{
+    nsSocket.on('currentScheduleLoad', (schedules)=>{
       console.log('currentScheduleLoad 실행됨');
       dispatch(inputCurrentSchedule(schedules)) 
     })
 
-    Socket.on('currentRoomClose', (rooms)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
+    nsSocket.on('currentRoomClose', (rooms)=>{ // 남을 초대하면 나는 비밀방을 보고있으므로 나에게 현재방갱신해줌
       console.log('currentRoomClose 실행됨');
       let myRooms = rooms.filter((room)=>{
         return room.member.find(mem=> (mem._id ===_id))
@@ -57,7 +57,7 @@ const Rooms = ({hideList}) => {
       dispatch(inputCurrentRoom("")) // 방클릭시 리턴도 여기로 해준다
     })
 
-    Socket.on('currentNsClose', (nsArray)=>{ 
+    nsSocket.on('currentNsClose', (nsArray)=>{ 
       console.log('currentNsClose 실행됨');
       dispatch(inputCurrentRoom(""));
       dispatch(inputCurrentSchedule(""));
@@ -67,7 +67,7 @@ const Rooms = ({hideList}) => {
       dispatch(inputNsList(nsArray));
     })
 
-    Socket.on('errorMsg', (msg)=>{
+    nsSocket.on('errorMsg', (msg)=>{
       message.error(msg);
     })
     return ()=>{ console.log(`[${nsTitle}] NS에서 나갔습니다`); }// 왜 나가지도 않았는데 실행되는가?? 함수안에서 사용하지 않았기 때문이다
@@ -108,18 +108,18 @@ const Rooms = ({hideList}) => {
 
   function handleSchedule(scheduler) {
     console.log(scheduler);
-    Socket.emit('clickSchedule', scheduler._id);
+    nsSocket.emit('clickSchedule', scheduler._id);
   }
 
   function handleList(room) {
     // console.log(room); // _id , member, roomTitle, namespace(_id)
-    Socket.emit('clickRoom', room._id);
+    nsSocket.emit('clickRoom', room._id);
     // dispatch(inputCurrentRoom(room))
   }
   return (
     <>
       <section id={styles.header}>
-        <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name}></ModalMenu>
+        <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name} Socket={Socket}></ModalMenu>
         {/* { roomList && <ModalMenu isAdmin={isAdmin} nsTitle={nsTitle} username={name}></ModalMenu> } */}
         <ArrowIcon hideList={hideList}></ArrowIcon>
       </section>

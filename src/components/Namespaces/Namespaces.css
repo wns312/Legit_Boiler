@@ -3,9 +3,13 @@
   grid-template-rows: 40px 1fr;
   color : rgb(178, 196, 216);
   height: 100%;
-  background-color:rgb(26, 61, 110);
+  background-color:rgb(255, 255, 255);
   cursor: default;
   user-select: none;
+}
+
+header {
+  background-color:rgb(26, 61, 110);
 }
 
 #namespace {

@@ -7,8 +7,6 @@ import EmptyChat from '../EmptyChat/EmptyChat'
 import Sidebar from '../Sidebar/Sidebar'
 import Scheduler from '../Scheduler/Scheduler'
 
-import {CreateNS} from "../modals";
-
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom, inputScheduleList, inputCurrentSchedule} from '../../_actions/chat_action'
@@ -96,19 +94,15 @@ const Namespaces = (props) => {
           <ul>
             <ArrowIcon RightArrow={RightArrow} showList={showList}></ArrowIcon>
             {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
-            <li>
-              <CreateNS Socket={Socket}></CreateNS>
-            </li>
           </ul>
-          {/* <CreateNS Socket={Socket}></CreateNS>  나중에 모달에추가 */}
         </section>
         <section ref={List} id='list'>
-          { roomList && <Rooms hideList={hideList}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
+          { roomList && <Rooms hideList={hideList} Socket={Socket}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         </section>
         {currentSchedule &&<section id='schedule'><Scheduler></Scheduler></section>}
-        <section id='chat'>
-          { currentRoom ? <Chat handleAside={handleAside} ></Chat> : <EmptyChat></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
-        </section>
+        
+          { currentRoom ? <section id='chat'><Chat handleAside={handleAside} ></Chat></section> : <EmptyChat Socket={Socket}></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+        
         <aside ref={Aside}>
           {currentRoom && <Sidebar Close={Close}></Sidebar>}
         </aside>

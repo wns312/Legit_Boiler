@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from './ModalMenu.module.css';
 import { useRef } from 'react';
-import {InviteNS, LeaveNS, SettingNS} from "../";
-const ModalMenu = ({isAdmin, nsTitle, username}) => {
+import {InviteNS, LeaveNS, SettingNS, CreateNS} from "../";
+const ModalMenu = ({isAdmin, nsTitle, username, Socket}) => {
   let modal = useRef();
   let overlay = useRef();
   
@@ -28,6 +28,7 @@ const ModalMenu = ({isAdmin, nsTitle, username}) => {
           <p>Namespace Settings</p>
           <InviteNS Close={Close}></InviteNS>
           <LeaveNS Close={Close}></LeaveNS>
+          <CreateNS Socket={Socket}></CreateNS>
           {isAdmin && <SettingNS Close={Close}></SettingNS> } 
           {/* <hr/> */}
         </div>

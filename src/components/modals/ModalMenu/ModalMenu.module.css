@@ -30,6 +30,7 @@
   width: 100%;
   height: 100%;
   position: fixed;
+  z-index: 6;
   margin: 20px;
 }
 /* 클릭시 모달배경 컬러 */
