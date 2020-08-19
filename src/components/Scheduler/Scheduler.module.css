@@ -1,18 +1,4 @@
 
-#chat_header {
-
-  grid-column: 1 / 4;
-
-  display: grid;
-  grid-template-columns: 1fr 70px 70px;
-
-  border-style: solid;
-  border-width: 0px 0px 1px 0px;
-  border-color: rgb(226, 226, 226);
-  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
-  overflow-x: hidden;
-}
-
 #header {
   grid-row: 1;
   border-style: solid;
@@ -20,6 +6,24 @@
   border-color: rgb(226, 226, 226);
   box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
   overflow-x: hidden;
+
+  display: grid;
+  grid-template-columns: 1fr 70px;
+}
+
+#roomtitle {
+  grid-column: 1;
+  padding: 24px 0px 0px 22px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.closeicon {
+  margin: 19px 19px;
+  cursor: pointer;
+  grid-row: 1;
+  grid-column: 2;
+  font-size: 1.1rem;
 }
 
 #body {
@@ -37,8 +41,9 @@
 .event span {
   flex : 1;
 }
-.event button {
+.removebutton {
   color: rgb(29, 28, 29);
-  flex : 0 0 50px;
+  margin : 2px 0 0 0;
+  flex : 0 0 11px;
   max-width: 30px;
 }

@@ -22,15 +22,15 @@
   color : rgb(29, 28, 29);
   
 }
-#header i{
+
+.closeicon {
+  margin: 19px 19px;
   cursor: pointer;
-  flex: 0 0 65px;
-  height: 100%;
-  font-size: 1.4rem;
-  padding : 26px 25px;
-  color : rgb(29, 28, 29);
+  grid-row: 1;
+  grid-column: 2;
+  font-size: 1.1rem;
 }
+
 #body{
   grid-row: 2;
 }
-  

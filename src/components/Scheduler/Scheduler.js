@@ -4,13 +4,18 @@ import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from 'moment'
 import 'moment/locale/ko'
 import "./react-big-calendar.css"
-import { useSelector } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {inputCurrentSchedule} from '../../_actions/chat_action'
 const localizer = momentLocalizer(moment)
 moment.locale('ko')
+
+
+
 function Scheduler() {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
   let {_id, event, namespace} = currentSchedule
+  const dispatch =useDispatch();
   const [Events, setEvents] = useState([]);
   const [dayLayoutAlgorithm, setdayLayoutAlgorithm] = useState("no-overlap");
 
@@ -78,16 +83,27 @@ function Scheduler() {
 
   function Event({ event }) {
     return (
-      <div className={styles.event}>
-      <span>{event.title}</span><button onClick={(e)=>{removeEvent(e, event)}}>x</button><br/>
+      <div className={styles.event} title="">
+      <span>{event.title}</span>
+      <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>
       </div>
     );
+  }
+
+  function Close(event) {
+    dispatch(inputCurrentSchedule(""))
   }
 
   return (
     <>
       <div id={styles.header}>
-        <h1 style={{textAlign : 'center'}}>일정관리</h1>
+        <div id={styles.roomtitle}>
+          {(currentSchedule.room===undefined) ? currentNs.nsTitle : currentSchedule.room.roomTitle }
+        </div>
+        <svg width="2em" height="2em" viewBox="0 0 16 16" className={`bi bi-x ${styles.closeicon}`}  fill="currentColor" onClick={Close} xmlns="http://www.w3.org/2000/svg">
+          <path fillRule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
+          <path fillRule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
+        </svg>
       </div>
       <div id={styles.body}>
         <Calendar
@@ -124,8 +140,8 @@ export default Scheduler;
 function EventAgenda({ event }) {
   return (
     <>
-      <p style={{ color: "magenta" }}>{event.title}</p>
-      <p>{event.desc}</p>
+      <span style={{ color: "black", fontWeight:600, fontSize:'20px' }}>{event.title}</span><hr/>
+      <div style={{ padding : '5px'}}>{event.desc}</div>
     </>
   );
 }

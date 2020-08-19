@@ -121,6 +121,7 @@ module.exports = function (io) {
     nsSocket.on('clickSchedule', (_id)=>{
       console.log(`스케쥴러 id : ${_id}`);
       Schedule.findOne({_id})
+      .populate('room')
       .populate('event')
       .exec()
       .then((doc)=>{
