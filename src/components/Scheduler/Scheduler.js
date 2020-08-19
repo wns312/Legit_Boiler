@@ -23,7 +23,7 @@ function Scheduler() {
   useEffect(() => {
     nsSocket.emit('joinSchedule', {_id});
     let events= event.map(ele=>{
-      let { _id, start, end, desc, title, index } = ele;
+      let { _id, start, end, desc, title } = ele;
       return { _id, title, desc, start: new Date(start), end: new Date(end) };
     })
     setEvents(events);
@@ -54,7 +54,7 @@ function Scheduler() {
     const desc = window.prompt("내용을 추가하세요");
     if (title) {
     let newEvent = { title, start, end, desc };
-    nsSocket.emit('handleEvent', newEvent, _id);
+    nsSocket.emit('handleEvent', newEvent, _id); 
     }else{
       console.log("title이 입력되지 않았습니다");
     }
@@ -70,20 +70,11 @@ function Scheduler() {
     nsSocket.emit('handleEvent', newEvent, _id);
   }
 
-  function onSelectEvent(event) {
+  function removeEvent(event) {
     console.log(event);
-    const r = window.confirm("일정을 취소합니다.");
-    if (r === true) {
-      axios.post("/api/event/removeEvent",event)
-      .then((response) => {
-        let arr = response.data.event.map((ele) => {
-          let { _id, start, end, desc, title, index } = ele;
-          return { _id, title, desc, start: new Date(start), end: new Date(end), index};
-        });
-        setEvents(arr);
-        console.log(arr); 
-      })
-    }}
+    const result = window.confirm("일정을 취소합니다.");
+    result && nsSocket.emit('removeEvent', event, _id);
+  }
 
   const localizer = momentLocalizer(moment_timezone);
   return (
@@ -106,7 +97,7 @@ function Scheduler() {
         onDragStart={console.log} // 드래그 시작할 떄 => 클릭시
         onEventDrop={moveEvent}
         onEventResize={resizeEvent}
-        onDoubleClickEvent={onSelectEvent}
+        onDoubleClickEvent={removeEvent}
         components={{
           event: Event, //여기서 호버줘야함
           agenda: {
