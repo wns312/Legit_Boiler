@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import styles from './Scheduler.module.css'
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment_timezone from "moment-timezone";
-import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.scss";
 import { useSelector } from 'react-redux';
 
 moment_timezone.tz.setDefault("Asia/Seoul");
-const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 function Scheduler() {
   let { userData } = useSelector(state => state.user)
@@ -23,6 +21,7 @@ function Scheduler() {
       let { _id, start, end, desc, title } = ele;
       return { _id, title, desc, start: new Date(start), end: new Date(end) };
     })
+    console.log(events);
     setEvents(events);
     return(()=>{
       nsSocket.emit('leaveSchedule',{_id});
@@ -80,10 +79,11 @@ function Scheduler() {
   return (
     <>
       <h1 style={{textAlign : 'center'}}>일정관리</h1>
-      <DragAndDropCalendar
+      <Calendar
         style={{ height: '70vh', width: "100%"}}
         popup={true} //+ _x_ more"링크를 클릭하면 잘린 이벤트를 오버레이에 표시합니다.
-        selectable={false} //필수 ** 날짜와 범위를 선택할수 있게 만들어줌
+        selectable={true} //필수 ** 날짜와 범위를 선택할수 있게 만들어줌
+        onSelectEvent={removeEvent}
         localizer={localizer} //moment 모듈을 이용한 로컬화
         events={Events} //이벤트 나오게 하는거
         allDayAccessor="allday"
@@ -95,9 +95,6 @@ function Scheduler() {
         onSelectSlot={addEvent} //**날짜 선택시 콜백이 발생한다 -> 위에서 만들어준 handleSelect가 실행
         dayLayoutAlgorithm={dayLayoutAlgorithm} //레이아웃 배열의 알고리즘
         // onDragStart={console.log} // 드래그 시작할 떄 => 클릭시
-        onEventDrop={moveEvent}
-        onEventResize={resizeEvent}
-        onDoubleClickEvent={removeEvent}
         components={{
           event: Event, //여기서 호버줘야함
           agenda: {
