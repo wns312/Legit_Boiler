@@ -20,7 +20,7 @@ const LeaveRoom = () => {
   function close() { setOpen(false) }
 
   function leave() {
-    nsSocket.emit('quitRoom', {userId, _id});
+    nsSocket.emit('quitRoom', {userId, _id, roomId : currentRoom._id});
     setOpen(false);
   }
 

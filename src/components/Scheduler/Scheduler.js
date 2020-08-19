@@ -30,29 +30,20 @@ function Scheduler() {
   }, [_id, event, nsSocket]);
 
   useEffect(()=>{
-
-    nsSocket.on('updateSchedule', (event, isNew)=>{ // 추가 변경
-      let {title, desc, start, end, _id} = event
-      if(isNew){
-        setEvents((events)=>{
-          return [...events, {_id, title, desc, start: new Date(start), end: new Date(end)}]
-        })
-      }else { 
-        setEvents((events)=>{
-          return events.map((ele)=>{
-            return (ele._id===_id) ? {...ele, start: new Date(start), end: new Date(end)} : ele
-          })
-        })
-      }
+    nsSocket.on('updateSchedule', (events)=>{ // 추가 변경
+      let newEvents = events.map(ele=>{
+        let { _id, start, end, desc, title } = ele;
+        return { _id, title, desc, start: new Date(start), end: new Date(end) };
+      })
+      setEvents(newEvents)
     })
 
-    nsSocket.on('deleteSchedule', (event)=>{ // 삭제
-      setEvents((events)=>{
-        let result = events.filter((ele)=>{
-          return ele._id !==event._id
-        })
-        return result
+    nsSocket.on('deleteSchedule', (events)=>{ // 삭제
+      let newEvents = events.map(ele=>{
+        let { _id, start, end, desc, title } = ele;
+        return { _id, title, desc, start: new Date(start), end: new Date(end) };
       })
+      setEvents(newEvents)
     }) 
   }, [nsSocket])
 
@@ -61,23 +52,26 @@ function Scheduler() {
     const desc = window.prompt("내용을 추가하세요");
     if (title) {
     let newEvent = { title, start, end, desc };
-    nsSocket.emit('handleEvent', newEvent, _id); 
+    nsSocket.emit('createEvent', newEvent, _id); 
     }else{
       console.log("title이 입력되지 않았습니다");
     }
   }
 
   function moveEvent({ event, start, end }) {
+    console.log("move : "+event._id);
     let newEvent = {...event, start, end}
     nsSocket.emit('handleEvent', newEvent, _id);
     }
 
   function resizeEvent({ event, start, end }) {
+    console.log("resize : "+event._id);
     let newEvent = {...event, start, end}
     nsSocket.emit('handleEvent', newEvent, _id);
   }
 
   function removeEvent(event) {
+    console.log("delete : "+event._id);
     const result = window.confirm("일정을 취소합니다.");
     result && nsSocket.emit('removeEvent', event, _id);
   }
@@ -89,7 +83,7 @@ function Scheduler() {
       <DragAndDropCalendar
         style={{ height: '70vh', width: "100%"}}
         popup={true} //+ _x_ more"링크를 클릭하면 잘린 이벤트를 오버레이에 표시합니다.
-        selectable={true} //필수 ** 날짜와 범위를 선택할수 있게 만들어줌
+        selectable={false} //필수 ** 날짜와 범위를 선택할수 있게 만들어줌
         localizer={localizer} //moment 모듈을 이용한 로컬화
         events={Events} //이벤트 나오게 하는거
         allDayAccessor="allday"
@@ -100,7 +94,7 @@ function Scheduler() {
         defaultDate={moment_timezone().toDate()} //디폴트 날짜
         onSelectSlot={addEvent} //**날짜 선택시 콜백이 발생한다 -> 위에서 만들어준 handleSelect가 실행
         dayLayoutAlgorithm={dayLayoutAlgorithm} //레이아웃 배열의 알고리즘
-        onDragStart={console.log} // 드래그 시작할 떄 => 클릭시
+        // onDragStart={console.log} // 드래그 시작할 떄 => 클릭시
         onEventDrop={moveEvent}
         onEventResize={resizeEvent}
         onDoubleClickEvent={removeEvent}
@@ -120,7 +114,7 @@ export default Scheduler;
 function Event({ event }) {
   return (
     <>
-    {event.start.getDate()} <br/> {event.title}<br></br>
+    {event._id} <br/> {event.title}<br></br>
     </>
   );
 }

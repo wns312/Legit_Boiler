@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './ChatInput.module.css';
 import { useSelector } from 'react-redux';
 
-const ChatInput = ({scrollBottom}) => { 
+const ChatInput = ({scrollBottom, roomId}) => { 
   let {userData} = useSelector(state=>state.user) 
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   const [InputText, setInputText] = useState(""); // 얘는 메모해주어야 할 것 같다
@@ -18,7 +18,7 @@ const ChatInput = ({scrollBottom}) => {
     inputTag.setAttribute('disabled', true);
     if(InputText!=="") {
       let {name, image} = userData
-      nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, text: InputText, type : "text", userName : name, userImg : image, filename : ""});
+      nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, roomId ,text: InputText, type : "text", userName : name, userImg : image, filename : ""});
       setInputText("");
     }
     inputTag.removeAttribute('disabled')

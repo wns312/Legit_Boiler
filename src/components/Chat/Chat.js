@@ -20,9 +20,7 @@ const Chat = ({handleAside}) => {
   
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
-    nsSocket.emit('joinRoom', NS_id, _id, (numberOfMembers) => {
-      setAmountOfUsers(numberOfMembers);
-    });
+    nsSocket.emit('joinRoom', NS_id, _id);
     setTimeout(()=>{ chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight) }, 70)
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
@@ -106,7 +104,7 @@ const Chat = ({handleAside}) => {
           </section>
         )}
       </Dropzone>
-      <ChatInput scrollBottom={scrollBottom}></ChatInput>
+      <ChatInput scrollBottom={scrollBottom} roomId={_id}></ChatInput>
     </>
   );
 }

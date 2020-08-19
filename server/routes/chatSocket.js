@@ -134,46 +134,55 @@ module.exports = function (io) {
     nsSocket.on('joinSchedule', ({_id})=>{
       nsSocket.join(_id);
     })
-
-    nsSocket.on('handleEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
+    //일단 전부 재조회로 바꾸기 + create와 handle분리하기
+    nsSocket.on('createEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
       let { title, end, start, desc} = event;
-      if (event._id === undefined) { // 새이벤트라면
-        let newEvent = new Event({scheduler : _id, title, end, start, desc})
-        console.log(newEvent);
-        newEvent.save()
-        .then((doc)=>{
-          Schedule.findOneAndUpdate({_id}, {$push : {event : doc._id}}, {new : true})
-          .exec()
-          .then((res)=>{
-            console.log(res);
-            NS_io.to(_id).emit('updateSchedule', doc, true)
-          })
-          .catch((err)=>{
-            console.log(err);
-          })
-        })
-      }else{ //새이벤트가 아니라면
-        Event.findOneAndUpdate({_id : event._id}, event, { new : true })
+      let newEvent = new Event({scheduler : _id, title, end, start, desc})
+      console.log(newEvent);
+      newEvent.save()
+      .then((doc)=>{
+        Schedule.findOneAndUpdate({_id}, {$push : {event : doc._id}}, {new : true})
         .exec()
+        .then(()=>{
+          return Event.find({scheduler : _id}).exec()
+        })
         .then((doc)=>{
-          console.log(doc);
-          NS_io.to(_id).emit('updateSchedule', doc, false)
+          NS_io.to(_id).emit('updateSchedule', doc)
         })
         .catch((err)=>{
-          console.log(err);
+          console.log("에러 : "+err);
         })
-      }
+      })
     })
 
-    nsSocket.on('removeEvent', (event, _id)=>{
-      Event.findOneAndDelete({scheduler : _id}, {_id : event._id })
+    nsSocket.on('handleEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
+      console.log(event); // 여기서 Object뜨고->문제는 없지만 없는데이터를 받아오는 것이 문제다
+      Event.findOneAndUpdate({_id : event._id}, event, { new : true })
       .exec()
       .then((doc)=>{
-        console.log("독 : "+doc);
-        NS_io.to(_id).emit('deleteSchedule', event)
+        console.log("handleEvent2 : "+doc); // 여기서 null뜸
+        return Event.find({scheduler : _id}).exec()
+      })
+      .then((doc)=>{
+        NS_io.to(_id).emit('updateSchedule', doc)
       })
       .catch((err)=>{
         console.log(err);
+      })
+    })
+
+    nsSocket.on('removeEvent', (event, _id)=>{
+      Event.findOneAndDelete({scheduler : _id, _id : event._id})
+      .exec()
+      .then((doc)=>{
+        return Event.find({scheduler : _id}).exec()
+      })
+      .then((res)=>{
+        console.log(res);
+        NS_io.to(_id).emit('deleteSchedule', res)
+      })
+      .catch((err)=>{
+        console.log("에러 : "+err);
       })
       
     })
@@ -186,8 +195,8 @@ module.exports = function (io) {
       createRoomInNs(NS_io, nsSocket, data)
     })
 
-    nsSocket.on('joinRoom', (NS_id, roomToJoin, numberOfUsersCallback) => {
-      joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback)
+    nsSocket.on('joinRoom', (NS_id, roomToJoin) => {
+      joinRoomInNs(nsSocket,  NS_id, roomToJoin)
     });
 
     nsSocket.on('leaveRoom', ({_id})=>{
@@ -259,8 +268,7 @@ module.exports = function (io) {
 
   //내가 나가는게 먼저로 순서를 변경하고 테스트
   function quitRoom(NS_io, nsSocket, data) {
-    let {userId, _id} = data // _id는 ns의 _id
-    let roomId = Object.keys(nsSocket.rooms)[1] // 방아이디를 그냥 따로 받아올까?
+    let {userId, _id, roomId} = data // _id는 ns의 _id
     nsSocket.leave(roomId); //여기
     RoomModel.findOneAndUpdate({_id : roomId}, {$pull : {member : userId}}, {new : true})
     .populate('member', "email name image")
@@ -288,24 +296,14 @@ module.exports = function (io) {
   }
 
   // joinRoomInNs는 내부에서 updateUsersInRoom을 호출한다 (이건 그냥 참여이므로 수정할 것 없어보임)
-  function joinRoomInNs(NS_io, nsSocket,  NS_id, roomToJoin, numberOfUsersCallback) {
-    let roomToLeave = Object.keys(nsSocket.rooms)[1];
-    if (roomToLeave !== roomToJoin) {
-      (roomToLeave !== undefined) && updateUsersInRoom(NS_io, roomToLeave); // 나갈때 적용
+  function joinRoomInNs(nsSocket,  NS_id, roomToJoin) {
       nsSocket.join(roomToJoin);
-      
-      NS_io.to(roomToJoin).clients((err, client) => { //방인원 받아오기
-        numberOfUsersCallback(client.length);
-      });
-      
       RoomModel.findOne({namespace : NS_id, _id : roomToJoin})
       .select('history -_id')
       .exec((err, doc)=>{ //history를 방채팅에 적용
         if(err) console.error(err);
         nsSocket.emit('historyCatchUp', doc.history);
-        updateUsersInRoom(NS_io, roomToJoin);
       })
-    }
   }
 
   //방을 만들때 방유저목록에 생성한 유저를 추가
@@ -399,8 +397,7 @@ module.exports = function (io) {
   }
 
   function inviteRoom(NS_io, nsSocket, data) {
-    let {nsTitle, NS_id, _id} = data // 유저id
-    let roomId = Object.keys(nsSocket.rooms)[1]
+    let {nsTitle, NS_id, _id, roomId} = data // 유저id
     RoomModel.findOneAndUpdate({_id : roomId}, { $addToSet : {member : _id}}, { new : true})
     .populate('member', "email name image")
     .select('-history -__v -createdAt -updatedAt').exec()
@@ -428,20 +425,18 @@ module.exports = function (io) {
   }
 
   function sendMessageToClients(NS_io, nsSocket, data) {    
-    let {NS_id, text, type, userName, filename, userImg } = data
+    let {NS_id, roomId, text, type, userName, filename, userImg } = data
     const fullMsg = { //메시지 객체
       text, type, userName, filename,
       time: Date.now(),
       avatar: userImg
     };
-    let roomTitle = Object.keys(nsSocket.rooms)[1]; //방엔드포인트 찾아서 할당
-
-    RoomModel.findOneAndUpdate({ namespace : NS_id, _id: roomTitle },  { $push: { history: fullMsg } }, { new: true })
+    RoomModel.findOneAndUpdate({ namespace : NS_id, _id: roomId },  { $push: { history: fullMsg } }, { new: true })
     .exec()
     .then((doc) => {
       if(doc!==null){
         console.log(doc.history[doc.history.length-1]);
-        NS_io.to(roomTitle).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송
+        NS_io.to(roomId).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송
       }else{
         nsSocket.emit('errorMsg', `메시지 전송에 실패했습니다 : ${userName} : ${text}`);
       }
@@ -452,13 +447,13 @@ module.exports = function (io) {
     
   }
 
-  function updateUsersInRoom(NS_io, roomToJoin) {   // 인원수 업데이트 메소드를 따로 빼는이유는 나갈때도 적용시키기 위해
-    NS_io.to(roomToJoin).clients((err, clients) => {
-      console.log("접속중인 클라이언트 목록 : " + clients);
-      console.log(`There are ${clients.length} people in the [${roomToJoin}] room`);
-      NS_io.to(roomToJoin).emit('updateMembers', clients.length);
-    })
-  }
+  // function updateUsersInRoom(NS_io, roomToJoin) {   // 인원수 업데이트 메소드를 따로 빼는이유는 나갈때도 적용시키기 위해
+  //   NS_io.to(roomToJoin).clients((err, clients) => {
+  //     console.log("접속중인 클라이언트 목록 : " + clients);
+  //     console.log(`There are ${clients.length} people in the [${roomToJoin}] room`);
+  //     NS_io.to(roomToJoin).emit('updateMembers', clients.length);
+  //   })
+  // }
 // const client = redis.createClient(6379, '3.15.39.170', { auth_pass: "tiger" });
 // client.on("error", (error) => {
 //   console.error(error);
