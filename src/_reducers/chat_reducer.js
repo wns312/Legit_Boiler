@@ -1,6 +1,11 @@
 import {SOCKET, NS_LIST, CURRENT_NS, ROOM_LIST, CURRENT_ROOM, SCHEDULE_LIST, CURRENT_SCHEDULE } from '../_actions/types'
 
-export default function (state={}, action) {
+let initialState= {
+  nsList : []
+}
+
+
+export default function (state=initialState, action) {
   switch (action.type) {
     case SOCKET:
       return {...state, nsSocket : action.payload }

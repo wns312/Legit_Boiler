@@ -35,7 +35,7 @@ const Namespaces = (props) => {
   useEffect(()=>{
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
       dispatch(inputNsList(nsArray));  // 변하는 정보가 없어지면 리덕스에서 삭제
-      // Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
+      (nsArray.length !==0) && Socket.emit('clickNs', {nsTitle : nsArray[0].nsTitle, NS_id : nsArray[0]._id});
     })//완성⭐
 
     Socket.on('currentNs', ({doc, rooms, schedules})=>{ // 아래의 handleNsList에서 보낸 clicktNs이벤트를 보내면 서버에서 clickedNs 이벤트를 보낸다
@@ -96,13 +96,13 @@ const Namespaces = (props) => {
             {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
           </ul>
         </section>
-        <section ref={List} id='list'>
-          { roomList && <Rooms hideList={hideList} Socket={Socket}></Rooms> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
-        </section>
+        
+        { roomList && <section ref={List} id='list'><Rooms hideList={hideList} Socket={Socket}></Rooms></section> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
+        
         {currentSchedule &&<section id='schedule'><Scheduler></Scheduler></section>}
         
-          { currentRoom ? <section id='chat'><Chat handleAside={handleAside} ></Chat></section> : <EmptyChat Socket={Socket}></EmptyChat>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
-        
+        { currentRoom && <section id='chat'><Chat handleAside={handleAside} ></Chat></section>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
+        {nsList.length ===0 && <EmptyChat Socket={Socket}></EmptyChat>}
         <aside ref={Aside}>
           {currentRoom && <Sidebar Close={Close}></Sidebar>}
         </aside>
