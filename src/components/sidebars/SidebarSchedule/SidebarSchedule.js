@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './SidebarSchedule.module.css'
 import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import "./react-datepicker.css";
 import ko from 'date-fns/locale/ko'; 
 registerLocale('ko', ko);
 
