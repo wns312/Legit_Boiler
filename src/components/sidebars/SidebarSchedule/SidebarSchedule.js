@@ -20,6 +20,10 @@ const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) 
     setDesc(currentEvent.desc);
     setStartDate(currentEvent.start)
     setEndDate(currentEvent.end)
+    let containers = document.getElementsByClassName('react-datepicker__input-container')
+    Array.from(containers).forEach((container)=>{
+      container.firstChild.setAttribute('readonly', true)
+    })
   }, [currentEvent])
 
   function Close(e) {
