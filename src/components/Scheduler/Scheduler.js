@@ -17,6 +17,7 @@ function Scheduler() {
   let {_id, event, namespace} = currentSchedule
   const dispatch =useDispatch();
   const [Events, setEvents] = useState([]);
+  const [currentEvent, setCurrentEvent] = useState();
   const [dayLayoutAlgorithm, setdayLayoutAlgorithm] = useState("no-overlap");
 
   useEffect(() => {
@@ -50,9 +51,12 @@ function Scheduler() {
     }) 
   }, [nsSocket])
 
-  function addEvent({start, end}) {
+  function addEvent({start, end, box}) {
+    // console.log(box.clientX);
+    // console.log(box.clientY);
     const title = window.prompt("일정을 추가하세요");
     const desc = window.prompt("내용을 추가하세요");
+    console.log(window.clientX);
     if (title) {
     let newEvent = { title, start, end, desc };
     nsSocket.emit('createEvent', newEvent, _id); 
@@ -83,20 +87,25 @@ function Scheduler() {
 
   function Event({ event }) {
     return (
-      <div className={styles.event} title="">
-      <span>{event.title}</span>
-      <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>
-      </div>
+        <div className={styles.event} title="">
+          <span>{event.title}</span>
+          <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>
+        </div>
     );
   }
 
   function Close(event) {
     dispatch(inputCurrentSchedule(""))
   }
+  function modifyEvent(e) {
+    console.log(e);
+    setCurrentEvent(e)
+    
+  }
 
   return (
     <>
-      <div id={styles.header}>
+      <section id={styles.header}>
         <div id={styles.roomtitle}>
           {(currentSchedule.room===undefined) ? currentNs.nsTitle : currentSchedule.room.roomTitle }
         </div>
@@ -104,13 +113,14 @@ function Scheduler() {
           <path fillRule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
           <path fillRule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
         </svg>
-      </div>
-      <div id={styles.body}>
+      </section>
+      <section id={styles.body}>
+        <div id={styles.calendar}>
         <Calendar
-          style={{ height: "100%", width: "100%"}}
+          style={{ height: "95%", width: "99%"}}
           popup={true} //+ _x_ more"링크를 클릭하면 잘린 이벤트를 오버레이에 표시합니다.
           selectable={true} //필수 ** 날짜와 범위를 선택할수 있게 만들어줌
-          onSelectEvent={()=>{console.log("hey");}}
+          onSelectEvent={(e)=>{modifyEvent(e)}}
           localizer={localizer} //moment 모듈을 이용한 로컬화
           events={Events} //이벤트 나오게 하는거
           allDayAccessor="allday"
@@ -129,7 +139,14 @@ function Scheduler() {
             },
           }}
         />
-      </div>
+        </div>
+        {currentEvent &&
+          <div id={styles.aside}>
+            <div id={styles.aside_header}></div>
+            <div id={styles.aside_body}></div>
+          </div>}
+      </section>
+
     </>
   );
 }

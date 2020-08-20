@@ -6,18 +6,15 @@
   border-color: rgb(226, 226, 226);
   box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
   overflow-x: hidden;
-
   display: grid;
   grid-template-columns: 1fr 70px;
 }
-
 #roomtitle {
   grid-column: 1;
   padding: 24px 0px 0px 22px;
   font-size: 1.1rem;
   font-weight: 700;
 }
-
 .closeicon {
   margin: 19px 19px;
   cursor: pointer;
@@ -28,8 +25,13 @@
 
 #body {
   grid-row: 2;
-  padding : 5px;
   overflow-x: auto;
+  display: flex;
+}
+
+#calendar {
+  flex : 2;
+  margin : 20px 0 0 5px;
 }
 
 /* rbc-event도 같이 변경해야함 : 이벤트부분*/
@@ -47,3 +49,28 @@
   flex : 0 0 11px;
   max-width: 30px;
 }
+
+#aside {
+  flex : 1;
+  border-style: solid;
+  border-width: 0px 0px 0px 1px;
+  border-color: rgb(226, 226, 226);
+  display: grid;
+  grid-template-rows: 70px 1fr;
+}
+#aside_header {
+  grid-row: 1;
+
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: rgb(226, 226, 226);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 0 5px rgba(0,0,0,0.02);
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 1fr 70px;
+}
+#aside_body {
+  grid-row: 2;
+
+}
+
