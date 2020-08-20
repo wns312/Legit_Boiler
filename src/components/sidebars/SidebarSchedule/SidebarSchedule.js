@@ -5,15 +5,17 @@ import "react-datepicker/dist/react-datepicker.css";
 import ko from 'date-fns/locale/ko'; 
 registerLocale('ko', ko);
 
-const SidebarSchedule = ({currentEvent, setCurrentEvent}) => {
+const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) => {
   let {_id, title, desc, start, end} = currentEvent
 
+  const [Id, setId] = useState(_id);
   const [Title, setTitle] = useState(title);
   const [Desc, setDesc] = useState(desc);
   const [startDate, setStartDate] = useState(start);
   const [endDate, setEndDate] = useState(end);
 
   useEffect(()=>{
+    setId(currentEvent._id)
     setTitle(currentEvent.title);
     setDesc(currentEvent.desc);
     setStartDate(currentEvent.start)
@@ -30,11 +32,9 @@ const SidebarSchedule = ({currentEvent, setCurrentEvent}) => {
     setDesc(e.target.value);
   }
   function handleSubmit() {
-    console.log(Title);
-    console.log(Desc);
-    console.log(startDate);
-    console.log(endDate);
-    
+    let newEvent = { title : Title, desc : Desc, start : startDate, end : endDate, _id : Id }
+    nsSocket.emit('handleEvent', newEvent, ScheduleId);
+    setCurrentEvent("")
   }
 
 

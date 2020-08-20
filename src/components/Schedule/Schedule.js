@@ -15,7 +15,7 @@ moment.locale('ko')
 function Schedule() {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
-  let {_id, event, namespace} = currentSchedule
+  let {_id, event} = currentSchedule
   const dispatch =useDispatch();
   const [Events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState();
@@ -63,18 +63,6 @@ function Schedule() {
     }else{
       console.log("title이 입력되지 않았습니다");
     }
-  }
-
-  function moveEvent({ event, start, end }) {
-    console.log("move : "+event._id);
-    let newEvent = {...event, start, end}
-    nsSocket.emit('handleEvent', newEvent, _id);
-    }
-
-  function resizeEvent({ event, start, end }) {
-    console.log("resize : "+event._id);
-    let newEvent = {...event, start, end}
-    nsSocket.emit('handleEvent', newEvent, _id);
   }
 
   function removeEvent(e, event) {
@@ -138,7 +126,7 @@ function Schedule() {
           }}
         />
         </div>
-        {currentEvent && <SidebarSchedule currentEvent={currentEvent} setCurrentEvent={setCurrentEvent}></SidebarSchedule> }
+        {currentEvent && <SidebarSchedule ScheduleId={_id} nsSocket={nsSocket} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent}></SidebarSchedule> }
       </section>
     </>
   );
