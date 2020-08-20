@@ -609,7 +609,27 @@
 }
 .react-datepicker__input-container input{
   outline : none;
+  cursor: pointer;
+  width : 180px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-style : solid;
+  border-color : grey;
+  
+  color : rgb(70, 70, 70);
+  text-align: center;
+  background-color: #ffffff;
+  /* transition: background-color 0.3s; */
 }
+
+.react-datepicker__input-container input:hover{
+  /* #06387a #09428b*/
+  background-color: #0f4ea1;
+  color : rgb(241, 241, 241);
+  border-style : none;
+}
+
 
 .react-datepicker__year-read-view,
 .react-datepicker__month-read-view,

@@ -52,11 +52,8 @@ function Schedule() {
   }, [nsSocket])
 
   function addEvent({start, end, box}) {
-    // console.log(box.clientX);
-    // console.log(box.clientY);
     const title = window.prompt("일정을 추가하세요");
     const desc = window.prompt("내용을 추가하세요");
-    console.log(window.clientX);
     if (title) {
     let newEvent = { title, start, end, desc };
     nsSocket.emit('createEvent', newEvent, _id); 
@@ -67,8 +64,6 @@ function Schedule() {
 
   function removeEvent(e, event) {
     e.stopPropagation();
-    console.log(event);
-    console.log("delete : "+event._id);
     const result = window.confirm("일정을 취소합니다.");
     result && nsSocket.emit('removeEvent', event, _id);
   }
@@ -82,7 +77,7 @@ function Schedule() {
     );
   }
 
-  function Close(event) {
+  function Close() {
     dispatch(inputCurrentSchedule(""))
   }
   function modifyEvent(event) {

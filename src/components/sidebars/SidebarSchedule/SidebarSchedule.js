@@ -36,45 +36,62 @@ const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) 
     nsSocket.emit('handleEvent', newEvent, ScheduleId);
     setCurrentEvent("")
   }
-
-
   return (
     <div id={styles.aside}>
-    <section id={styles.aside_header}>
+    <section id={styles.header}>
       <div id={styles.title}>일정</div>
       <svg width="1.5em" height="1.5em" className={`bi bi-x ${styles.closeicon}`} onClick={Close} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path fillRule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
         <path fillRule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
       </svg>
     </section>
-    <section id={styles.aside_body}>
+
+    <section id={styles.body}>
       <input id={styles.event_title} placeholder="제목" value={Title} onChange={handleInput}></input>
       <hr/>
-      <textarea id={styles.event_desc} placeholder="내용" value={Desc} onChange={handletextArea}></textarea>
+      <textarea id={styles.event_body} placeholder="내용" value={Desc} onChange={handletextArea}></textarea>
       <hr/>
-      {/* {start.getTime()} <br/>
-      {end.getTime()} <br/>
-      {start.toDateString()} <br/>
-      {end.toTimeString()} <br/>
-      {end.toString()} <br/>
-      {new Date().toString()} <br/> */}
-      <DatePicker
-        locale="ko"
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        placeholderText="시작날짜"
-      />
-      <DatePicker
-        locale="ko"
-        selected={endDate}
-        onChange={(date) => setEndDate(date)}
-        placeholderText="끝날짜"
-      />
-      <div id={styles.submit} onClick={handleSubmit}>저장</div>
-      {/* 새로만들면 저장, 수정하면 수정 */}
     </section>
+
+    <section id={styles.footer}>
+
+      <section id={styles.date_title}>
+        <span>시작 날짜</span>
+        <span>끝 날짜</span>
+      </section>
+
+      <section id={styles.date_body}>
+        <div id={styles.date_start}>
+          <DatePicker
+            locale="ko"
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            placeholderText="시작날짜"
+          />
+        </div>
+          <div id={styles.date_end}>
+            <DatePicker
+              locale="ko"
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              placeholderText="끝날짜"
+            />
+        </div>
+      </section>
+      <section id={styles.submit}>
+        <div id={styles.submit_button} onClick={handleSubmit}>저장</div>
+      </section>
+    </section>
+      {/* 새로만들면 저장, 수정하면 수정 */}
   </div>
   );
 };
 
 export default SidebarSchedule;
+
+// {start.getTime()} <br/>
+// {end.getTime()} <br/>
+// {start.toDateString()} <br/>
+// {end.toTimeString()} <br/>
+// {end.toString()} <br/>
+// {new Date().toString()} <br/> 
