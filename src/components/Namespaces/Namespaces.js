@@ -4,8 +4,8 @@ import { message } from "antd";
 import Rooms from '../Rooms/Rooms'
 import Chat from '../Chat/Chat'
 import EmptyChat from '../EmptyChat/EmptyChat'
-import Sidebar from '../Sidebar/Sidebar'
-import Scheduler from '../Scheduler/Scheduler'
+import {SidebarRoom} from '../sidebars'
+import Schedule from '../Schedule/Schedule'
 
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
@@ -99,12 +99,12 @@ const Namespaces = (props) => {
         
         { roomList && <section ref={List} id='list'><Rooms hideList={hideList} Socket={Socket}></Rooms></section> } {/* 엔드포인트 설정되면 방 컴포넌트 로드 */}
         
-        {currentSchedule &&<section id='schedule'><Scheduler></Scheduler></section>}
+        {currentSchedule &&<section id='schedule'><Schedule></Schedule></section>}
         
         { currentRoom && <section id='chat'><Chat handleAside={handleAside} ></Chat></section>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         {nsList.length ===0 && <EmptyChat Socket={Socket}></EmptyChat>}
         <aside ref={Aside}>
-          {currentRoom && <Sidebar Close={Close}></Sidebar>}
+          {currentRoom && <SidebarRoom Close={Close}></SidebarRoom>}
         </aside>
       </div>
     </div>

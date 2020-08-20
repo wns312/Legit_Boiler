@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './Sidebar.module.css';
-import {InviteRoom, LeaveRoom} from "../modals";
+import styles from './SidebarRoom.module.css';
+import {InviteRoom, LeaveRoom} from "../../modals";
 import { useSelector } from 'react-redux';
 
-const Sidebar = ({Close}) => {
+const SidebarRoom = ({Close}) => {
   let {currentRoom} = useSelector(state => state.chatInfo)
 // member, _id,  namespace, nsEndpoint 도 있음
 let {isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
@@ -24,4 +24,4 @@ let {isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
   );
 };
 
-export default Sidebar;
+export default SidebarRoom;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styles from './Scheduler.module.css'
+import styles from './Schedule.module.css'
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import {SidebarSchedule} from '../sidebars'
 import moment from 'moment'
 import 'moment/locale/ko'
 import "./react-big-calendar.css"
@@ -11,7 +12,7 @@ moment.locale('ko')
 
 
 
-function Scheduler() {
+function Schedule() {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
   let {_id, event, namespace} = currentSchedule
@@ -26,7 +27,6 @@ function Scheduler() {
       let { _id, start, end, desc, title } = ele;
       return { _id, title, desc, start: new Date(start), end: new Date(end) };
     })
-    console.log(events);
     setEvents(events);
     return(()=>{
       nsSocket.emit('leaveSchedule',{_id});
@@ -97,19 +97,17 @@ function Scheduler() {
   function Close(event) {
     dispatch(inputCurrentSchedule(""))
   }
-  function modifyEvent(e) {
-    console.log(e);
-    setCurrentEvent(e)
-    
+  function modifyEvent(event) {
+    setCurrentEvent(event)
   }
 
   return (
     <>
       <section id={styles.header}>
-        <div id={styles.roomtitle}>
+        <div id={styles.title}>
           {(currentSchedule.room===undefined) ? currentNs.nsTitle : currentSchedule.room.roomTitle }
         </div>
-        <svg width="2em" height="2em" viewBox="0 0 16 16" className={`bi bi-x ${styles.closeicon}`}  fill="currentColor" onClick={Close} xmlns="http://www.w3.org/2000/svg">
+        <svg width="2em" height="2em" className={`bi bi-x ${styles.closeicon}`} onClick={Close} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path fillRule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
           <path fillRule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
         </svg>
@@ -140,18 +138,13 @@ function Scheduler() {
           }}
         />
         </div>
-        {currentEvent &&
-          <div id={styles.aside}>
-            <div id={styles.aside_header}></div>
-            <div id={styles.aside_body}></div>
-          </div>}
+        {currentEvent && <SidebarSchedule currentEvent={currentEvent} setCurrentEvent={setCurrentEvent}></SidebarSchedule> }
       </section>
-
     </>
   );
 }
 
-export default Scheduler;
+export default Schedule;
 
 //Agenda에서 이벤트 주는거
 function EventAgenda({ event }) {
