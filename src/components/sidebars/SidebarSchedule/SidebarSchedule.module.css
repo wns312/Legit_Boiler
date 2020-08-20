@@ -62,3 +62,16 @@ hr{
   /* background-color: yellow; */
 }
 
+
+#submit{
+  cursor : pointer;
+  text-align: center;
+  padding-top: 3px;
+  background-color: rgb(165, 167, 168);
+  width: 100px;
+  height: 30px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(26, 26, 26);
+  border-radius: 15px;
+}
