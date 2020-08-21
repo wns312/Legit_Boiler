@@ -78,6 +78,11 @@
   font-weight: 600;
   padding-bottom : 4px
 }
+p{
+  line-height: 21px;
+  margin: 0;
+  padding : 0;
+}
 
 .chatset_time {
   font-weight: 100;

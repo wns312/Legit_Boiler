@@ -11,6 +11,7 @@ const ChatInput = ({scrollBottom, roomId}) => {
   function handleInput(e) {
     setInputText(e.target.value);
   }
+
   //메시지발신
   function handleForm(event) {
     event.preventDefault();
@@ -26,6 +27,7 @@ const ChatInput = ({scrollBottom, roomId}) => {
     setTimeout(()=>{scrollBottom()}, 50);
     setTimeout(()=>{inputTag.focus()}, 100);
   }
+  
   return (
     <> 
       <form id={styles.input} onSubmit={handleForm}>

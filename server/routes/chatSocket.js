@@ -432,9 +432,11 @@ module.exports = function (io) {
       time: Date.now(),
       avatar: userImg
     };
+    console.log(fullMsg);
     RoomModel.findOneAndUpdate({ namespace : NS_id, _id: roomId },  { $push: { history: fullMsg } }, { new: true })
     .exec()
     .then((doc) => {
+      console.log(doc);
       if(doc!==null){
         console.log(doc.history[doc.history.length-1]);
         NS_io.to(roomId).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송

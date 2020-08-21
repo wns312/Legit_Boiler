@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
 import ChatInput from "../ChatInput/ChatInput"
+import ConverTed from "../ChatInput/ConverTed"
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -57,7 +58,7 @@ const Chat = ({handleAside}) => {
         let { url, mimetype, filename, success } = res.data
         let { name, image } = userData
         if(success){
-          nsSocket.emit('newMessageToServer', { NS_id : currentNs._id, text: url, type: mimetype, filename, userName: name, userImg: image })
+          nsSocket.emit('newMessageToServer', { NS_id : currentNs._id, roomId:_id, text: url, type: mimetype, filename, userName: name, userImg: image })
           setTimeout(()=>{scrollBottom()}, 300);
         }else{
           console.log(res)
@@ -104,7 +105,8 @@ const Chat = ({handleAside}) => {
           </section>
         )}
       </Dropzone>
-      <ChatInput scrollBottom={scrollBottom} roomId={_id}></ChatInput>
+      <ConverTed scrollBottom={scrollBottom} roomId={_id}></ConverTed>
+      {/* <ChatInput scrollBottom={scrollBottom} roomId={_id}></ChatInput> */}
     </>
   );
 }
@@ -133,7 +135,7 @@ function convertMsg(text, type, filename) {
   let tag = "";
   switch (type) {
     case 'text':
-      tag = <p>{text}</p>
+      tag = <div dangerouslySetInnerHTML={{__html: text}}></div>
       break;
     case 'image/png': case 'image/jpeg': case 'image/gif':
       tag = <img src={text} alt="이미지"></img>
