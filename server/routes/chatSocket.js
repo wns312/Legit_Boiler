@@ -20,7 +20,6 @@ module.exports = function (io) {
       .then((nsArray) => {
         socket.emit("nsList", nsArray);
         nsArray.forEach((ns)=>{
-          console.log(ns);
           io.of(`/${ns.nsTitle}`).emit('updatecurrentNs', ns)
         })
         //본인이 속한 NS의 모두에게 currentNS업데이트를 해주어야한다

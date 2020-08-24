@@ -50,15 +50,18 @@
 }
 
 #chatset_ul {
-  padding-left: 13px;
+  padding-left: 0px;
   margin-top: 15px;
 
 }
 
 .chatset_li {
   display: grid;
-  padding : 0px 15px 11px 3px; /* 위 / 오 / 아래 / 왼 */
+  padding : 6px 15px 6px 15px; /* 위 / 오 / 아래 / 왼 */
   grid-template-columns: 48px 1fr;
+}
+.chatset_li:hover{
+  background-color: rgb(245, 245, 245);
 }
 
 .chatset_image {
