@@ -12,7 +12,7 @@ const Rooms = ({hideList, Socket}) => {
   let {_id, name} = useSelector(state=>state.user.userData)
   let {currentNs, roomList, scheduleList} = useSelector(state=>state.chatInfo)
   let { nsTitle, admin } = currentNs // nsId
-
+  // console.log(currentNs["nsTitle"]);
   const [isAdmin, setIsAdmin] = useState(false)
   const dispatch =useDispatch();
   

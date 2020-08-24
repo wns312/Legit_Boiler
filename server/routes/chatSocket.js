@@ -13,9 +13,9 @@ module.exports = function (io) {
   io.on("connection", (socket) => {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
     
-    User.findOneAndUpdate({_id}, {socket : socket.id, isConnected : true}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
+    User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
     .then((doc)=>{
-      return NsModel.find({nsMember : _id}).select('nsTitle img, isConnected').exec() //접속시 nsList전송
+      return NsModel.find({nsMember : _id}).select('nsTitle img').exec() //접속시 nsList전송
     })
     .then((nsArray) => {
       socket.emit("nsList", nsArray);
@@ -27,16 +27,18 @@ module.exports = function (io) {
 
 
     socket.on('disconnect', ()=>{//접속해제시 socket을 파기
-      console.log(`disconnect 실행`);
-      User.findOneAndUpdate({_id}, {socket : "", isConnected : false}, {new : true}).select('isConnected').exec() // 접속 종료시 socket id를 db에서 
+      User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).exec() // 접속 종료시 socket id를 db에서 
       .then((doc)=>{
         console.log(doc);
-        return NsModel.find({nsMember : _id}).select('nsTitle').exec()
+        return NsModel.find({nsMember : _id})
+        .populate('nsMember', 'email name socket image')
+        .select('nsTitle nsMember admin').exec()
+        
       })
       .then((doc)=>{
         console.log(doc);
         doc.forEach((ns)=>{
-          io.of(`/${ns.nsTitle}`).emit() // 이따가 하기
+          io.of(`/${ns.nsTitle}`).emit('updatecurrentNs', ns)
         })
       })
 
@@ -45,6 +47,7 @@ module.exports = function (io) {
     socket.on('clickNs', (data)=>{
       //클릭한 ns목록과 그에 맞는 방을 전송
       let {nsTitle, NS_id}= data
+      
       NsModel.findOne({nsTitle}).populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
       .exec()
       .then((doc)=>{
@@ -266,8 +269,8 @@ module.exports = function (io) {
       });
 
       return NsModel.findOneAndUpdate({_id}, {$pull : {nsMember : userId}}, {new : true})
-      .populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
-      .exec()
+      .populate('nsMember', 'email name socket image')
+      .select('nsTitle nsMember admin').exec()
     })
     .then((ns)=>{
       NS_io.emit('updatecurrentNs', ns) // ns전체에 멤버가 바뀐것을 보내준다 (되는 것 확인)
@@ -371,9 +374,6 @@ module.exports = function (io) {
         NS_io.emit('updatecurrentNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)
 
         NsModel.find({nsMember : doc._id}).select('nsTitle img').exec((err, nsArray)=>{
-          console.log(`ns초대 후 nsList결과 : ${nsArray}`);
-          console.log("NS초대 시 조회가 제대로 되었는가? : "+nsArray[nsArray.length-1]);
-          console.log("NS초대시 보내려는 socket id : "+doc.socket);
           if(doc.socket) io.to(doc.socket).emit("nsList", nsArray);
         });
       })
