@@ -12,42 +12,33 @@ module.exports = function (io) {
   //Ns, Room 세팅        
   io.on("connection", (socket) => {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
-    
     User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
-    .then((doc)=>{
-      return NsModel.find({nsMember : _id}).select('nsTitle img').exec() //접속시 nsList전송
-    })
-    .then((nsArray) => {
-      socket.emit("nsList", nsArray);
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-
-
+      .then((doc)=>{
+        return NsModel.find({nsMember : _id}).select('nsTitle img').exec() //접속시 nsList전송
+      })
+      .then((nsArray) => {
+        socket.emit("nsList", nsArray);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
 
     socket.on('disconnect', ()=>{//접속해제시 socket을 파기
       User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).exec() // 접속 종료시 socket id를 db에서 
-      .then((doc)=>{
-        console.log(doc);
-        return NsModel.find({nsMember : _id})
-        .populate('nsMember', 'email name socket image')
-        .select('nsTitle nsMember admin').exec()
-        
-      })
-      .then((doc)=>{
-        console.log(doc);
-        doc.forEach((ns)=>{
-          io.of(`/${ns.nsTitle}`).emit('updatecurrentNs', ns)
+        .then((doc)=>{
+          return NsModel.find({nsMember : _id})
+            .populate('nsMember', 'email name socket image').select('nsTitle nsMember admin').exec()
         })
-      })
-
+        .then((doc)=>{
+          doc.forEach((ns)=>{
+            io.of(`/${ns.nsTitle}`).emit('updatecurrentNs', ns)
+          })
+        })
     })
 
     socket.on('clickNs', (data)=>{
       //클릭한 ns목록과 그에 맞는 방을 전송
       let {nsTitle, NS_id}= data
-      
       NsModel.findOne({nsTitle}).populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
       .exec()
       .then((doc)=>{
@@ -65,9 +56,9 @@ module.exports = function (io) {
             socket.emit('currentNs', {doc, rooms, schedules})
           })
         })
-        .catch((err)=>{ console.log(err); })
+        .catch((err)=>{ console.log(err) })
       })
-      .catch((err)=>{ console.log(err); })
+      .catch((err)=>{ console.log(err) })
     })
     
 
@@ -159,7 +150,6 @@ module.exports = function (io) {
     nsSocket.on('createEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
       let { title, end, start, desc} = event;
       let newEvent = new Event({scheduler : _id, title, end, start, desc})
-      console.log(newEvent);
       newEvent.save()
       .then((doc)=>{
         Schedule.findOneAndUpdate({_id}, {$push : {event : doc._id}}, {new : true})
@@ -177,11 +167,9 @@ module.exports = function (io) {
     })
 
     nsSocket.on('handleEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
-      console.log(event); // 여기서 Object뜨고->문제는 없지만 없는데이터를 받아오는 것이 문제다
       Event.findOneAndUpdate({_id : event._id}, event, { new : true })
       .exec()
       .then((doc)=>{
-        console.log("handleEvent2 : "+doc); // 여기서 null뜸
         return Event.find({scheduler : _id}).exec()
       })
       .then((doc)=>{
@@ -199,7 +187,6 @@ module.exports = function (io) {
         return Event.find({scheduler : _id}).exec()
       })
       .then((res)=>{
-        console.log(res);
         NS_io.to(_id).emit('deleteSchedule', res)
       })
       .catch((err)=>{
@@ -252,14 +239,11 @@ module.exports = function (io) {
 
   function leaveNS(NS_io, nsSocket, data) {
     let {userId, _id, roomsIdArray} = data
-    console.log(roomsIdArray);
-
     // id로 방들을 find한 뒤, 모두 업데이트를 해야 그 방들을 보내줄 수 있을거같다.
     RoomModel.updateMany({namespace : _id, member : userId}, {$pull : {member : userId}}) //정상적으로 방을 퇴장한다
     .exec()
     .then((doc)=>{
       console.log(`발견된 갯수 : ${doc.n}, 수정된 갯수 : ${doc.nModified}`);
-
       return RoomModel.find({_id : { $in : roomsIdArray }}).populate('member', "email name image")
       .select("-history -createdAt -updatedAt -__v").exec()
     })    
@@ -338,7 +322,6 @@ module.exports = function (io) {
     // find-save-find?? 극혐
     RoomModel.countDocuments({roomTitle, namespace : Ns_id}).exec()
     .then((count)=>{
-      console.log(`중복된 방 갯수 : ${count}`);
       if(!count) return room.save()
       nsSocket.emit('errorMsg', `중복된 방 이름이 존재합니다`);
     })
@@ -360,17 +343,13 @@ module.exports = function (io) {
     User.findOne({email}).select('email name socket').exec()
     .then((doc)=>{ //공개방 유저목록에 초대받은 유저 추가
       RoomModel.updateMany({ namespace: _id, isPrivate:false }, { $addToSet : { member : doc._id} }) 
-      .exec((err, res)=>{
-        console.log(`검색된 공개방 갯수 : ${res.n} / 수정된 공개방 갯수 : ${res.nModified}`);
-      })
+      .exec()
       return doc
     })
     .then((doc)=>{//네임스페이스의 유저목록에 신규유저 추가하고 접속중인 ns유저들에게 새 목록을 보내준다
-      console.log(`초대유저 검색 결과 : ${doc}`);
       NsModel.findOneAndUpdate({_id}, {$addToSet : {nsMember : doc._id}}, {new : true} )
       .populate('nsMember', 'email name socket image').select('nsTitle nsMember admin')
       .exec((err, ns)=>{
-        console.log(`ns : ${ns}`);
         NS_io.emit('updatecurrentNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)
 
         NsModel.find({nsMember : doc._id}).select('nsTitle img').exec((err, nsArray)=>{
@@ -420,7 +399,6 @@ module.exports = function (io) {
     .populate('member', "email name image")
     .select('-history -__v -createdAt -updatedAt').exec()
     .then((data)=>{
-      console.log("초대시 방 데이터 :" +data);
       NS_io.to(roomId).emit('currentRoomLoad', data) // 나말고도 비밀방에 사람이 있을 수 있으므로, nsio toroom current가되어야한다
     })
     .then(()=>{
@@ -449,11 +427,9 @@ module.exports = function (io) {
       time: Date.now(),
       avatar: userImg
     };
-    console.log(fullMsg);
     RoomModel.findOneAndUpdate({ namespace : NS_id, _id: roomId },  { $push: { history: fullMsg } }, { new: true })
     .exec()
     .then((doc) => {
-      console.log(doc);
       if(doc!==null){
         console.log(doc.history[doc.history.length-1]);
         NS_io.to(roomId).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송
