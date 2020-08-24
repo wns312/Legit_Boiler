@@ -1,0 +1,45 @@
+
+
+/* 모달컨텐츠 */
+.content {
+  color: rgb(26, 26, 26);
+  top: 0px;
+  left: 0px;
+  background-color: rgb(248, 248, 246);
+  /* 여길 relative로 적어주어야 중앙정렬됨 */
+  position : absolute; 
+  width: 150px;
+  height: 35px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(196, 196, 196);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.05), 0 3px 5px rgba(0,0,0,0.1);
+  /* 그리드관련 */
+  display: grid;
+  grid-template-rows: 75px 1fr 75px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.content__header{
+  grid-row: 1;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 25px 20px;
+  background-color : rgb(248, 248, 246);
+}
+.content__body{
+  grid-row: 2;
+  overflow: auto;
+  font-size: 1.1rem;
+  border-style: solid;
+  border-width: 1px 0px 1px 0px;
+  border-color: rgb(196, 196, 196);
+  padding: 20px 20px;
+}
+
+
+.hidden {
+  display: none;
+}

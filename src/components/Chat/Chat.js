@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
-import ChatInput from "../ChatInput/ChatInput"
+// import ChatInput from "../ChatInput/ChatInput"
 import ConverTed from "../ChatInput/ConverTed"
+import ChatModal from './ChatModal/ChatModal'
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -16,6 +17,7 @@ const Chat = ({handleAside}) => {
   let NS_id = currentNs._id
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
+  const [isMouseOver, setIsMouseOver] = useState(false);
   let chat_messages = useRef();
   let ulTag = useRef();
   
@@ -80,7 +82,12 @@ const Chat = ({handleAside}) => {
     // ulTag.current.scrollIntoView(false)
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
-
+  function Open(params) {
+    setIsMouseOver(true)
+  }
+  function Close(params) {
+    setIsMouseOver(false)
+  }
   return (
     <>
       <div id={styles.chat_header}>
@@ -98,9 +105,10 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages}>
                 <ul ref={ulTag} id={styles.chatset_ul}>
-                  {newChatList(messages, chat_messages)} {/* 채팅목록 */}
+                  {newChatList(messages, Open, Close)} {/* 채팅목록 */}
                 </ul>
               </div>
+              {isMouseOver && <ChatModal></ChatModal>}
             </div>
           </section>
         )}
@@ -112,14 +120,14 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages) {
+function newChatList(messages, Open, Close) {
   let newChatList = messages.map((message, index) => {
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
 
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
     return (
-      <li className={styles.chatset_li} key={index}>
+      <li className={styles.chatset_li} key={index} onMouseOver={Open} onMouseOut={Close}>
         <img className={styles.chatset_image} src={avatar} alt="아바타" />
         <div className={styles.chatset_message}>
           <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
