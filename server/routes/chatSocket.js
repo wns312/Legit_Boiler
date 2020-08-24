@@ -12,17 +12,34 @@ module.exports = function (io) {
   //Ns, Room 세팅        
   io.on("connection", (socket) => {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
-
-    NsModel.find({nsMember : _id}).select('nsTitle img')//접속시 nsList전송
-    .exec((err, nsArray) => {
-      if(err) console.log(err);
+    
+    User.findOneAndUpdate({_id}, {socket : socket.id, isConnected : true}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
+    .then((doc)=>{
+      return NsModel.find({nsMember : _id}).select('nsTitle img, isConnected').exec() //접속시 nsList전송
+    })
+    .then((nsArray) => {
       socket.emit("nsList", nsArray);
-    });
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
 
-    User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
+
 
     socket.on('disconnect', ()=>{//접속해제시 socket을 파기
-      User.findOneAndUpdate({_id}, {socket : ""}, {new : true}).select('socket').exec() // 접속 종료시 socket id를 db에서 
+      console.log(`disconnect 실행`);
+      User.findOneAndUpdate({_id}, {socket : "", isConnected : false}, {new : true}).select('isConnected').exec() // 접속 종료시 socket id를 db에서 
+      .then((doc)=>{
+        console.log(doc);
+        return NsModel.find({nsMember : _id}).select('nsTitle').exec()
+      })
+      .then((doc)=>{
+        console.log(doc);
+        doc.forEach((ns)=>{
+          io.of(`/${ns.nsTitle}`).emit() // 이따가 하기
+        })
+      })
+
     })
 
     socket.on('clickNs', (data)=>{
@@ -449,15 +466,3 @@ module.exports = function (io) {
     })
     
   }
-
-  // function updateUsersInRoom(NS_io, roomToJoin) {   // 인원수 업데이트 메소드를 따로 빼는이유는 나갈때도 적용시키기 위해
-  //   NS_io.to(roomToJoin).clients((err, clients) => {
-  //     console.log("접속중인 클라이언트 목록 : " + clients);
-  //     console.log(`There are ${clients.length} people in the [${roomToJoin}] room`);
-  //     NS_io.to(roomToJoin).emit('updateMembers', clients.length);
-  //   })
-  // }
-// const client = redis.createClient(6379, '3.15.39.170', { auth_pass: "tiger" });
-// client.on("error", (error) => {
-//   console.error(error);
-// })

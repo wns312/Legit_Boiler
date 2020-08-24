@@ -34,6 +34,9 @@ const userSchema = mongoose.Schema({
   socket : { 
     type: String 
   },
+  isConnected : { 
+    type: Boolean
+  },
   token: {// 토큰
     type: String,
   },

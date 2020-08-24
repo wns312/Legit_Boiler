@@ -31,6 +31,14 @@ const Namespaces = (props) => {
   useEffect(()=>{
     Socket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:9000`, { query :  {_id} } );
   }, [_id])
+  useEffect(()=>{
+    return ()=>{
+      Socket.emit('a', {})
+      // let nsTitleList = nsList.map((ns)=>{
+      //   return ns.nsTitle
+      // })
+    }
+  }, [])
 
   useEffect(()=>{
     Socket.on("nsList", (nsArray)=>{ //접속시 리스트 로드
@@ -45,6 +53,7 @@ const Namespaces = (props) => {
     })
 
     Socket.on('errorMsg', (msg)=>{ message.error(msg); }) // 에러출력
+
   }, [dispatch]);                
   
   function getnsList(){
