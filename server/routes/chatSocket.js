@@ -14,10 +14,16 @@ module.exports = function (io) {
     let {handshake : {query : {_id}}} = socket // 유저 DB의 _id : 여기서 받은 _id로 db를 검색해 소켓id를 저장
     User.findOneAndUpdate({_id}, {socket : socket.id}, {new : true}).exec() // 접속시 유저의 socket id를 db에 저장
       .then((doc)=>{
-        return NsModel.find({nsMember : _id}).select('nsTitle img').exec() //접속시 nsList전송
+        return NsModel.find({nsMember : _id})  //접속시 nsList전송
+          .populate('nsMember', 'email name socket image').select('nsTitle nsMember admin').exec()
       })
       .then((nsArray) => {
         socket.emit("nsList", nsArray);
+        nsArray.forEach((ns)=>{
+          console.log(ns);
+          io.of(`/${ns.nsTitle}`).emit('updatecurrentNs', ns)
+        })
+        //본인이 속한 NS의 모두에게 currentNS업데이트를 해주어야한다
       })
       .catch((err)=>{
         console.log(err);

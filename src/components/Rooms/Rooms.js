@@ -89,10 +89,15 @@ const Rooms = ({hideList, Socket}) => {
   function getdmList() {
     let tmproom = roomList.filter((room)=> room.isDM === true ) // 내가 참여한 모든 DM방 목록
     const newList= tmproom.map((room, index) => { // 내가 포함된 dm방 전체데이터를 map한다
-      let dataOfOpponent = room.member.find(ele=>ele._id !==_id)
+      let tmp = room.member.find(ele=>ele._id !==_id)
+      let dataOfOpponent = currentNs.nsMember.find((ele)=>ele._id ===tmp._id)
+      console.log(dataOfOpponent);
       return (
-      <li key={index} onClick={()=>{handleList(room)}}> 
-        <Icon name='user'></Icon>{dataOfOpponent ? dataOfOpponent.name : "나간상대"} 
+      <li key={index} onClick={()=>{handleList(room)}}>
+        {/* Icon대신 dataOfOpponent.socket.length가 0이면 비접속, 아니면 접속으로 */}
+        {/* <Icon name='user'></Icon> */}
+        {dataOfOpponent.socket.length===0 ? "비접속":"접속"}
+        {dataOfOpponent ? dataOfOpponent.name : "나간상대"} 
       </li>)
     });
       return newList
