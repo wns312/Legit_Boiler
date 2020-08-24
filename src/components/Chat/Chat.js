@@ -18,6 +18,7 @@ const Chat = ({handleAside}) => {
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
   const [isMouseOver, setIsMouseOver] = useState(false);
+  const [modalPosition, setModalPosition] = useState();
   let chat_messages = useRef();
   let ulTag = useRef();
   
@@ -82,10 +83,13 @@ const Chat = ({handleAside}) => {
     // ulTag.current.scrollIntoView(false)
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
-  function Open(params) {
+  function Open(e) {
+    e.stopPropagation();
+    let {offsetTop, offsetLeft, offsetWidth} = e.currentTarget
+    setModalPosition({offsetTop, offsetLeft, offsetWidth})
     setIsMouseOver(true)
   }
-  function Close(params) {
+  function Close(e) {
     setIsMouseOver(false)
   }
   return (
@@ -103,12 +107,12 @@ const Chat = ({handleAside}) => {
         {({ getRootProps }) => (
           <section className={styles.dropzone}>
             <div {...getRootProps()} className={styles.dropzone}>
-              <div ref={chat_messages} id={styles.chat_messages}>
-                <ul ref={ulTag} id={styles.chatset_ul}>
+              <div ref={chat_messages} id={styles.chat_messages} >
+                <ul ref={ulTag} id={styles.chatset_ul} onMouseLeave={Close}>
                   {newChatList(messages, Open, Close)} {/* 채팅목록 */}
+                  {isMouseOver && <ChatModal modalPosition={modalPosition}></ChatModal>}
                 </ul>
               </div>
-              {isMouseOver && <ChatModal></ChatModal>}
             </div>
           </section>
         )}
@@ -120,14 +124,14 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages, Open, Close) {
+function newChatList(messages, Open) {
   let newChatList = messages.map((message, index) => {
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
 
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
     return (
-      <li className={styles.chatset_li} key={index} onMouseOver={Open} onMouseOut={Close}>
+      <li className={styles.chatset_li} key={index} onMouseEnter={Open}>
         <img className={styles.chatset_image} src={avatar} alt="아바타" />
         <div className={styles.chatset_message}>
           <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
