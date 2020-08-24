@@ -59,3 +59,12 @@
   background-color: rgb(82, 127, 171);
   color: white;
 }
+
+
+/* 접속 아이콘 */
+.connect, .disconnect{
+  font-size: 11px;
+}
+.connect{
+  color: rgb(59, 199, 59);
+}
