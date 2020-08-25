@@ -1,21 +1,33 @@
 import React, { useState, useRef } from 'react';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier} from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import 'draft-js/dist/Draft.css';
 import "./MyEditor.css"
 import { useSelector } from 'react-redux';
+
+let currentEditorState;
 function MyEditor({roomId, scrollBottom}) {
   let {userData} = useSelector(state=>state.user) 
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   const [editorState, setEditorState] = useState(EditorState.createEmpty()
   );
-
   let editor = useRef();
-  function focus() { editor.current.focus(); }
+  function focus() { editor.current.focus() }
   function onChange (e) {
+    currentEditorState = e
     setEditorState(e)
   }
 
+  function _onBlockClick(style) {
+    onChange(RichUtils.toggleBlockType(editorState, style));
+    setTimeout(() => { focus() }, 20);
+    
+  }
+  function _onInlineClick(style) {
+    onChange(RichUtils.toggleInlineStyle(editorState, style));
+    setTimeout(() => { focus() }, 20);
+  }
+  
   function handleKeyCommand(command, editorState) {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
@@ -25,20 +37,19 @@ function MyEditor({roomId, scrollBottom}) {
     return 'not-handled';
   }
 
-  function _onBlockClick(style) {
-    onChange(RichUtils.toggleBlockType(editorState, style));
-    setTimeout(() => { focus() }, 20);
-    
+  function keyBindingFn(e) {//tab키는 9 엔터는 13
+    if (e.ctrlKey && e.keyCode === 13) {
+      return 'split-block' 
+    }
+    if (e.keyCode === 13) {
+      Send()
+      return
+    }
+    return getDefaultKeyBinding(e);
   }
 
-  function _onInlineClick(style) {
-    onChange(RichUtils.toggleInlineStyle(editorState, style));
-    setTimeout(() => { focus() }, 20);
-  }
-
-  function Send(e) {
-    e.preventDefault();
-    let text = convertToHTML(editorState.getCurrentContent())
+  function Send() {
+    let text = convertToHTML(currentEditorState.getCurrentContent())
     if(text!=="<p></p>") {
       let {name, image} = userData
       nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, roomId ,text, type : "text", userName : name, userImg : image, filename : ""});
@@ -48,6 +59,7 @@ function MyEditor({roomId, scrollBottom}) {
     setTimeout(()=>{focus()}, 100);
   }
 
+
   return (
     <>
     <div className="editor-wrapper">
@@ -56,6 +68,7 @@ function MyEditor({roomId, scrollBottom}) {
         onChange={(e)=>{onChange(e)}}
         handleKeyCommand={handleKeyCommand}
         ref={editor}
+        keyBindingFn={keyBindingFn}
       />
     </div>
     <div className='editor-control'>
