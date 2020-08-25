@@ -70,14 +70,13 @@ module.exports = function (io) {
     socket.on("NewNs", (data) => { //새 ns요청이 왔을 시 생성 후 새 리스트 전송, 각종 ns.on 켜주기
       let {nsTitle}= data
       let result= nsTitleList.find( element=>(element ===nsTitle) );
-      let img = "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D";
-      let newNs = new NsModel({ admin : _id, nsMember : [_id], nsTitle, img});
+      let newNs = new NsModel({ admin : _id, nsMember : [_id], nsTitle});
       
       newNs.save()
       .then((ns) => { // 새 NS를 DB에 추가
         console.log(ns);
         
-        NsModel.find({nsMember : _id}).select('nsTitle img admin')
+        NsModel.find({nsMember : _id}).select('nsTitle admin')
         .exec((err, nsArray) => {
           if(err) console.log(err);
           socket.emit("nsList", nsArray);
@@ -265,7 +264,7 @@ module.exports = function (io) {
       NS_io.emit('updatecurrentNs', ns) // ns전체에 멤버가 바뀐것을 보내준다 (되는 것 확인)
       //ns멤버바뀐건 그렇다치고, 저 멤버가 들어가있는 방은 어캐해?
 
-      return NsModel.find({nsMember : userId}).select('nsTitle img').exec() // 새로운 nsList검색
+      return NsModel.find({nsMember : userId}).select('nsTitle').exec() // 새로운 nsList검색
     })
     .then((nsList)=>{ // nsList를 제대로 못받아온다
       
@@ -357,7 +356,7 @@ module.exports = function (io) {
       .exec((err, ns)=>{
         NS_io.emit('updatecurrentNs', ns); //정상임 (얘는 네임스페이스목록만 업데이트 해줘야 하므로 루트io는 안됨)
 
-        NsModel.find({nsMember : doc._id}).select('nsTitle img').exec((err, nsArray)=>{
+        NsModel.find({nsMember : doc._id}).select('nsTitle').exec((err, nsArray)=>{
           if(doc.socket) io.to(doc.socket).emit("nsList", nsArray);
         });
       })

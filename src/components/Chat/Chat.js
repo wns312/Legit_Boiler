@@ -93,11 +93,6 @@ const Chat = ({handleAside}) => {
     setModalPosition({offsetLeft, offsetWidth, offsetHeight : offsetTop-scrollTop})
     setIsMouseOver(true)
   }
-
-  function Out(e) {
-    e.stopPropagation();
-    ulTag.current.childNodes[Index].style.backgroundColor = "rgb(255, 255, 255)"
-  }
   function setColor() {
     ulTag.current.childNodes[Index].style.backgroundColor = "rgb(245, 245, 245)"
   }
@@ -123,7 +118,7 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages} >
                 <ul ref={ulTag} id={styles.chatset_ul} onMouseLeave={Close}>
-                  {newChatList(messages, Open, Out)} {/* 채팅목록 */}
+                  {newChatList(messages, Open, removeColor)} {/* 채팅목록 */}
                   {isMouseOver && <ChatModal modalPosition={modalPosition} setColor={setColor} removeColor={removeColor}></ChatModal>}
                 </ul>
               </div>
@@ -137,14 +132,14 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages, Open, Out) {
+function newChatList(messages, Open, removeColor) {
   let newChatList = messages.map((message, index) => {
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
 
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
     return (
-      <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={Out}>
+      <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={removeColor}>
         <img className={styles.chatset_image} src={avatar} alt="아바타" />
         <div className={styles.chatset_message}>
           <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>

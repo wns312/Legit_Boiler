@@ -28,8 +28,7 @@ const userSchema = mongoose.Schema({
   image: {// 프로필이미지
     type : String, 
     required : true,
-    default : 
-    "https://scontent-lax3-1.cdninstagram.com/v/t51.2885-15/e35/s320x320/109488487_711845919377281_5934331567804909908_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=Z6gzEfBk2psAX-qM4d-&oh=c18285690e640dc381335f777695525e&oe=5F43752D"
+    default : "/default_profile.png"
   },
   socket : { 
     type: String 

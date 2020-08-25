@@ -7,10 +7,6 @@ const nsSchema = mongoose.Schema({
     required: true,
     unique : true
   },
-  img: { // 이미지는 당연히 필요
-    type: String,
-    required: true,
-  },
   admin : {
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User' 
