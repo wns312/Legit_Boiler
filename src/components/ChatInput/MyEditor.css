@@ -1,0 +1,62 @@
+.editor-wrapper {
+  width : 100%;
+  height: 100%;
+  position: static;
+  overflow-y : auto;
+  border-style: solid;
+  border-radius: 5px 5px 0 0 ;
+  border-color : grey;
+  border-width : 2px 2px 1px 2px;
+  grid-column : 2;
+  grid-row : 3;
+}
+
+.editor-control {
+  grid-column : 2;
+  grid-row : 4;
+  width : 100%;
+  height: 100%;
+  border-style: solid;
+  border-radius: 0 0 5px 5px;
+  border-width : 0px 2px 2px 2px;
+  border-color : grey;
+  display : flex;
+  justify-content: center;
+}
+
+.editor-control button{
+  flex : 1;
+  margin : 2px;
+}
+.submit {
+  flex : 1;
+}
+
+
+.public-DraftEditor-content {
+  position: relative;
+  height: 100%;
+}
+/* 여기까지가 타자 한줄한줄 이전부분 */
+
+/* 블록타입은 div태그자체를 다른것으로 바꿈 */
+.public-DraftStyleDefault-block {
+}
+/* ltr타입은스타일로 span을 바꿈 */
+.public-DraftStyleDefault-ltr {
+}
+blockquote {
+  background-color : grey;
+  margin : 0 0 5px 0;
+}
+/* ------------스크롤바--------------- */
+::-webkit-scrollbar { width: 10px; }
+/* 스크롤바의 width */
+::-webkit-scrollbar-track { background-color: #f0f0f0; }
+/* 스크롤바의 전체 배경색 */
+::-webkit-scrollbar-thumb { 
+    background:#9ba3a2
+}
+/* 스크롤바 색 */
+::-webkit-scrollbar-button { display: none; }
+/* 위 아래 버튼 (버튼 없애기를 함) */

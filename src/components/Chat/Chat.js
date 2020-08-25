@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
-// import ChatInput from "../ChatInput/ChatInput"
-import ConverTed from "../ChatInput/ConverTed"
+// import ConverTed from "../ChatInput/ConverTed"
+import MyEditor from "../ChatInput/MyEditor"
 import ChatModal from './ChatModal/ChatModal'
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
@@ -117,7 +117,7 @@ const Chat = ({handleAside}) => {
           </section>
         )}
       </Dropzone>
-      <ConverTed scrollBottom={scrollBottom} roomId={_id}></ConverTed>
+      <MyEditor scrollBottom={scrollBottom} roomId={_id}></MyEditor>
       {/* <ChatInput scrollBottom={scrollBottom} roomId={_id}></ChatInput> */}
     </>
   );

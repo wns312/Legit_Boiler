@@ -119,7 +119,7 @@ header {
 #chat{
   display: grid;
   color : rgb(29, 28, 29);
-  grid-template-rows: 70px 1fr 0px 40px 35px 20px;
+  grid-template-rows: 70px 1fr 65px 35px 20px;
   grid-template-columns: 20px 1fr 20px;
   flex : 1;
   background-color:rgb(255, 255, 255);
