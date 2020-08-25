@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
-// import ConverTed from "../ChatInput/ConverTed"
-import MyEditor from "../ChatInput/MyEditor"
+import ChatInput from "../ChatInput/ChatInput"
 import ChatModal from './ChatModal/ChatModal'
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
@@ -18,6 +17,8 @@ const Chat = ({handleAside}) => {
   const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
   const [isMouseOver, setIsMouseOver] = useState(false);
+  const [Index, setIndex] = useState(false);
+
   const [modalPosition, setModalPosition] = useState();
   let chat_messages = useRef();
   let ulTag = useRef();
@@ -85,13 +86,26 @@ const Chat = ({handleAside}) => {
   }
   function Open(e) {
     e.stopPropagation();
+    e.currentTarget.style.backgroundColor = "rgb(245, 245, 245)"
+    setIndex(e.currentTarget.getAttribute('index'))
+    let {scrollTop} = chat_messages.current
     let {offsetTop, offsetLeft, offsetWidth} = e.currentTarget
-    setModalPosition({offsetTop, offsetLeft, offsetWidth})
+    setModalPosition({offsetLeft, offsetWidth, offsetHeight : offsetTop-scrollTop})
     setIsMouseOver(true)
   }
-  function Close(e) {
-    setIsMouseOver(false)
+
+  function Out(e) {
+    e.stopPropagation();
+    ulTag.current.childNodes[Index].style.backgroundColor = "rgb(255, 255, 255)"
   }
+  function setColor() {
+    ulTag.current.childNodes[Index].style.backgroundColor = "rgb(245, 245, 245)"
+  }
+  function removeColor() {
+    ulTag.current.childNodes[Index].style.backgroundColor = "rgb(255, 255, 255)"
+  }
+
+  function Close(e) { setIsMouseOver(false) }
   return (
     <>
       <div id={styles.chat_header}>
@@ -109,29 +123,28 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages} >
                 <ul ref={ulTag} id={styles.chatset_ul} onMouseLeave={Close}>
-                  {newChatList(messages, Open, Close)} {/* 채팅목록 */}
-                  {isMouseOver && <ChatModal modalPosition={modalPosition}></ChatModal>}
+                  {newChatList(messages, Open, Out)} {/* 채팅목록 */}
+                  {isMouseOver && <ChatModal modalPosition={modalPosition} setColor={setColor} removeColor={removeColor}></ChatModal>}
                 </ul>
               </div>
             </div>
           </section>
         )}
       </Dropzone>
-      <MyEditor scrollBottom={scrollBottom} roomId={_id}></MyEditor>
-      {/* <ChatInput scrollBottom={scrollBottom} roomId={_id}></ChatInput> */}
+      <ChatInput scrollBottom={scrollBottom} roomId={_id}></ChatInput>
     </>
   );
 }
 export default React.memo(Chat);
 
-function newChatList(messages, Open) {
+function newChatList(messages, Open, Out) {
   let newChatList = messages.map((message, index) => {
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
 
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
     return (
-      <li className={styles.chatset_li} key={index} onMouseEnter={Open}>
+      <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={Out}>
         <img className={styles.chatset_image} src={avatar} alt="아바타" />
         <div className={styles.chatset_message}>
           <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>

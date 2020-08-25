@@ -2,11 +2,11 @@ import React, { useState, useRef } from 'react';
 import {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier} from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import 'draft-js/dist/Draft.css';
-import "./MyEditor.css"
+import "./ChatInput.css"
 import { useSelector } from 'react-redux';
 
 let currentEditorState;
-function MyEditor({roomId, scrollBottom}) {
+function ChatInput({roomId, scrollBottom}) {
   let {userData} = useSelector(state=>state.user) 
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   const [editorState, setEditorState] = useState(EditorState.createEmpty()
@@ -90,7 +90,7 @@ function MyEditor({roomId, scrollBottom}) {
     </>
   );
 }
-export default MyEditor;
+export default ChatInput;
 
 // function onTab(e) {
 //   e.preventDefault();
