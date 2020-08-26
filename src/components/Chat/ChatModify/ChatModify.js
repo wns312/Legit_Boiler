@@ -59,6 +59,7 @@ function ChatModify({roomId}) {
 
 
   return (
+    <>
     <div className="modify-wrapper">
       <Editor 
         editorState={editorState} 
@@ -67,13 +68,14 @@ function ChatModify({roomId}) {
         ref={editor}
         keyBindingFn={keyBindingFn}
       />
-      <div className='modify-control'>
-        <button onClick={()=>{_onInlineClick('BOLD')}}>B</button>
-        <button onClick={()=>{_onInlineClick('ITALIC')}}>I</button>
-        <button onClick={()=>{_onInlineClick('UNDERLINE')}}>U</button>
-        <button className="submit" onClick={Send}>전송</button>
-      </div>
     </div>
+    <div className='modify-control'>
+      <button onClick={() => { _onInlineClick('BOLD') }}>B</button>
+      <button onClick={() => { _onInlineClick('ITALIC') }}>I</button>
+      <button onClick={() => { _onInlineClick('UNDERLINE') }}>U</button>
+      <button className="submit" onClick={Send}>전송</button>
+    </div>
+    </>
   );
 }
 export default ChatModify;
