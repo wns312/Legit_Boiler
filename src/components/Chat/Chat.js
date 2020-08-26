@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
 import ChatInput from "../ChatInput/ChatInput"
-import ChatModal from './ChatModal/ChatModal'
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -16,12 +15,7 @@ const Chat = ({handleAside}) => {
   let { roomTitle, _id} = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [messages, setMessages] = useState([]);
-  const [isMouseOver, setIsMouseOver] = useState(false);
-  const [Index, setIndex] = useState(false);
-
-  const [modalPosition, setModalPosition] = useState();
   let chat_messages = useRef();
-  let ulTag = useRef();
   
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
@@ -80,23 +74,6 @@ const Chat = ({handleAside}) => {
     // ulTag.current.scrollIntoView(false)
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
-  function Open(e) {
-    e.stopPropagation();
-    e.currentTarget.style.backgroundColor = "rgb(245, 245, 245)"
-    setIndex(e.currentTarget.getAttribute('index'))
-    let {scrollTop} = chat_messages.current
-    let {offsetTop, offsetLeft, offsetWidth} = e.currentTarget
-    setModalPosition({offsetLeft, offsetWidth, offsetHeight : offsetTop-scrollTop})
-    setIsMouseOver(true)
-  }
-  function setColor() {
-    ulTag.current.childNodes[Index].style.backgroundColor = "rgb(245, 245, 245)"
-  }
-  function removeColor() {
-    ulTag.current.childNodes[Index].style.backgroundColor = "rgb(255, 255, 255)"
-  }
-
-  function Close(e) { setIsMouseOver(false) }
   return (
     <>
       <div id={styles.chat_header}>
@@ -113,9 +90,8 @@ const Chat = ({handleAside}) => {
           <section className={styles.dropzone}>
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages} >
-                <ul ref={ulTag} id={styles.chatset_ul} onMouseLeave={Close}>
-                  {newChatList(messages, Open, removeColor)} {/* 채팅목록 */}
-                  {isMouseOver && <ChatModal modalPosition={modalPosition} setColor={setColor} removeColor={removeColor}></ChatModal>}
+                <ul id={styles.chatset_ul}>
+                  {newChatList(messages)} {/* 채팅목록 */}
                 </ul>
               </div>
             </div>
@@ -128,10 +104,10 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages, Open, removeColor) {
+function newChatList(messages) {
   return messages.map((message, index) => {
     return (
-      <ChatList message={message} index={index} Open={Open} removeColor={removeColor}/>
+      <ChatList message={message} index={index}/>
     )
   })
 }

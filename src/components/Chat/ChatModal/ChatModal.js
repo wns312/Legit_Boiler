@@ -1,10 +1,9 @@
 import React from 'react';
 import styles from'./ChatModal.module.css';
 
-const ChatModal = ({modalPosition, setColor,removeColor}) => {
-  let {offsetLeft, offsetWidth, offsetHeight} = modalPosition
+const ChatModal = () => {
   return (
-      <section className={styles.content} style={{top:offsetHeight-10, left : offsetLeft+offsetWidth-170}} onMouseOver={setColor} onMouseLeave={removeColor}>
+      <section className={styles.content}>
         <i className={`far fa-laugh ${styles.content__body}`}></i>
         <i className={`fas fa-edit ${styles.content__body}`}></i>
         <i className={`fas fa-trash-alt ${styles.content__body}`}></i>

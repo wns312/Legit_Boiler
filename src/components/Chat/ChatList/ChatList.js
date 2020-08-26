@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ChatList.module.css'
+import ChatModal from '../ChatModal/ChatModal'
 
-const ChatList = ({message, Open, index, removeColor}) => {
+const ChatList = ({message, index}) => {
+  const [isMouseOver, setIsMouseOver] = useState(false);
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
-
+    function Open() {
+      setIsMouseOver(true)
+    }
+    function Close(){
+      setIsMouseOver(false)
+    }
   return (
-    <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={removeColor}>
+    <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={Close}>
       <img className={styles.chatset_image} src={avatar} alt="아바타" />
-      <div className={styles.chatset_message}>
-        <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
-        {convertedMsg}
-      </div>
+      <div className={styles.chatset_name}>{userName} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
+      
+      <div className={styles.chatset_message}>{convertedMsg}</div>
+      {isMouseOver && <ChatModal ></ChatModal>}
     </li>
   );
 } 
