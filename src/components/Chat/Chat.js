@@ -70,8 +70,7 @@ const Chat = ({handleAside}) => {
     }
   }
   function scrollBottom() {
-    // scrollIntoView는 true일시 자신의 맨 위, false일시 자신의 맨 아래를 보여주게된다
-    // ulTag.current.scrollIntoView(false)
+    // ulTag.current.scrollIntoView(false) // scrollIntoView는 true일시 자신의 맨 위, false일시 자신의 맨 아래를 보여주게된다
     chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
   }
   return (
@@ -91,7 +90,7 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages} >
                 <ul id={styles.chatset_ul}>
-                  {newChatList(messages)} {/* 채팅목록 */}
+                  {newChatList(messages, nsSocket)} {/* 채팅목록 */}
                 </ul>
               </div>
             </div>
@@ -104,10 +103,10 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages) {
+function newChatList(messages, nsSocket) {
   return messages.map((message, index) => {
     return (
-      <ChatList message={message} index={index}/>
+      <ChatList message={message} nsSocket={nsSocket} key={index}/>
     )
   })
 }

@@ -41,3 +41,8 @@ p{
 .chatset_message img, video {
   max-width:50vw;
 }
+
+.deleted {
+  color : grey;
+  text-align: center;
+}

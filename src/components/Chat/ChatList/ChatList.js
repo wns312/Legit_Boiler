@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './ChatList.module.css'
 import ChatModal from '../ChatModal/ChatModal'
 
-const ChatList = ({message, index}) => {
+const ChatList = ({message, nsSocket}) => {
   const [isMouseOver, setIsMouseOver] = useState(false);
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
@@ -13,13 +13,17 @@ const ChatList = ({message, index}) => {
     function Close(){
       setIsMouseOver(false)
     }
+    function Delete() {
+      type="deleted"
+      nsSocket.emit("deleteMessage", {})
+    }
+
   return (
-    <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={Close}>
+    <li className={styles.chatset_li} onMouseEnter={Open} onMouseLeave={Close}>
       <img className={styles.chatset_image} src={avatar} alt="아바타" />
       <div className={styles.chatset_name}>{userName} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
-      
       <div className={styles.chatset_message}>{convertedMsg}</div>
-      {isMouseOver && <ChatModal ></ChatModal>}
+      {isMouseOver && <ChatModal message={message} Delete={Delete}></ChatModal>}
     </li>
   );
 } 
@@ -39,6 +43,10 @@ function convertMsg(text, type, filename) {
     case 'video/mp4':
       tag = <video src={text} width='400' controls></video>
       break;
+    case 'deleted':
+      tag = <strong className={styles.deleted}><i className="info circle icon"></i>삭제된 메시지</strong>
+      break;
+    
     default:
       tag = <a href={text} download>{filename}</a>
       break;
