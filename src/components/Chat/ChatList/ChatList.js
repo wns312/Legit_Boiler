@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './ChatList.module.css'
 import ChatModal from '../ChatModal/ChatModal'
 
-const ChatList = ({message, nsSocket}) => {
+const ChatList = ({message, nsSocket, roomId}) => {
   const [isMouseOver, setIsMouseOver] = useState(false);
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
@@ -13,9 +13,9 @@ const ChatList = ({message, nsSocket}) => {
     function Close(){
       setIsMouseOver(false)
     }
-    function Delete() {
+    function Delete() { 
       type="deleted"
-      nsSocket.emit("deleteMessage", {})
+      nsSocket.emit("newMessageToServer", {...message, type:"deleted", roomId})
     }
 
   return (
@@ -37,16 +37,15 @@ function convertMsg(text, type, filename) {
     case 'text':
       tag = <div dangerouslySetInnerHTML={{__html: text}}></div>
       break;
+    case 'deleted':
+      tag = <strong className={styles.deleted}><i className="info circle icon"></i>삭제된 메시지</strong>
+      break; 
     case 'image/png': case 'image/jpeg': case 'image/gif':
       tag = <img src={text} alt="이미지"></img>
       break;
     case 'video/mp4':
       tag = <video src={text} width='400' controls></video>
       break;
-    case 'deleted':
-      tag = <strong className={styles.deleted}><i className="info circle icon"></i>삭제된 메시지</strong>
-      break;
-    
     default:
       tag = <a href={text} download>{filename}</a>
       break;

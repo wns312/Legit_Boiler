@@ -237,8 +237,28 @@ module.exports = function (io) {
     })
 
     nsSocket.on('newMessageToServer', (data) => {//방에서 메시지를 받아서 '그 방으로' 메시지 보내기
-    sendMessageToClients(NS_io, nsSocket, data)
+    if(data.type === "deleted") {
+      deleteMessage(NS_io, nsSocket, data)
+    }else{
+      sendMessageToClients(NS_io, nsSocket, data)
+    }
     })
+  }
+
+  function deleteMessage(NS_io, nsSocket, data) {
+    let {text, type, time, userName, filename, avatar, roomId } = data
+    console.log(data);
+    RoomModel.findOneAndUpdate({ _id : roomId, "history.time" : time },  { $set: { "history.$.type": type } }, { new: true })
+    .exec()
+    .then((doc) => {
+      delete data.roomId;
+      console.log(data);
+      NS_io.to(roomId).emit("messageToClients", data);
+    })
+    .catch((err)=>{
+      nsSocket.emit('errorMsg', `오류가 발생했습니다 : ${err}`);
+    })
+
   }
 
   function leaveNS(NS_io, nsSocket, data) {

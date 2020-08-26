@@ -34,7 +34,14 @@ const Chat = ({handleAside}) => {
     });
     //메시지 수신
     nsSocket.on('messageToClients', (message) => {
-      setMessages(messages => [...messages, message]);
+      console.log("삭제메시지 : "+message._id);
+      if(message.type==="deleted") {
+        setMessages(messages => messages.map((msg)=>{
+          return (msg.time ===message.time ? message : msg)
+        }));
+      }else{
+        setMessages(messages => [...messages, message]);
+      }
       //스크롤부분 넣어주어야한다
       let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
       scrollTop+offsetHeight >(scrollHeight-200) && chat_messages.current.scrollTo(0,scrollHeight)
@@ -90,7 +97,7 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages} >
                 <ul id={styles.chatset_ul}>
-                  {newChatList(messages, nsSocket)} {/* 채팅목록 */}
+                  {newChatList(messages, nsSocket, _id)} {/* 채팅목록 */}
                 </ul>
               </div>
             </div>
@@ -103,10 +110,10 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages, nsSocket) {
+function newChatList(messages, nsSocket, _id) {
   return messages.map((message, index) => {
     return (
-      <ChatList message={message} nsSocket={nsSocket} key={index}/>
+      <ChatList message={message} nsSocket={nsSocket} key={index} roomId={_id}/>
     )
   })
 }
