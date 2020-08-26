@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import styles from './ChatList.module.css'
 import ChatModal from '../ChatModal/ChatModal'
+import ChatModify from '../ChatModify/ChatModify'
 
 const ChatList = ({message, nsSocket, roomId}) => {
   const [isMouseOver, setIsMouseOver] = useState(false);
+  const [isModify, setIsModify] = useState(false);
+  
     let { text, type, filename, time, userName, avatar } = message;
     const convertedDate = new Date(time).toLocaleTimeString();
     const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
@@ -17,14 +20,20 @@ const ChatList = ({message, nsSocket, roomId}) => {
       type="deleted"
       nsSocket.emit("newMessageToServer", {...message, type:"deleted", roomId})
     }
+    function Modify(){
+      setIsModify(true)
+    }
 
   return (
+    <>
+    {isModify ? <ChatModify roomId={roomId}></ChatModify> :     
     <li className={styles.chatset_li} onMouseEnter={Open} onMouseLeave={Close}>
       <img className={styles.chatset_image} src={avatar} alt="아바타" />
       <div className={styles.chatset_name}>{userName} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
       <div className={styles.chatset_message}>{convertedMsg}</div>
-      {isMouseOver && <ChatModal message={message} Delete={Delete}></ChatModal>}
-    </li>
+      {isMouseOver && <ChatModal  message={message} Modify={Modify} Delete={Delete}></ChatModal>}
+    </li>}
+    </>
   );
 } 
 

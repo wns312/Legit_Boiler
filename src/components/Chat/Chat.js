@@ -34,7 +34,6 @@ const Chat = ({handleAside}) => {
     });
     //메시지 수신
     nsSocket.on('messageToClients', (message) => {
-      console.log("삭제메시지 : "+message._id);
       if(message.type==="deleted") {
         setMessages(messages => messages.map((msg)=>{
           return (msg.time ===message.time ? message : msg)
