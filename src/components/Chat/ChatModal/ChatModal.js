@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from'./ChatModal.module.css';
-import { useRef } from 'react';
 
 const ChatModal = ({modalPosition, setColor,removeColor}) => {
   let {offsetLeft, offsetWidth, offsetHeight} = modalPosition

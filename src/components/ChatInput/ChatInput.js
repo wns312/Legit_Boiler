@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import {Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier} from 'draft-js';
+import {Editor, EditorState, RichUtils, getDefaultKeyBinding} from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import 'draft-js/dist/Draft.css';
 import "./ChatInput.css"

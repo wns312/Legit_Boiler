@@ -1,0 +1,41 @@
+
+.chatset_li {
+  display: grid;
+  padding : 6px 15px 6px 15px; /* 위 / 오 / 아래 / 왼 */
+  grid-template-columns: 48px 1fr;
+}
+.chatset_li:hover{
+  background-color: rgb(245, 245, 245);
+}
+
+.chatset_image {
+  display : block;
+  border-radius: 5px;
+  width: 45px;
+  height: 45px;
+  grid-column: 1;
+}
+
+.chatset_message {
+  grid-column: 2;
+  padding-left: 5px;
+}
+
+.chatset_name {
+  font-weight: 600;
+  padding-bottom : 4px
+}
+p{
+  line-height: 21px;
+  margin: 0;
+  padding : 0;
+}
+
+.chatset_time {
+  font-weight: 100;
+  color: grey;
+}
+
+.chatset_message img, video {
+  max-width:50vw;
+}

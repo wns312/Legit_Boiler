@@ -6,6 +6,7 @@ import ChatModal from './ChatModal/ChatModal'
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import ChatList from './ChatList/ChatList';
 
 const Chat = ({handleAside}) => {
   //방정보를 store에 넣어서 가져올 필요가 있어보임
@@ -14,7 +15,6 @@ const Chat = ({handleAside}) => {
   // member, _id,  namespace, nsEndpoint 도 있음
   let { roomTitle, _id} = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
-  const [amountOfUsers, setAmountOfUsers] = useState(0);
   const [messages, setMessages] = useState([]);
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [Index, setIndex] = useState(false);
@@ -44,10 +44,6 @@ const Chat = ({handleAside}) => {
       //스크롤부분 넣어주어야한다
       let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
       scrollTop+offsetHeight >(scrollHeight-200) && chat_messages.current.scrollTo(0,scrollHeight)
-    });
-    //인원수 추가
-    nsSocket.on('updateMembers', numberOfMembers => {
-      setAmountOfUsers(numberOfMembers);
     });
   }, [nsSocket]);
 
@@ -133,42 +129,13 @@ const Chat = ({handleAside}) => {
 export default React.memo(Chat);
 
 function newChatList(messages, Open, removeColor) {
-  let newChatList = messages.map((message, index) => {
-    let { text, type, filename, time, userName, avatar } = message;
-    const convertedDate = new Date(time).toLocaleTimeString();
-
-    const convertedMsg = convertMsg(text, type, filename);//switch문 이용해서 데이터 타입에 따라 다른 태그를 넣어줌
+  return messages.map((message, index) => {
     return (
-      <li className={styles.chatset_li} key={index} index={index} onMouseEnter={Open} onMouseLeave={removeColor}>
-        <img className={styles.chatset_image} src={avatar} alt="아바타" />
-        <div className={styles.chatset_message}>
-          <div className={styles.chatset_name}>{userName}<small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
-          {convertedMsg}
-        </div>
-      </li>
+      <ChatList message={message} index={index} Open={Open} removeColor={removeColor}/>
     )
   })
-  return newChatList
 }
 
-function convertMsg(text, type, filename) {
-  let tag = "";
-  switch (type) {
-    case 'text':
-      tag = <div dangerouslySetInnerHTML={{__html: text}}></div>
-      break;
-    case 'image/png': case 'image/jpeg': case 'image/gif':
-      tag = <img src={text} alt="이미지"></img>
-      break;
-    case 'video/mp4':
-      tag = <video src={text} width='400' controls></video>
-      break;
-    default:
-      tag = <a href={text} download>{filename}</a>
-      break;
-  }
-  return tag;
-}
 
 // joinRoom마지막에 검색창 기능추가 
 // <input type="text" id="search-box" placeholder="Search" onchange={handleSearch}/>

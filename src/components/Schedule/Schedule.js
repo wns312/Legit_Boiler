@@ -10,16 +10,14 @@ import {inputCurrentSchedule} from '../../_actions/chat_action'
 const localizer = momentLocalizer(moment)
 moment.locale('ko')
 
-
-
 function Schedule() {
-  let { userData } = useSelector(state => state.user)
+  // let { userData } = useSelector(state => state.user)
   let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
   let {_id, event} = currentSchedule
   const dispatch =useDispatch();
   const [Events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState();
-  const [dayLayoutAlgorithm, setdayLayoutAlgorithm] = useState("no-overlap");
+  const [dayLayoutAlgorithm] = useState("no-overlap");
 
   useEffect(() => {
     nsSocket.emit('joinSchedule', {_id});
