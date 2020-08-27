@@ -1,6 +1,7 @@
 .modify-wrapper {
   width : 80%;
-  height: 60px;
+  min-height: 80px;
+  height: auto;
   position: static;
   overflow-y : auto;
   border-style: solid;
