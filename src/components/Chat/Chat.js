@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
-import ChatInput from "../ChatInput/ChatInput"
+import ChatInput from "./ChatInput/ChatInput"
 import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const Chat = ({handleAside}) => {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   // member, _id,  namespace, nsEndpoint 도 있음
-  let { roomTitle, _id} = currentRoom; //roomindex를 버릴경우 여기서 에러남
+  let { roomTitle, _id, member} = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [messages, setMessages] = useState([]);
   let chat_messages = useRef();
@@ -56,9 +56,8 @@ const Chat = ({handleAside}) => {
     axios.post('/api/chat/uploadfiles', formData, config)
       .then((res) => {
         let { url, mimetype, filename, success } = res.data
-        let { name, image } = userData
         if(success){
-          nsSocket.emit('newMessageToServer', { NS_id : currentNs._id, roomId:_id, text: url, type: mimetype, filename, userName: name, userImg: image })
+          nsSocket.emit('newMessageToServer', { NS_id : currentNs._id, roomId:_id, text: url, type: mimetype, filename, userId : userData._id })
           setTimeout(()=>{scrollBottom()}, 300);
         }else{
           console.log(res)
@@ -96,7 +95,8 @@ const Chat = ({handleAside}) => {
             <div {...getRootProps()} className={styles.dropzone}>
               <div ref={chat_messages} id={styles.chat_messages} >
                 <ul id={styles.chatset_ul}>
-                  {newChatList(messages, nsSocket, _id)} {/* 채팅목록 */}
+                  {newChatList(messages, nsSocket, _id, member)} 
+                  {/* 채팅목록 */}
                 </ul>
               </div>
             </div>
@@ -109,10 +109,10 @@ const Chat = ({handleAside}) => {
 }
 export default React.memo(Chat);
 
-function newChatList(messages, nsSocket, _id) {
+function newChatList(messages, nsSocket, _id, member) {
   return messages.map((message, index) => {
     return (
-      <ChatList message={message} nsSocket={nsSocket} key={index} roomId={_id}/>
+      <ChatList message={message} nsSocket={nsSocket} key={index} roomId={_id} member={member}/>
     )
   })
 }

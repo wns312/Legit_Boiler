@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {Editor, EditorState, RichUtils, getDefaultKeyBinding} from 'draft-js';
 import { convertToHTML } from 'draft-convert';
-import './node_modules/draft-js/dist/Draft.css';
+import 'draft-js/dist/Draft.css';
 import "./ChatInput.css"
 import { useSelector } from 'react-redux';
 
@@ -51,8 +51,8 @@ function ChatInput({roomId, scrollBottom}) {
   function Send() {
     let text = convertToHTML(currentEditorState.getCurrentContent())
     if(text!=="<p></p>") {
-      let {name, image} = userData
-      nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, roomId ,text, type : "text", userName : name, userImg : image, filename : ""});
+      let {_id} = userData
+      nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, roomId ,text, type : "text", userId: _id, filename : ""});
       setEditorState(EditorState.createEmpty())
     }
     setTimeout(()=>{scrollBottom()}, 50);

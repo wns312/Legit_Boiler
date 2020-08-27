@@ -6,11 +6,10 @@ const roomSchema = mongoose.Schema({
   isDM : { type: Boolean },
   history: [// 채팅내용
     {
-      text: { type: String, required: true }, // 메시지본문
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
       type : {type: String, required: true}, // text / image / video
+      text: { type: String, required: true }, // 메시지본문
       time: { type: Date, required: true }, // 전송시간 (정렬할 때 쓰일 수도 있을 것)
-      userName: { type: String, required: true }, // 전송자 이름
-      avatar: { type: String, required: true }, // 유저이미지
       filename : {type: String}
     },
   ],

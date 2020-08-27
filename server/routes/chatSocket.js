@@ -246,7 +246,7 @@ module.exports = function (io) {
   }
 
   function deleteMessage(NS_io, nsSocket, data) {
-    let {text, type, time, userName, filename, avatar, roomId } = data
+    let {text, type, time, userId, filename, roomId } = data
     console.log(data);
     RoomModel.findOneAndUpdate({ _id : roomId, "history.time" : time },  { $set: { "history.$.type": type } }, { new: true })
     .exec()
@@ -445,11 +445,10 @@ module.exports = function (io) {
   }
 
   function sendMessageToClients(NS_io, nsSocket, data) {    
-    let {NS_id, roomId, text, type, userName, filename, userImg } = data
+    let {NS_id, roomId, text, type, userId, filename } = data
     const fullMsg = { //메시지 객체
-      text, type, userName, filename,
+      text, type, userId, filename,
       time: Date.now(),
-      avatar: userImg
     };
     RoomModel.findOneAndUpdate({ namespace : NS_id, _id: roomId },  { $push: { history: fullMsg } }, { new: true })
     .exec()
@@ -458,11 +457,10 @@ module.exports = function (io) {
         console.log(doc.history[doc.history.length-1]);
         NS_io.to(roomId).emit("messageToClients", fullMsg); //방이름을 to에 넣어서 전송. 이때 io인 thisNs로 전송
       }else{
-        nsSocket.emit('errorMsg', `메시지 전송에 실패했습니다 : ${userName} : ${text}`);
+        nsSocket.emit('errorMsg', `메시지 전송에 실패했습니다 : ${userId} : ${text}`);
       }
     })
     .catch((err)=>{
       nsSocket.emit('errorMsg', `오류가 발생했습니다 : ${err}`);
     })
-    
   }
