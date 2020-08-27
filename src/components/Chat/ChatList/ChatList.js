@@ -23,13 +23,16 @@ const ChatList = ({message, nsSocket, roomId, member}) => {
     function Modify(){
       setIsModify(true)
     }
+    function ModifyClose(){
+      setIsModify(false)
+    }
 
   let user = member.find((ele)=>{
     return ele._id ===userId
   })
   return (
     <>
-    {isModify ? <ChatModify roomId={roomId}></ChatModify> :     
+    {isModify ? <ChatModify roomId={roomId} Close={ModifyClose}></ChatModify> :     
     <li className={styles.chatset_li} onMouseEnter={Open} onMouseLeave={Close}>
       <img className={styles.chatset_image} src={user.image} alt="아바타" />
       <div className={styles.chatset_name}>{user.name} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>

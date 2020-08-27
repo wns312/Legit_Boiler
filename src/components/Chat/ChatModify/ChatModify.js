@@ -6,7 +6,7 @@ import "./ChatModify.css"
 import { useSelector } from 'react-redux';
 
 let currentEditorState;
-function ChatModify({roomId}) {
+function ChatModify({roomId, Close}) {
   let {userData} = useSelector(state=>state.user) 
   let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
   const [editorState, setEditorState] = useState(EditorState.createEmpty()
@@ -18,11 +18,6 @@ function ChatModify({roomId}) {
     setEditorState(e)
   }
 
-  function _onBlockClick(style) {
-    onChange(RichUtils.toggleBlockType(editorState, style));
-    setTimeout(() => { focus() }, 20);
-    
-  }
   function _onInlineClick(style) {
     onChange(RichUtils.toggleInlineStyle(editorState, style));
     setTimeout(() => { focus() }, 20);
@@ -56,6 +51,7 @@ function ChatModify({roomId}) {
       setEditorState(EditorState.createEmpty())
     }
   }
+  
 
 
   return (
@@ -68,13 +64,16 @@ function ChatModify({roomId}) {
         ref={editor}
         keyBindingFn={keyBindingFn}
       />
+
     </div>
     <div className='modify-control'>
-      <button onClick={() => { _onInlineClick('BOLD') }}>B</button>
-      <button onClick={() => { _onInlineClick('ITALIC') }}>I</button>
-      <button onClick={() => { _onInlineClick('UNDERLINE') }}>U</button>
-      <button className="submit" onClick={Send}>전송</button>
+      <span onClick={() => { _onInlineClick('BOLD') }}>B</span>
+      <span onClick={() => { _onInlineClick('ITALIC') }}>I</span>
+      <span onClick={() => { _onInlineClick('UNDERLINE') }}>U</span>
+      <span className="submit" onClick={Close} >취소</span>
+      <span className="submit" onClick={Send} >전송</span>
     </div>
+
     </>
   );
 }

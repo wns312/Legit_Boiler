@@ -3,7 +3,7 @@
   display: grid;
   padding : 6px 15px 12px 15px; /* 위 / 오 / 아래 / 왼 */
   grid-template-columns: 46px 1fr auto;
-  grid-template-rows: 23px  1fr;
+  grid-template-rows: 23px 1fr;
 }
 .chatset_li:hover{
   background-color: rgb(245, 245, 245);
@@ -19,9 +19,10 @@
 }
 
 .chatset_message {
-  grid-column: 2;
+  grid-column: 2/4;
   grid-row: 2;
   padding-left: 5px;
+  word-break:break-all;
 }
 
 .chatset_name {

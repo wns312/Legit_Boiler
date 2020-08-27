@@ -72,13 +72,13 @@ function ChatInput({roomId, scrollBottom}) {
       />
     </div>
     <div className='editor-control'>
-    <button onClick={()=>{_onBlockClick('header-one')}}>H1</button>
+    {/* <button onClick={()=>{_onBlockClick('header-one')}}>H1</button>
     <button onClick={()=>{_onBlockClick('header-two')}}>H2</button>
     <button onClick={()=>{_onBlockClick('header-three')}}>H3</button>
     <button onClick={()=>{_onBlockClick('header-four')}}>H4</button>
     <button onClick={()=>{_onBlockClick('header-five')}}>H5</button>
     <button onClick={()=>{_onBlockClick('header-six')}}>H6</button>
-    <button onClick={()=>{_onBlockClick('blockquote')}}>Blockquote</button>
+    <button onClick={()=>{_onBlockClick('blockquote')}}>Blockquote</button> */}
     <button onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</button>
     <button onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</button>
     <button onClick={()=>{_onInlineClick('BOLD')}}>B</button>
