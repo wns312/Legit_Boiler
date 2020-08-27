@@ -1,7 +1,6 @@
 .editor-wrapper {
   width : 100%;
-  min-height: 65px;
-  height: auto;
+  height: 100%;
   position: static;
   overflow-y : auto;
   border-style: solid;

@@ -1,7 +1,7 @@
 .modify-wrapper {
   width : 80%;
-  min-height: 80px;
-  height: auto;
+  min-height: 65px;
+  height : 100%;
   position: static;
   overflow-y : auto;
   border-style: solid;
@@ -17,7 +17,7 @@
   grid-column : 2;
   grid-row : 2;
   width : 80%;
-  height: 35px;
+  height: 34px;
   border-style: solid;
   border-radius: 0 0 5px 5px;
   border-width : 0px 2px 2px 2px;
@@ -51,7 +51,7 @@
 
 .public-DraftEditor-content {
   position: relative;
-  height: 100%;
+  height: 65px;
 }
 /* 여기까지가 타자 한줄한줄 이전부분 */
 
