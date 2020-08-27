@@ -32,7 +32,7 @@ const ChatList = ({message, nsSocket, roomId, member}) => {
   })
   return (
     <>
-    {isModify ? <ChatModify roomId={roomId} Close={ModifyClose}></ChatModify> :     
+    {isModify ? <ChatModify message={message} roomId={roomId} Close={ModifyClose}></ChatModify> :     
     <li className={styles.chatset_li} onMouseEnter={Open} onMouseLeave={Close}>
       <img className={styles.chatset_image} src={user.image} alt="아바타" />
       <div className={styles.chatset_name}>{user.name} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
@@ -52,8 +52,11 @@ function convertMsg(text, type, filename) {
     case 'text':
       tag = <div dangerouslySetInnerHTML={{__html: text}}></div>
       break;
+    case 'text/modified':
+      tag = <><div className={styles.modified}>&nbsp;(수정됨)</div><div dangerouslySetInnerHTML={{__html: text}}></div></>
+      break;  
     case 'deleted':
-      tag = <strong className={styles.deleted}><i className="info circle icon"></i>삭제된 메시지</strong>
+      tag = <strong className={styles.deleted}>&nbsp;<i className="info circle icon"></i>삭제된 메시지</strong>
       break; 
     case 'image/png': case 'image/jpeg': case 'image/gif':
       tag = <img src={text} alt="이미지"></img>

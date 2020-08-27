@@ -6,9 +6,8 @@ import "./ChatModify.css"
 import { useSelector } from 'react-redux';
 
 let currentEditorState;
-function ChatModify({roomId, Close}) {
-  let {userData} = useSelector(state=>state.user) 
-  let {currentNs, nsSocket} = useSelector(state=>state.chatInfo)
+function ChatModify({message, roomId, Close}) {
+  let {nsSocket} = useSelector(state=>state.chatInfo)
   const [editorState, setEditorState] = useState(EditorState.createEmpty()
   );
   let editor = useRef();
@@ -46,9 +45,9 @@ function ChatModify({roomId, Close}) {
   function Send() {
     let text = convertToHTML(currentEditorState.getCurrentContent())
     if(text!=="<p></p>") {
-      let {name, image} = userData
-      nsSocket.emit("newMessageToServer", { NS_id : currentNs._id, roomId ,text, type : "text", userName : name, userImg : image, filename : ""});
+      nsSocket.emit("newMessageToServer", {...message, text : text, type : "text/modified" ,roomId: roomId});
       setEditorState(EditorState.createEmpty())
+      Close()
     }
   }
   

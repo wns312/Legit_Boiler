@@ -5,8 +5,6 @@ import { useSelector } from 'react-redux';
 const ChatModal = ({message, Modify, Delete}) => {
   let { _id } = useSelector(state => state.user.userData)
   let {userId} = message
-  console.log(userId)
-  console.log(_id);
   return (
     <div className={styles.content_wrapper}>
       <section className={styles.content}>
