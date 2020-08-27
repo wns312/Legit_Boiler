@@ -6,7 +6,7 @@
 /* 모달컨텐츠 */
 .content {
   color: rgb(26, 26, 26);
-  background-color: rgb(248, 248, 246);
+  background-color: rgb(255, 255, 255);
   /* 여길 relative로 적어주어야 중앙정렬됨 */
   position : relative; 
   width: 100%;
@@ -28,12 +28,12 @@
 .content__body{
   flex : 1;
   font-size: 1.1rem;
-  padding : 12px 14px 0 15px ;
+  padding : 12px 13px 0 13.5px ;
   margin : 1px
 }
 
 .content__body:hover{
-  background-color: rgb(223, 223, 223);
+  background-color: rgb(245, 245, 245);
 }
 
 .hidden {

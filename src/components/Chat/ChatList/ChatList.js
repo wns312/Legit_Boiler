@@ -34,8 +34,7 @@ const ChatList = ({message, nsSocket, roomId, member}) => {
       <img className={styles.chatset_image} src={user.image} alt="아바타" />
       <div className={styles.chatset_name}>{user.name} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
       <div className={styles.chatset_message}>{convertedMsg}</div>
-      <ChatModal  message={message} Modify={Modify} Delete={Delete}></ChatModal>
-      {/* {isMouseOver && <ChatModal  message={message} Modify={Modify} Delete={Delete}></ChatModal>} */}
+      {isMouseOver && <ChatModal  message={message} Modify={Modify} Delete={Delete}></ChatModal>}
     </li>}
     </>
   );
