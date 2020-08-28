@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { message } from "antd";
 import { Icon } from 'semantic-ui-react'
-import {CreateRoom, CreateDM, ModalMenu, } from "../modals";
+import {CreateRoom, CreateDM, ModalMenu } from "../modals";
 import {useDispatch, useSelector} from 'react-redux';
 import {inputSocket, inputNsList, inputRoomList, inputCurrentNs, inputCurrentRoom, inputScheduleList, inputCurrentSchedule} from '../../_actions/chat_action'
 import styles from './Rooms.module.css';
@@ -140,7 +140,9 @@ export default Rooms;
 const Schedule = ({isAdmin, getScheduleList}) => {
   return (
     <section id={styles.body_schedule}>
-    <strong>&nbsp;&emsp;Schedule {isAdmin}</strong>
+    <div className={styles.body_listname}>
+      <strong>Schedule {isAdmin}</strong><i className='fas fa-plus'/>
+    </div>
     <ul>
       {getScheduleList()}
     </ul>
@@ -151,7 +153,9 @@ const Schedule = ({isAdmin, getScheduleList}) => {
 const Channel = ({getroomList}) => {
   return (
     <section id={styles.body_channel}>
-    <strong>&nbsp;&emsp;Channels &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;<CreateRoom><i className='fas fa-plus'/></CreateRoom></strong>
+    <div className={styles.body_listname}>
+      <strong>Channels</strong><CreateRoom><i className='fas fa-plus'/></CreateRoom>
+    </div>
     <ul>
       {getroomList()}{/* 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
     </ul>
@@ -162,7 +166,9 @@ const Channel = ({getroomList}) => {
 const DM = ({getdmList}) => {
   return (
     <section id={styles.body_directmessage}>
-    <strong>&nbsp;&emsp;Direct Messages &emsp;&emsp;&ensp;&ensp;<CreateDM><i className='fas fa-plus'/></CreateDM></strong>
+    <div className={styles.body_listname}>
+      <strong>Direct Messages</strong><CreateDM><i className='fas fa-plus'/></CreateDM>
+    </div>
     <ul>
       {getdmList()}{/* 마찬가지로 방데이터가 있을 때 Rooms컴포넌트를 로드하므로 괜찮음 */}
       {/*  currentNs가 있을때만 열리게하고싶은데 조건걸면 ns초대할때 터짐 */}

@@ -61,7 +61,7 @@ const Namespaces = (props) => {
       let {nsTitle} = element;
       return (
         <li key={index}>
-          <p className="namespace_icon" title={nsTitle} onClick={()=>{handleNsList(element)}}>{nsTitle.toUpperCase()[0]}</p>
+          <div className="namespace_icon" title={nsTitle} onClick={()=>{handleNsList(element)}}>{nsTitle.toUpperCase()[0]}</div>
         </li>
       )
     })

@@ -49,11 +49,11 @@ header {
   border-style: solid;
   border-width: 3px;
   border-radius: 11px;
-  padding-top: 2.5px;
   width: 40px;
   height: 40px;
   font-size: 19px;
   font-weight: 600;
+  padding : 5.5px 1px 0 0;
 }
 
 .namespace_icon-noborder {
@@ -143,9 +143,9 @@ aside {
   aside {
     display: none;
   }
-  /* #list{
+  #list{
     display: none;
-  } */
+  }
   .sidebar_iconright {
     display: block;
   }

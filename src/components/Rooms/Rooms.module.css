@@ -28,6 +28,19 @@
   overflow-y: auto;
   overflow-x: auto;
 }
+.body_listname {
+  padding: 0 0 10px 20px;
+  display: grid;
+  grid-template-columns: 1fr 35px;
+}
+
+.body_listname strong {
+  flex : 1
+}
+.body_listname i {
+  flex : 2
+}
+
 
 #body_schedule{
   grid-row : 2;

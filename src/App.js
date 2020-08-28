@@ -18,7 +18,7 @@ function App() {
         <Route exact path="/register" component={Auth(RegisterPage, false)}/>
         <Route exact path="/chat" component={Auth(Namespaces, true)}/>
         <Route exact path="/usermodify" component={Auth(UserModify, true)}/>          
-        <Route path="/valid" component={Auth(Valid,true)} />
+        <Route exact path="/valid/:id" component={Auth(Valid,true)} />
         <Route exact path="/invalid" component={Auth(Invalid,true)}/>
       </Switch>
     </Router>
