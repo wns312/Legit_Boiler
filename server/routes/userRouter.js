@@ -27,32 +27,14 @@ router.post("/login", (req, res) => {
           .json({ loginSuccess: true, _id, name, image, role, email })
       });
     });
-    
     if (!user.isVerified) {
-      const Verifiedtoken = jwt.sign(user._id.toHexString(), "registerToken");
-      const url2 = `http://localhost:3000/valid/${Verifiedtoken}`;
-      if (err) {
-        return res.json({ success: false, err });
-      } else {
-        console.log(user.email);
-        let transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {user: "bitbitlegit@gmail.com", pass: "!bit9000",
-          },
-        });
-        const mailOptions = {
-          from: "bitbitlegit@gmail.com", to: user.email,
-          subject: "안녕하세요, 이메일 인증을 해주세요.",
-          html: `Please, confirm your email by clicking the following link: <a href=${url2}>${url2}</a>`,
-        };
-        transporter.sendMail(mailOptions, function (error, info) {});
-      }
+      if (err) res.json({ success: false, err });
+      else {sendingEmail(user); }
     }
   })
   .catch((err)=>{
     return res.status(400).send(err);
   })
-
 });
 
 router.get('/auth', auth, (req, res) => {
@@ -83,18 +65,7 @@ router.get("/getValidation", auth, (req, res) => {
 
 router.get("/resend", auth, (req, res) => {
   User.findOne({ email: req.user.email }, (err, user) => {
-    const Verifiedtoken = jwt.sign(user._id.toHexString(), "registerToken");
-    const url2 = `http://localhost:3000/valid/${Verifiedtoken}`;
-
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: "bitbitlegit@gmail.com",  pass: "!bit9000" },
-    });
-    const mailOptions = {
-      from: "bitbitlegit@gmail.com", to: user.email, subject: "안녕하세요, 이메일 인증을 해주세요.",
-      html: `Please, confirm your email by clicking the following link: <a href=${url2}>${url2}</a>`,
-    };
-    transporter.sendMail(mailOptions, function (error, info) {});
+    sendingEmail(user);
     return res.status(200).send({ success: true });
   })
   .catch((err)=>{
@@ -106,20 +77,27 @@ router.post("/modify", auth, (req, res)=>{
   let {user, body} = req
   let {password, image, name} = body
   User.findOne({ _id: user.id }, (err, user) => {
-  if (err) return res.json({ success: false, err });
-  User.updateOne(
-    {_id: user._id},
-    { $set: { password, image, name } },
-    (err,userInfo)=>{
+    if (err) return res.json({ success: false, err });
+    User.updateOne( {_id: user._id}, { $set: { password, image, name } }, (err,userInfo)=>{
       if(err) return res.json({success: false, err})
-      return res.status(200).send({
-        success:true,
-        user : userInfo,
-        })
+      return res.status(200).send({ success:true, user : userInfo })
       }
     )
   })
 })
 
-
 module.exports =router
+
+function sendingEmail(user) {
+  const Verifiedtoken = jwt.sign(user._id.toHexString(), "registerToken");
+  const url2 = `http://localhost:3000/valid/${Verifiedtoken}`;
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: "bitbitlegit@gmail.com",  pass: "!bit9000" },
+  });
+  const mailOptions = {
+    from: "bitbitlegit@gmail.com", to: user.email, subject: "안녕하세요, 이메일 인증을 해주세요.",
+    html: `Please, confirm your email by clicking the following link: <a href=${url2}>${url2}</a>`,
+  };
+  transporter.sendMail(mailOptions, function (error, info) {});
+}
