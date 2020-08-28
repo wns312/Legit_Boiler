@@ -21,10 +21,9 @@ app.use(express.json({ extended: true })); // app.use(bodyParser.json());
 //쿠키파서 사용설정
 app.use(cookieParser());
 
-const userRouter = require('./routes/user');
+const userRouter = require('./routes/userRouter');
 const chatRouter = require('./routes/chatRouter');
 const chatSocket = require('./routes/chatSocket');
-const scheduleRouter = require('./routes/schedule');
 
 const port = 9000
 server.listen(port, ()=>{
@@ -36,4 +35,3 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/users',userRouter);
 app.use('/api/chat',chatRouter(io));
 app.use('/api/chatSocket', chatSocket(io)); // 소켓처리 담당
-app.use('/api/event', scheduleRouter(io, mongoose)); // 소켓처리 담당

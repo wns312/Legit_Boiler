@@ -1,7 +1,4 @@
 const express = require('express');
-const { NsModel } = require('../models/NsModel');
-const { RoomModel } = require("../models/RoomModel");
-const { User } = require("../models/User");
 const multer = require('multer');
 const fs = require('fs');
 
@@ -13,12 +10,10 @@ let storage = multer.diskStorage({ // 파일이 저장될 스토리지경로와 
     callback(null, `${Date.now()}_${file.originalname}`);
   }
 })
-
 const upload = multer({storage : storage}).single("file"); // 지정된 storage로 upload함수 생성
 
 module.exports = function (io) {
   const router = express.Router();
-
   //파일 로컬 저장부분
   router.post('/uploadfiles',(req, res)=>{
     upload(req, res, (error)=>{
@@ -29,7 +24,6 @@ module.exports = function (io) {
       return res.json({success : true, url, mimetype, filename});
     })
   })
-
   return router
 } 
 
