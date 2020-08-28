@@ -29,11 +29,7 @@ const RegisterPage = (props) => {
     if(Password!==Confirm) {
       return alert("비밀번호와 비밀번호확인이 일치하지 않습니다")
     }
-    let body = {
-      email : Email,
-      name : Name,
-      password : Password
-    }
+    let body = {email : Email, name : Name, password : Password }
     dispatch(registerUser(body))
     .then(response=>{
       //payload는 이미 {success: boolean}을 가리키므로 Success라고 하면안됨
@@ -61,7 +57,6 @@ const RegisterPage = (props) => {
         <Form.Input fluid icon='user' iconPosition='left' placeholder='Name' value={Name} onChange={onNameHandler}/>
         <Form.Input fluid icon='lock' iconPosition='left' placeholder='Password' type='password' value={Password} onChange={onPasswordHandler}/>
         <Form.Input fluid icon='lock' iconPosition='left' placeholder='Confirm Password' type='password' value={Confirm} onChange={onConfirmHandler}/>
-
         <Button color='teal' fluid size='large'>
           Sign In
         </Button>

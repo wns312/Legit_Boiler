@@ -9,10 +9,10 @@ function Valid(props) {
       console.log(response.data)
       if(response.data.success){
         alert("인증이 완료되었습니다.")
-        props.history.push("/")
+        props.history.replace("/")
       } else {
         alert("비정상적인 경로입니다.")
-        props.history.push("/")
+        props.history.replace("/")
       }
     })
   },[props.history]);
