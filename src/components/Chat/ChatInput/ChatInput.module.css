@@ -1,4 +1,4 @@
-.editor-wrapper {
+.editor_wrapper {
   width : 100%;
   height: 100%;
   position: static;
@@ -11,7 +11,7 @@
   grid-row : 3;
 }
 
-.editor-control {
+.editor_control {
   grid-column : 2;
   grid-row : 4;
   width : 100%;
@@ -24,7 +24,7 @@
   justify-content: center;
 }
 
-.editor-control button{
+.editor_control button{
   flex : 1;
   margin : 2px;
 }
@@ -32,19 +32,6 @@
   flex : 1;
 }
 
-
-.public-DraftEditor-content {
-  position: relative;
-  height: 100%;
-}
-/* 여기까지가 타자 한줄한줄 이전부분 */
-
-/* 블록타입은 div태그자체를 다른것으로 바꿈 */
-.public-DraftStyleDefault-block {
-}
-/* ltr타입은스타일로 span을 바꿈 */
-.public-DraftStyleDefault-ltr {
-}
 blockquote {
   background-color : grey;
   margin : 0 0 5px 0;

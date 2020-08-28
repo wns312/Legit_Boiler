@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import {Editor, EditorState, RichUtils, getDefaultKeyBinding} from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import 'draft-js/dist/Draft.css';
-import "./ChatInput.css"
+import './Draft.css';
+import styles from "./ChatInput.module.css"
 import { useSelector } from 'react-redux';
 
 let currentEditorState;
@@ -62,7 +63,7 @@ function ChatInput({roomId, scrollBottom}) {
 
   return (
     <>
-    <div className="editor-wrapper">
+    <div className={styles.editor_wrapper}>
       <Editor 
         editorState={editorState} 
         onChange={(e)=>{onChange(e)}}
@@ -71,7 +72,7 @@ function ChatInput({roomId, scrollBottom}) {
         keyBindingFn={keyBindingFn}
       />
     </div>
-    <div className='editor-control'>
+    <div className={styles.editor_control}>
     {/* <button onClick={()=>{_onBlockClick('header-one')}}>H1</button>
     <button onClick={()=>{_onBlockClick('header-two')}}>H2</button>
     <button onClick={()=>{_onBlockClick('header-three')}}>H3</button>
@@ -85,7 +86,7 @@ function ChatInput({roomId, scrollBottom}) {
     <button onClick={()=>{_onInlineClick('ITALIC')}}>I</button>
     <button onClick={()=>{_onInlineClick('UNDERLINE')}}>U</button>
     <button onClick={()=>{_onInlineClick('CODE')}}>M</button>
-    <button className="submit" onClick={Send}>전송</button>
+    <button className={styles.submit} onClick={Send}>전송</button>
     </div>
     </>
   );

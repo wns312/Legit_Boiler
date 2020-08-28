@@ -1,4 +1,4 @@
-.modify-wrapper {
+.modify_wrapper {
   width : 80%;
   min-height: 65px;
   height : 100%;
@@ -10,10 +10,10 @@
   border-width : 2px 2px 1px 2px;
   grid-column : 2;
   grid-row : 3;
-  margin : 6px 15px 0 15px;
+  margin : 6px 15px 0 20px;
 }
 
-.modify-control {
+.modify_control {
   grid-column : 2;
   grid-row : 2;
   width : 80%;
@@ -25,10 +25,10 @@
   display : flex;
   justify-content: flex-end;
   align-items: stretch;
-  margin : 0 15px 12px 15px;
+  margin : 0 15px 12px 20px;
 }
 
-.modify-control span{
+.modify_control span{
   flex : 0 0 40px;
   margin : 3px;
   padding : 3px 0 0 0;
@@ -40,27 +40,10 @@
   justify-self: flex-end;
 }
 
-.modify-control span:hover{
-
-}
 .submit {
   flex : 1;
 }
 
-
-
-.public-DraftEditor-content {
-  position: relative;
-  height: 65px;
-}
-/* 여기까지가 타자 한줄한줄 이전부분 */
-
-/* 블록타입은 div태그자체를 다른것으로 바꿈 */
-.public-DraftStyleDefault-block {
-}
-/* ltr타입은스타일로 span을 바꿈 */
-.public-DraftStyleDefault-ltr {
-}
 blockquote {
   background-color : grey;
   margin : 0 0 5px 0;

@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import {Editor, EditorState, RichUtils, getDefaultKeyBinding} from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import 'draft-js/dist/Draft.css';
-import "./ChatModify.css"
+import './Draft.css';
+import styles from "./ChatModify.module.css"
 import { useSelector } from 'react-redux';
 
 let currentEditorState;
@@ -55,7 +56,7 @@ function ChatModify({message, roomId, Close}) {
 
   return (
     <>
-    <div className="modify-wrapper">
+    <div className={styles.modify_wrapper}>
       <Editor 
         editorState={editorState} 
         onChange={(e)=>{onChange(e)}}
@@ -65,7 +66,7 @@ function ChatModify({message, roomId, Close}) {
       />
 
     </div>
-    <div className='modify-control'>
+    <div className={styles.modify_control}>
       <span onClick={() => { _onInlineClick('BOLD') }}>B</span>
       <span onClick={() => { _onInlineClick('ITALIC') }}>I</span>
       <span onClick={() => { _onInlineClick('UNDERLINE') }}>U</span>
