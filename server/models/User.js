@@ -39,6 +39,15 @@ const userSchema = mongoose.Schema({
   tokenExp: {// 토큰 유효시간
     type: Number,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  // isSns: {
+  //   type: Boolean,
+  //   default: false,
+  // },
+
 }, {timestamps: true});
 
 userSchema.pre('save', function (next) {
@@ -56,6 +65,26 @@ userSchema.pre('save', function (next) {
     next();
   }
 })
+//새로 추가된 것
+userSchema.pre("updateOne", function (next) {
+  let user = this;
+  if (user._update.$set.password) {
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+      if (err) return next(err);
+      bcrypt.hash(user._update.$set.password, salt, function (err, hash) {
+        if (err) return next(err);
+        user._update.$set.password = hash;
+        console.log(hash);
+        next();
+      });
+    });             
+  } else if(user._update.$set.image){ //이미지를 바꿀떄
+    next();
+  }
+});
+
+
+
 
 
 userSchema.methods.comparePassword = function (plainPassword, callback) {
@@ -66,11 +95,10 @@ userSchema.methods.comparePassword = function (plainPassword, callback) {
 };
 
 userSchema.methods.generateToken = function (callback) {
-  let user = this; JSON.stringify()
+  let user = this; 
   let token = jwt.sign(user._id.toHexString(), "secretToken");
   user.token = token;
   user.save(function (err, user) {
-
     if (err) return callback(err);
     callback(null, user);
   });
@@ -82,7 +110,7 @@ userSchema.statics.findByToken = function (token, callback) {
   //토큰을 복호화한다.
   jwt.verify(token, "secretToken", function (err, decoded) {//복호화 메소드
     //유저아이디로 유저를 찾고, 클라이언트에서 가져온 토큰을 비교
-    user.findOne({ "_id": decoded, "token": token }, (err, user) => {
+    user.findOne({ "_id": decoded, token }, (err, user) => {
       if (err) return callback(err);
       callback(null, user)
     })

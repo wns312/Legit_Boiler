@@ -6,6 +6,8 @@ import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import Namespaces from './components/Namespaces/Namespaces';
 import UserModify from './components/UserModify/UserModify';
+import Invalid from './components/Invalid/Invalid';
+import Valid from './components/Valid/Valid';
 import Auth from "./hoc/auth"
 function App() {
   return (
@@ -15,7 +17,9 @@ function App() {
         <Route exact path="/login" component={Auth(LoginPage, false)}/>
         <Route exact path="/register" component={Auth(RegisterPage, false)}/>
         <Route exact path="/chat" component={Auth(Namespaces, true)}/>
-        <Route exact path="/usermodify" component={Auth(UserModify, true)}/>
+        <Route exact path="/usermodify" component={Auth(UserModify, true)}/>          
+        <Route path="/valid" component={Auth(Valid,true)} />
+        <Route exact path="/invalid" component={Auth(Invalid,true)}/>
       </Switch>
     </Router>
   );

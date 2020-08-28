@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from "react-redux"
-import {registerUser} from '../../_actions/user_action'
+import { registerUser, loginUser } from '../../_actions/user_action'
 import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 import './RegisterPage.css'
 const RegisterPage = (props) => {
@@ -26,7 +26,6 @@ const RegisterPage = (props) => {
 
   function onSubmitHandler(event) {
     event.preventDefault();
-
     if(Password!==Confirm) {
       return alert("비밀번호와 비밀번호확인이 일치하지 않습니다")
     }
@@ -39,9 +38,14 @@ const RegisterPage = (props) => {
     .then(response=>{
       //payload는 이미 {success: boolean}을 가리키므로 Success라고 하면안됨
       if(response.payload.success){
-        props.history.push('/login');
+        dispatch(loginUser(body)).then((response) => {
+          if (response.payload.loginSuccess) {
+            props.history.replace("/invalid");
+          } 
+        });
       }else{
         alert("Error")
+        console.log("에러메시지 : ",response.payload)
       }
     }) 
   }
