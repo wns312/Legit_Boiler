@@ -180,7 +180,9 @@ module.exports = function (io) {
       .populate('owner', 'name email image')
       .exec()
       .then((doc)=>{
-        return Event.find({scheduler : _id}).exec()
+        return Event.find({scheduler : _id})
+        .populate('owner', 'name email image')
+        .exec()
       })
       .then((doc)=>{
         NS_io.to(_id).emit('updateSchedule', doc)
