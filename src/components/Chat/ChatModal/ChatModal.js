@@ -16,5 +16,5 @@ const ChatModal = ({message, Modify, Delete}) => {
     </div>
   );
 };
-
+ 
 export default ChatModal;
