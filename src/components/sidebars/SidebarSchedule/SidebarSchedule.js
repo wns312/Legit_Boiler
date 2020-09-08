@@ -5,8 +5,10 @@ import "./react-datepicker.css";
 import ko from 'date-fns/locale/ko'; 
 registerLocale('ko', ko);
 
-const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) => {
-  let {_id, title, desc, start, end} = currentEvent
+const SidebarSchedule = ({nsSocket, ScheduleId, userId, currentEvent, setCurrentEvent}) => {
+  let {_id, title, desc, start, end, owner} = currentEvent
+  console.log(owner._id);
+  console.log(userId);
 
   const [Id, setId] = useState(_id);
   const [Title, setTitle] = useState(title);
@@ -51,9 +53,17 @@ const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) 
       </section>
       {/* 일정내용 */}
       <section id={styles.body}>
-        <input id={styles.event_title} placeholder="제목" value={Title} onChange={handleInput}></input>
+        {
+          owner._id===userId 
+            ? <input id={styles.event_title} placeholder="제목" value={Title} onChange={handleInput}></input> 
+            : <input id={styles.event_title} placeholder="제목" value={Title} onChange={handleInput}  readOnly></input>
+        }
         <hr/>
-        <textarea id={styles.event_body} placeholder="내용" value={Desc} onChange={handletextArea}></textarea>
+        {
+          owner._id===userId 
+            ? <textarea id={styles.event_body} placeholder="내용" value={Desc} onChange={handletextArea}></textarea>
+            : <textarea id={styles.event_body} placeholder="내용" value={Desc} onChange={handletextArea} readOnly></textarea>
+        }
         <hr/>
       </section>
       {/* 날짜 설정부분 */}
@@ -63,14 +73,22 @@ const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) 
         </section>
         <section id={styles.date_body}>
           <div id={styles.date_start}>
-            <DatePicker locale="ko" selected={startDate} onChange={(date) => setStartDate(date)} placeholderText="시작날짜"/>
+          {
+            owner._id===userId 
+              ? <DatePicker locale="ko" selected={startDate} onChange={(date) => setStartDate(date)} placeholderText="시작날짜"/>
+              : <DatePicker locale="ko" selected={startDate} onChange={(date) => setStartDate(date)} placeholderText="시작날짜" readOnly/>
+          }
           </div>
           <div id={styles.date_end}>
-            <DatePicker locale="ko" selected={endDate} onChange={(date) => setEndDate(date)} placeholderText="끝날짜"/>
+          {
+            owner._id===userId
+              ? <DatePicker locale="ko" selected={endDate} onChange={(date) => setEndDate(date)} placeholderText="끝날짜"/>
+              : <DatePicker locale="ko" selected={endDate} onChange={(date) => setEndDate(date)} placeholderText="끝날짜" readOnly/>
+          }
           </div>
         </section>
         <section id={styles.submit}>
-          <div id={styles.submit_button} onClick={handleSubmit}>저장</div>
+        {owner._id===userId && <div id={styles.submit_button} onClick={handleSubmit}>저장</div>} 
         </section>
       </section>
       {/* 새로만들면 저장, 수정하면 수정 */}

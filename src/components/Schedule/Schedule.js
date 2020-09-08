@@ -73,7 +73,7 @@ function Schedule() {
           <Popup
             content={event.owner.email}
             key={event.owner._id}
-            header={<><strong>By {event.owner.name}</strong>&emsp;<img className={styles.image} src={event.owner.image} alt="아바타" /></>}
+            header={<><img className={styles.image} src={event.owner.image} alt="아바타" />&ensp;<strong>By {event.owner.name}</strong></>}
             trigger={<span>{event.title} </span>}
           />
           <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>
@@ -125,7 +125,15 @@ function Schedule() {
           }}
         />
         </div>
-        {currentEvent && <SidebarSchedule ScheduleId={_id} nsSocket={nsSocket} currentEvent={currentEvent} setCurrentEvent={setCurrentEvent}></SidebarSchedule> }
+        {currentEvent && 
+          <SidebarSchedule
+            userId={userData._id}
+            ScheduleId={_id} 
+            nsSocket={nsSocket} 
+            currentEvent={currentEvent} 
+            setCurrentEvent={setCurrentEvent}
+          />
+        }
       </section>
     </>
   );
