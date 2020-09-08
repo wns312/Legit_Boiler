@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import styles from './Schedule.module.css'
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
-import {SidebarSchedule} from '../sidebars'
-import moment from 'moment'
+import { Popup } from 'semantic-ui-react'
 import 'moment/locale/ko'
+import moment from 'moment'
+import {SidebarSchedule} from '../sidebars'
+import styles from './Schedule.module.css'
 import "./react-big-calendar.css"
 import {useSelector, useDispatch} from 'react-redux';
 import {inputCurrentSchedule} from '../../_actions/chat_action'
@@ -11,7 +12,7 @@ const localizer = momentLocalizer(moment)
 moment.locale('ko')
 
 function Schedule() {
-  // let { userData } = useSelector(state => state.user)
+  let { userData } = useSelector(state => state.user)
   let { currentNs, currentSchedule, nsSocket } = useSelector(state => state.chatInfo)
   let {_id, event} = currentSchedule
   const dispatch =useDispatch();
@@ -22,8 +23,8 @@ function Schedule() {
   useEffect(() => {
     nsSocket.emit('joinSchedule', {_id});
     let events= event.map(ele=>{
-      let { _id, start, end, desc, title } = ele;
-      return { _id, title, desc, start: new Date(start), end: new Date(end) };
+      let { _id, start, end, desc, title, owner } = ele;
+      return { _id, title, desc, owner, start: new Date(start), end: new Date(end) };
     })
     setEvents(events);
     return(()=>{
@@ -34,26 +35,26 @@ function Schedule() {
   useEffect(()=>{
     nsSocket.on('updateSchedule', (events)=>{ // 추가 변경
       let newEvents = events.map(ele=>{
-        let { _id, start, end, desc, title } = ele;
-        return { _id, title, desc, start: new Date(start), end: new Date(end) };
+        let { _id, start, end, desc, title, owner } = ele;
+        return { _id, title, desc, owner, start: new Date(start), end: new Date(end) };
       })
       setEvents(newEvents)
     })
 
     nsSocket.on('deleteSchedule', (events)=>{ // 삭제
       let newEvents = events.map(ele=>{
-        let { _id, start, end, desc, title } = ele;
-        return { _id, title, desc, start: new Date(start), end: new Date(end) };
+        let { _id, start, end, desc, title, owner } = ele;
+        return { _id, title, desc, owner, start: new Date(start), end: new Date(end) };
       })
       setEvents(newEvents)
     }) 
   }, [nsSocket])
 
-  function addEvent({start, end, box}) {
+  function addEvent({start, end}) {
     const title = window.prompt("일정을 추가하세요");
     const desc = window.prompt("내용을 추가하세요");
     if (title) {
-    let newEvent = { title, start, end, desc };
+    let newEvent = { title, start, end, desc, owner : userData._id };
     nsSocket.emit('createEvent', newEvent, _id); 
     }else{
       console.log("title이 입력되지 않았습니다");
@@ -69,7 +70,12 @@ function Schedule() {
   function Event({ event }) {
     return (
         <div className={styles.event} title="">
-          <span>{event.title}</span>
+          <Popup
+            content={event.owner.email}
+            key={event.owner._id}
+            header={<><strong>By {event.owner.name}</strong>&emsp;<img className={styles.image} src={event.owner.image} alt="아바타" /></>}
+            trigger={<span>{event.title} </span>}
+          />
           <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>
         </div>
     );

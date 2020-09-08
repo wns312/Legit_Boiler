@@ -137,7 +137,10 @@ module.exports = function (io) {
       console.log(`스케쥴러 id : ${_id}`);
       Schedule.findOne({_id})
       .populate('room')
-      .populate('event')
+      .populate({
+        path : 'event',
+        populate : { path: 'owner' , select: 'name email image' }
+      })
       .exec()
       .then((doc)=>{
         nsSocket.emit('currentScheduleLoad', doc)
@@ -152,14 +155,16 @@ module.exports = function (io) {
     })
     //일단 전부 재조회로 바꾸기 + create와 handle분리하기
     nsSocket.on('createEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
-      let { title, end, start, desc} = event;
-      let newEvent = new Event({scheduler : _id, title, end, start, desc})
+      let { title, end, start, desc, owner} = event;
+      let newEvent = new Event({scheduler : _id, title, end, start, desc, owner})
       newEvent.save()
       .then((doc)=>{
         Schedule.findOneAndUpdate({_id}, {$push : {event : doc._id}}, {new : true})
         .exec()
         .then(()=>{
-          return Event.find({scheduler : _id}).exec()
+          return Event.find({scheduler : _id})
+          .populate('owner', 'name image email')
+          .exec()
         })
         .then((doc)=>{
           NS_io.to(_id).emit('updateSchedule', doc)
@@ -172,6 +177,7 @@ module.exports = function (io) {
 
     nsSocket.on('handleEvent', (event, _id)=>{ // _id는 스케쥴러 겸 emit할 roomId
       Event.findOneAndUpdate({_id : event._id}, event, { new : true })
+      .populate('owner', 'name email image')
       .exec()
       .then((doc)=>{
         return Event.find({scheduler : _id}).exec()

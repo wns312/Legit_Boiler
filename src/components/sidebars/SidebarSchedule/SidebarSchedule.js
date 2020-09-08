@@ -15,7 +15,7 @@ const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) 
   const [endDate, setEndDate] = useState(end);
 
   useEffect(()=>{
-    setId(currentEvent._id)
+    setId(currentEvent._id);
     setTitle(currentEvent.title);
     setDesc(currentEvent.desc);
     setStartDate(currentEvent.start)
@@ -42,52 +42,39 @@ const SidebarSchedule = ({nsSocket, ScheduleId, currentEvent, setCurrentEvent}) 
   }
   return (
     <div id={styles.aside}>
-    <section id={styles.header}>
-      <div id={styles.title}>일정</div>
-      <svg width="1.5em" height="1.5em" className={`bi bi-x ${styles.closeicon}`} onClick={Close} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fillRule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
-        <path fillRule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
-      </svg>
-    </section>
-
-    <section id={styles.body}>
-      <input id={styles.event_title} placeholder="제목" value={Title} onChange={handleInput}></input>
-      <hr/>
-      <textarea id={styles.event_body} placeholder="내용" value={Desc} onChange={handletextArea}></textarea>
-      <hr/>
-    </section>
-
-    <section id={styles.footer}>
-
-      <section id={styles.date_title}>
-        <span>시작 날짜</span>
-        <span>끝 날짜</span>
+      <section id={styles.header}>
+        <div id={styles.title}>일정</div>
+        <svg width="1.5em" height="1.5em" className={`bi bi-x ${styles.closeicon}`} onClick={Close} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fillRule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
+          <path fillRule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
+        </svg>
       </section>
-
-      <section id={styles.date_body}>
-        <div id={styles.date_start}>
-          <DatePicker
-            locale="ko"
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            placeholderText="시작날짜"
-          />
-        </div>
+      {/* 일정내용 */}
+      <section id={styles.body}>
+        <input id={styles.event_title} placeholder="제목" value={Title} onChange={handleInput}></input>
+        <hr/>
+        <textarea id={styles.event_body} placeholder="내용" value={Desc} onChange={handletextArea}></textarea>
+        <hr/>
+      </section>
+      {/* 날짜 설정부분 */}
+      <section id={styles.footer}>
+        <section id={styles.date_title}>
+          <span>시작 날짜</span><span>끝 날짜</span>
+        </section>
+        <section id={styles.date_body}>
+          <div id={styles.date_start}>
+            <DatePicker locale="ko" selected={startDate} onChange={(date) => setStartDate(date)} placeholderText="시작날짜"/>
+          </div>
           <div id={styles.date_end}>
-            <DatePicker
-              locale="ko"
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              placeholderText="끝날짜"
-            />
-        </div>
+            <DatePicker locale="ko" selected={endDate} onChange={(date) => setEndDate(date)} placeholderText="끝날짜"/>
+          </div>
+        </section>
+        <section id={styles.submit}>
+          <div id={styles.submit_button} onClick={handleSubmit}>저장</div>
+        </section>
       </section>
-      <section id={styles.submit}>
-        <div id={styles.submit_button} onClick={handleSubmit}>저장</div>
-      </section>
-    </section>
       {/* 새로만들면 저장, 수정하면 수정 */}
-  </div>
+    </div>
   );
 };
 
