@@ -194,7 +194,9 @@ module.exports = function (io) {
       Event.findOneAndDelete({scheduler : _id, _id : event._id})
       .exec()
       .then((doc)=>{
-        return Event.find({scheduler : _id}).exec()
+        return Event.find({scheduler : _id})
+        .populate('owner', 'name email image')
+        .exec()
       })
       .then((res)=>{
         NS_io.to(_id).emit('deleteSchedule', res)
