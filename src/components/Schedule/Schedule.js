@@ -76,7 +76,7 @@ function Schedule() {
             header={<><img className={styles.image} src={event.owner.image} alt="아바타" />&ensp;<strong>By {event.owner.name}</strong></>}
             trigger={<span>{event.title} </span>}
           />
-          <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>
+          {userData._id===event.owner._id && <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>}
         </div>
     );
   }
