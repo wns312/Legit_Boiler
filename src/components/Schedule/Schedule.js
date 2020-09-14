@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import { Popup } from 'semantic-ui-react'
 import 'moment/locale/ko'
 import moment from 'moment'
-import {SidebarSchedule} from '../sidebars'
+import {SidebarSchedule, NewSchedule} from '../sidebars'
 import styles from './Schedule.module.css'
 import "./react-big-calendar.css"
 import {useSelector, useDispatch} from 'react-redux';
@@ -18,6 +18,9 @@ function Schedule() {
   const dispatch =useDispatch();
   const [Events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState();
+  const [IsNewEvent, setIsNewEvent] = useState(false);
+  const [Start, setStart] = useState();
+  const [End, setEnd] = useState();
   const [dayLayoutAlgorithm] = useState("no-overlap");
 
   useEffect(() => {
@@ -50,15 +53,11 @@ function Schedule() {
     }) 
   }, [nsSocket])
 
-  function addEvent({start, end}) {
-    const title = window.prompt("일정을 추가하세요");
-    const desc = window.prompt("내용을 추가하세요");
-    if (title) {
-    let newEvent = { title, start, end, desc, owner : userData._id };
-    nsSocket.emit('createEvent', newEvent, _id); 
-    }else{
-      console.log("title이 입력되지 않았습니다");
-    }
+  function newEvent({start, end}) {
+    setStart(start)
+    setEnd(end)
+    setCurrentEvent("")
+    setIsNewEvent(true)
   }
 
   function removeEvent(e, event) {
@@ -85,6 +84,7 @@ function Schedule() {
     dispatch(inputCurrentSchedule(""))
   }
   function modifyEvent(event) {
+    setIsNewEvent(false)
     setCurrentEvent(event)
   }
 
@@ -114,7 +114,7 @@ function Schedule() {
           defaultView={Views.MONTH} //디폴트 뷰
           scrollToTime={new Date()} //**스크롤 시작 위치를 정해줌(안해줘도 될듯)
           defaultDate={moment().toDate()} //디폴트 날짜
-          onSelectSlot={addEvent} //**날짜 선택시 콜백이 발생한다 -> 위에서 만들어준 handleSelect가 실행
+          onSelectSlot={newEvent} //**날짜 선택시 콜백이 발생한다 -> 위에서 만들어준 handleSelect가 실행
           dayLayoutAlgorithm={dayLayoutAlgorithm} //레이아웃 배열의 알고리즘
           // onDragStart={console.log} // 드래그 시작할 떄 => 클릭시
           components={{
@@ -132,6 +132,16 @@ function Schedule() {
             nsSocket={nsSocket} 
             currentEvent={currentEvent} 
             setCurrentEvent={setCurrentEvent}
+          />
+        }
+        {IsNewEvent && 
+          <NewSchedule
+            userId={userData._id}
+            ScheduleId={_id}
+            Start={Start}
+            End={End}
+            nsSocket={nsSocket}
+            setIsNewEvent={setIsNewEvent}
           />
         }
       </section>
