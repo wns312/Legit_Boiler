@@ -73,12 +73,11 @@ function ChatInput({roomId, scrollBottom}) {
     </div>
     <div className={styles.editor_control}>
       <div className={styles.button_wrapper}>
-        <div className={styles.button} onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</div>
-        <div className={styles.button} onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</div>
         <div className={styles.button} onClick={()=>{_onInlineClick('BOLD')}}>B</div>
         <div className={styles.button} onClick={()=>{_onInlineClick('ITALIC')}}>I</div>
         <div className={styles.button} onClick={()=>{_onInlineClick('UNDERLINE')}}>U</div>
-        <div className={styles.button} onClick={()=>{_onInlineClick('CODE')}}>M</div>
+        <div className={styles.button} onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</div>
+        <div className={styles.button} onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</div>
       </div>
       <div className={styles.submit} onClick={Send}>전송</div>
     </div>

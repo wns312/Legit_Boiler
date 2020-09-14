@@ -47,6 +47,10 @@
   font-weight: 600;
 }
 
+.submit:hover{
+  background-color: rgb(245, 245, 245);
+}
+
 blockquote {
   background-color : grey;
   margin : 0 0 5px 0;

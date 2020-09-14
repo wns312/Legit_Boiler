@@ -17,6 +17,10 @@ function ChatModify({message, roomId, Close}) {
     currentEditorState = e
     setEditorState(e)
   }
+  function _onBlockClick(style) {
+    onChange(RichUtils.toggleBlockType(editorState, style));
+    setTimeout(() => { focus() }, 20);
+  }
 
   function _onInlineClick(style) {
     onChange(RichUtils.toggleInlineStyle(editorState, style));
@@ -56,7 +60,7 @@ function ChatModify({message, roomId, Close}) {
 
   return (
     <>
-    <div className={styles.modify_wrapper}>
+    <div className={styles.editor_wrapper}>
       <Editor 
         editorState={editorState} 
         onChange={(e)=>{onChange(e)}}
@@ -66,12 +70,18 @@ function ChatModify({message, roomId, Close}) {
       />
 
     </div>
-    <div className={styles.modify_control}>
-      <span onClick={() => { _onInlineClick('BOLD') }}>B</span>
-      <span onClick={() => { _onInlineClick('ITALIC') }}>I</span>
-      <span onClick={() => { _onInlineClick('UNDERLINE') }}>U</span>
-      <span className="submit" onClick={Close} >취소</span>
-      <span className="submit" onClick={Send} >전송</span>
+    <div className={styles.editor_control}>
+      <div className={styles.button_wrapper}>
+        <div className={styles.button} onClick={() => { _onInlineClick('BOLD') }}>B</div>
+        <div className={styles.button} onClick={() => { _onInlineClick('ITALIC') }}>I</div>
+        <div className={styles.button} onClick={() => { _onInlineClick('UNDERLINE') }}>U</div>
+        <div className={styles.button} onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</div>
+        <div className={styles.button} onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</div>
+      </div>
+      <div className={styles.submit} >
+        <div className={styles.cancel} onClick={Close} >취소</div>
+        <div className={styles.confirm} onClick={Send} >전송</div>
+      </div>
     </div>
 
     </>
