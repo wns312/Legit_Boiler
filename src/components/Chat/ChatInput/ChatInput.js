@@ -22,7 +22,6 @@ function ChatInput({roomId, scrollBottom}) {
   function _onBlockClick(style) {
     onChange(RichUtils.toggleBlockType(editorState, style));
     setTimeout(() => { focus() }, 20);
-    
   }
   function _onInlineClick(style) {
     onChange(RichUtils.toggleInlineStyle(editorState, style));
@@ -73,20 +72,15 @@ function ChatInput({roomId, scrollBottom}) {
       />
     </div>
     <div className={styles.editor_control}>
-    {/* <button onClick={()=>{_onBlockClick('header-one')}}>H1</button>
-    <button onClick={()=>{_onBlockClick('header-two')}}>H2</button>
-    <button onClick={()=>{_onBlockClick('header-three')}}>H3</button>
-    <button onClick={()=>{_onBlockClick('header-four')}}>H4</button>
-    <button onClick={()=>{_onBlockClick('header-five')}}>H5</button>
-    <button onClick={()=>{_onBlockClick('header-six')}}>H6</button>
-    <button onClick={()=>{_onBlockClick('blockquote')}}>Blockquote</button> */}
-    <button onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</button>
-    <button onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</button>
-    <button onClick={()=>{_onInlineClick('BOLD')}}>B</button>
-    <button onClick={()=>{_onInlineClick('ITALIC')}}>I</button>
-    <button onClick={()=>{_onInlineClick('UNDERLINE')}}>U</button>
-    <button onClick={()=>{_onInlineClick('CODE')}}>M</button>
-    <button className={styles.submit} onClick={Send}>전송</button>
+      <div className={styles.button_wrapper}>
+        <div className={styles.button} onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</div>
+        <div className={styles.button} onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</div>
+        <div className={styles.button} onClick={()=>{_onInlineClick('BOLD')}}>B</div>
+        <div className={styles.button} onClick={()=>{_onInlineClick('ITALIC')}}>I</div>
+        <div className={styles.button} onClick={()=>{_onInlineClick('UNDERLINE')}}>U</div>
+        <div className={styles.button} onClick={()=>{_onInlineClick('CODE')}}>M</div>
+      </div>
+      <div className={styles.submit} onClick={Send}>전송</div>
     </div>
     </>
   );
@@ -98,3 +92,11 @@ export default ChatInput;
 //   const maxDepth = 4;
 //   onChange(RichUtils.onTab(e, editorState, maxDepth));
 // }
+
+// {/* <button onClick={()=>{_onBlockClick('header-one')}}>H1</button>
+// <button onClick={()=>{_onBlockClick('header-two')}}>H2</button>
+// <button onClick={()=>{_onBlockClick('header-three')}}>H3</button>
+// <button onClick={()=>{_onBlockClick('header-four')}}>H4</button>
+// <button onClick={()=>{_onBlockClick('header-five')}}>H5</button>
+// <button onClick={()=>{_onBlockClick('header-six')}}>H6</button>
+// <button onClick={()=>{_onBlockClick('blockquote')}}>Blockquote</button> */}
