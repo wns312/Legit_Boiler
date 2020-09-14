@@ -79,7 +79,7 @@ function ChatInput({roomId, scrollBottom}) {
         <div className={styles.button} onClick={()=>{_onBlockClick('unordered-list-item')}}>UL</div>
         <div className={styles.button} onClick={()=>{_onBlockClick('ordered-list-item')}}>OL</div>
       </div>
-      <div className={styles.submit} onClick={Send}>전송</div>
+      <i className={`${styles.submit} fas fa-paper-plane`} onClick={Send}></i>
     </div>
     </>
   );

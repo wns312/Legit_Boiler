@@ -42,7 +42,8 @@
 
 .submit {
   grid-column : 2;
-  margin: 7px 8px;
+  margin: 3px 8px;
+  padding-top : 6px;
   text-align: center;
   font-weight: 600;
 }

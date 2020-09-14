@@ -22,9 +22,9 @@
   border-radius: 0 0 5px 5px;
   border-width : 0px 2px 2px 2px;
   border-color : grey;
-  margin : 0 15px 12px 20px;
+  margin : 0 15px 10px 20px;
   display : grid;
-  grid-template-columns: 1fr 120px;
+  grid-template-columns: 1fr 110px;
 }
 .button_wrapper {
   grid-column : 1;
@@ -44,17 +44,26 @@
 
 .submit {
   grid-column : 2;
-  margin: 7px 8px;
+  margin: 3px 8px;
   text-align: center;
   font-weight: 600;
   display: flex;
   align-content: space-between;
 }
 
-.submit div{
+.submit div,i{
   flex : 1;
+  padding: 3px 0 ;
 }
+
+.submit i{
+  padding: 6px 0 ;
+}
+
 .submit div:hover{
+  background-color: rgb(245, 245, 245);
+}
+.submit i:hover{
   background-color: rgb(245, 245, 245);
 }
 
