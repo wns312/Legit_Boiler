@@ -113,7 +113,7 @@ const Namespaces = (props) => {
         { currentRoom && <section id='chat'><Chat handleAside={handleAside} ></Chat></section>} {/* 방이름이 설정되면 채팅 컴포넌트 로드 */}
         {nsList.length ===0 && <EmptyChat Socket={Socket}></EmptyChat>}
         <aside ref={Aside}>
-          {currentRoom && <SidebarRoom Close={Close}></SidebarRoom>}
+          {currentRoom && <SidebarRoom Close={Close} Members={currentRoom.member}></SidebarRoom>}
         </aside>
       </div>
     </div>

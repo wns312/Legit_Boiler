@@ -4,7 +4,7 @@ import {InviteRoom, LeaveRoom} from "../../modals";
 import ChatMember from '../../Chat/ChatMember/ChatMember'
 import { useSelector } from 'react-redux';
 
-const SidebarRoom = ({Close}) => {
+const SidebarRoom = ({Close, Members}) => {
   let {currentRoom} = useSelector(state => state.chatInfo)
 // member, _id,  namespace, nsEndpoint 도 있음
 let {isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
@@ -18,7 +18,7 @@ let {isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
         </svg>
       </section>
       <section id={styles.body}>
-        <ChatMember/>
+        <ChatMember Members={Members}/>
       {isDM ||<InviteRoom></InviteRoom>}
         <LeaveRoom></LeaveRoom>
       </section>
