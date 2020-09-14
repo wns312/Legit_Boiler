@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
-
-
+import styles from './LeaveRoom.module.css';
 const LeaveRoom = () => {
   let {userData} = useSelector(state=>state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
@@ -26,7 +25,7 @@ const LeaveRoom = () => {
 
   return (
     <>
-      <Button onClick={() => { show('small') }}>Leave Room</Button>
+      <div className={styles.button} onClick={() => { show('small') }}>Leave Room</div>
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>{roomTitle} 에서 나가시겠습니까?</Modal.Header>
           {/* <Modal.Content>

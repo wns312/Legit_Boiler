@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { message } from "antd";
 import { Button, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
+import styles from './InviteRoom.module.css';
 const InviteRoom = () => {
   //필요한 것 : Ns멤버목록(멤버선택을 위해), NsSocket(emit을 위해)
   let {currentNs, currentRoom, nsSocket} = useSelector(state=>state.chatInfo) // nsSocket 도 있음
@@ -36,7 +37,7 @@ const InviteRoom = () => {
 
   return (
     <>
-      <Button onClick={() => { show("small") }}>Invite Room</Button>
+      <div className={styles.button} onClick={() => { show("small") }}>Invite Room</div>
       
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>방 초대</Modal.Header>

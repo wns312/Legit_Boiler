@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './SidebarRoom.module.css';
 import {InviteRoom, LeaveRoom} from "../../modals";
+import ChatMember from '../../Chat/ChatMember/ChatMember'
 import { useSelector } from 'react-redux';
 
 const SidebarRoom = ({Close}) => {
@@ -17,6 +18,7 @@ let {isDM } = currentRoom; //roomindex를 버릴경우 여기서 에러남
         </svg>
       </section>
       <section id={styles.body}>
+        <ChatMember/>
       {isDM ||<InviteRoom></InviteRoom>}
         <LeaveRoom></LeaveRoom>
       </section>
