@@ -70,7 +70,7 @@ function Schedule() {
     return (
         <div className={styles.event} title="">
           <Popup
-            content={event.owner.email}
+            content={<><br/>{event.owner.email}<hr/>{event.desc}</>}
             key={event.owner._id}
             header={<><img className={styles.image} src={event.owner.image} alt="아바타" />&ensp;<strong>By {event.owner.name}</strong></>}
             trigger={<span>{event.title} </span>}
