@@ -31,7 +31,7 @@
 }
 
 .button{
-  margin: 7px 8px;
+  padding: 7px 8px;
   text-align: center;
   font-weight: 600;
 }
@@ -42,7 +42,7 @@
 
 .submit {
   grid-column : 2;
-  margin: 3px 8px;
+  margin: 4px 8px;
   padding-top : 6px;
   text-align: center;
   font-weight: 600;

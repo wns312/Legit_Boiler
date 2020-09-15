@@ -29,6 +29,14 @@ const RegisterPage = (props) => {
     if(Password!==Confirm) {
       return alert("비밀번호와 비밀번호확인이 일치하지 않습니다")
     }
+    // 정규 표현식
+    const idPattern = /^[A-Za-z]{1}[A-Za-z0-9]{3,19}$/; // 영어로 시작해야하고, 숫자포함가능
+    const pwPattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/; //
+    const emailPattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+
+
+
     let body = {email : Email, name : Name, password : Password }
     dispatch(registerUser(body))
     .then(response=>{
