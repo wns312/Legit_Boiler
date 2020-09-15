@@ -42,12 +42,14 @@ const InviteRoom = () => {
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>방 초대</Modal.Header>
         <Modal.Content>
-          &emsp;유저 email 입력<br/><hr/>
-          {createList(MemberArray)}
-          <br/>
-          <form onSubmit={invite}>
-            &emsp;<Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소" />
-          </form>
+          &emsp;초대할 유저의 E-mail 주소를 입력하세요<br/><hr/>
+          {MemberArray.length ? createList(MemberArray) : <>&emsp;초대할 멤버가 없습니다</>}
+          {MemberArray.length!==0 &&
+            <form onSubmit={invite}>
+              <hr/>
+            &emsp;<Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />
+          </form>  
+          }
         </Modal.Content>
         <Modal.Actions>
           <Button negative onClick={close}>닫기</Button>
