@@ -141,7 +141,8 @@ const Schedule = ({isAdmin, getScheduleList}) => {
   return (
     <section id={styles.body_schedule}>
     <div className={styles.body_listname}>
-      <strong>Schedule {isAdmin}</strong><i className='fas fa-plus'/>
+      <strong>Schedule {isAdmin}</strong>
+      {/* <i className='fas fa-plus'/> */}
     </div>
     <ul>
       {getScheduleList()}
