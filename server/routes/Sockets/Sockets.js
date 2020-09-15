@@ -10,7 +10,7 @@ function nsSettings(io, NS_io, nsSocket) {
     //여기서 db접근해서 data로 방 상세정보 찾아오고 추후 history도 합쳐준다?(이건생각해보기)
     RoomModel.findOne({_id})
     .populate('member', "email name image")
-    .select("-history -createdAt -updatedAt -__v")
+    .select("-createdAt -updatedAt -__v")
     .exec((err, room) => {
       nsSocket.emit('currentRoomLoad', room)
     });

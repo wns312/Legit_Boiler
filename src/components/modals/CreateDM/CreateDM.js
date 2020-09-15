@@ -40,16 +40,15 @@ const CreateDM = ({children}) => {
   }
   return (
     <>
-      <span onClick={() => { show('small') }} style={{cursor : 'pointer'}}>{children}</span>
+      <span onClick={() => { show('tiny') }} style={{cursor : 'pointer'}}>{children}</span>
       {/* <Button onClick={() => { show('small') }}>Create DM</Button> */}
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>DM 생성</Modal.Header>
         <Modal.Content>
-          멤버목록<br/>
-          {Email}<hr/>
-          <form onSubmit={createDM}>
+          &emsp;멤버목록<br/><hr/>
           {createList(MemberArray)}<br/>
-            <Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />
+          <form onSubmit={createDM}>
+          &emsp;<Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail" />
           </form>
         </Modal.Content>
         <Modal.Actions>
@@ -74,7 +73,7 @@ function createList(MemberArray) {
       let {name, email, image} = element //  _id도 있음
       return (
         <div key={index}>
-          <p style={{ color: "black" }}><img src={image} alt={image} style={{width : '50px', height : '50px', padding : '5px'}}></img>&ensp;{`${name} (${email})`}</p>
+          <p style={{ color: "black" }}>&emsp;<img src={image} alt={image} style={{width : '50px', height : '50px', padding : '5px'}}></img>&ensp;{`${name} (${email})`}</p>
         </div>
       )
     }

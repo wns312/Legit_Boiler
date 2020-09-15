@@ -81,6 +81,7 @@ function ChatModify({message, roomId, Close}) {
       <div className={styles.submit} >
         <div className={styles.cancel} onClick={Close} >취소</div>
         <i className={`fas fa-paper-plane`} onClick={Send}></i>
+        
       </div>
     </div>
 

@@ -38,14 +38,14 @@ const CreateRoom = ({children}) => {
 
   return (
     <>
-      <span onClick={() => { show('small') }} style={{cursor : 'pointer'}}>{children}</span>
+      <span onClick={() => { show('tiny') }} style={{cursor : 'pointer'}}>{children}</span>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header>방 생성</Modal.Header>
           <Modal.Content>
-            방 이름을 적으세요<hr/>
+          &emsp;생성할 방의 이름을 적으세요<hr/>
             <form onSubmit={createRoom}>
-              <Input focus value={roomTitle} onChange={handleRoomTitle} placeholder="방 이름" />&emsp;
-              <Checkbox label='비밀방' checked={isPrivate} onClick={handlePrivate} toggle/>
+            &emsp;<Input focus value={roomTitle} onChange={handleRoomTitle} placeholder="방 이름" />
+              &emsp;<Checkbox label='비밀방' checked={isPrivate} onClick={handlePrivate} toggle/>
             </form>
           </Modal.Content>
           <Modal.Actions>

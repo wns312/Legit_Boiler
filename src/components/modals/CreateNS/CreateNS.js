@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Input, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
 
 const CreateNS = ({Socket}) => {
@@ -32,13 +32,13 @@ const CreateNS = ({Socket}) => {
 
   return (
     <>
-      <div onClick={() => { show('small') }}>Create NS</div>
+      <div onClick={() => { show('tiny') }}>Create NS</div>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header >네임스페이스 생성</Modal.Header>
           <Modal.Content>
-            네임스페이스 이름 입력 (공백불가) <hr/>
+            &emsp;생성할 네임스페이스 이름을 입력하세요 <hr/>
             <form onSubmit={createNs}>
-              <input type="text" value={nsTitle} onChange={handleNstitle} placeholder="네임스페이스 이름 입력"/>
+            &emsp;<Input focus value={nsTitle} onChange={handleNstitle} placeholder="네임스페이스 입력" />
             </form>
           </Modal.Content>
           <Modal.Actions>

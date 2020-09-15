@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { message } from "antd";
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Input, Modal } from 'semantic-ui-react'
 import { useSelector } from 'react-redux';
 import styles from './InviteRoom.module.css';
 const InviteRoom = () => {
@@ -37,16 +37,16 @@ const InviteRoom = () => {
 
   return (
     <>
-      <div className={styles.button} onClick={() => { show("small") }}>Invite Room</div>
+      <div className={styles.button} onClick={() => { show("tiny") }}>Invite Room</div>
       
       <Modal size={Size} open={Open} onClose={close} centered={true}>
         <Modal.Header>방 초대</Modal.Header>
         <Modal.Content>
-          멤버목록<br/>
-          {Email}<hr/>
+          &emsp;유저 email 입력<br/><hr/>
+          {createList(MemberArray)}
+          <br/>
           <form onSubmit={invite}>
-            {createList(MemberArray)}<br/>
-            <input type="text" value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소"/>
+            &emsp;<Input focus value={Email} onChange={handleEmail} placeholder="초대할 유저의 E-mail 주소" />
           </form>
         </Modal.Content>
         <Modal.Actions>
@@ -78,9 +78,9 @@ function createList(MemberArray) {
     (element, index)=>{
       let {name, email, image} = element //  _id도 있음
       return (
-        <div key={index}>
-          <p style={{ color: "black" }}><img src={image} alt={image} style={{width : '50px', height : '50px', padding : '5px'}}></img>&ensp;{`${name} (${email})`}</p>
-        </div>
+        
+          <p key={index} style={{ color: "black" }}>&emsp;<img src={image} alt={image} style={{width : '50px', height : '50px', padding : '5px'}}></img>&ensp;{`${name} (${email})`}</p>
+        
       )
     }
   )
