@@ -30,9 +30,9 @@ const RegisterPage = (props) => {
       return alert("비밀번호와 비밀번호확인이 일치하지 않습니다")
     }
     // 정규 표현식
-    const idPattern = /^[A-Za-z]{1}[A-Za-z0-9]{3,19}$/; // 영어로 시작해야하고, 숫자포함가능
-    const pwPattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/; //
-    const emailPattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    // const idPattern = /^[A-Za-z]{1}[A-Za-z0-9]{3,19}$/; // 영어로 시작해야하고, 숫자포함가능
+    // const pwPattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/; //
+    // const emailPattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
 
 
@@ -56,7 +56,7 @@ const RegisterPage = (props) => {
   return (
 <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
   <Grid.Column style={{ maxWidth: 450 }}>
-    <Header as='h2' color='teal' textAlign='center'>
+    <Header as='h2' color='blue' textAlign='center'>
       Sign-in
     </Header>
     <Form size='large' onSubmit={onSubmitHandler}>
@@ -65,7 +65,7 @@ const RegisterPage = (props) => {
         <Form.Input fluid icon='user' iconPosition='left' placeholder='Name' value={Name} onChange={onNameHandler}/>
         <Form.Input fluid icon='lock' iconPosition='left' placeholder='Password' type='password' value={Password} onChange={onPasswordHandler}/>
         <Form.Input fluid icon='lock' iconPosition='left' placeholder='Confirm Password' type='password' value={Confirm} onChange={onConfirmHandler}/>
-        <Button color='teal' fluid size='large'>
+        <Button color='blue' fluid size='large'>
           Sign In
         </Button>
       </Segment>

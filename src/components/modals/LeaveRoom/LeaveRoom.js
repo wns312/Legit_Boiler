@@ -5,7 +5,6 @@ import styles from './LeaveRoom.module.css';
 const LeaveRoom = () => {
   let {userData} = useSelector(state=>state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
-  let {roomTitle} = currentRoom
   let userId = userData._id
   let {_id} = currentNs
   const [Open, setOpen] = useState(false);

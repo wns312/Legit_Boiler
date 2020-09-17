@@ -12,7 +12,7 @@ const Chat = ({handleAside}) => {
   let { userData } = useSelector(state => state.user)
   let { currentNs, currentRoom, nsSocket } = useSelector(state => state.chatInfo)
   // member, _id,  namespace, nsEndpoint 도 있음
-  let { roomTitle, _id, member, history} = currentRoom; //roomindex를 버릴경우 여기서 에러남
+  let { roomTitle, _id, member} = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [messages, setMessages] = useState([]);
   let chat_messages = useRef();
