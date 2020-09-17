@@ -1,0 +1,9 @@
+.check_hidden {
+  color: red;
+  font-size: 12px;
+}
+
+.check_visible {
+  color: black;
+  font-size: 12px;
+}
