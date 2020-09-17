@@ -7,15 +7,17 @@ const ChatModal = ({message, Modify, Delete}) => {
   let {userId} = message
 
   if (userId === _id) {
-    
+    return (
+      <div className={styles.content_wrapper}>
+        <section className={styles.content}>
+          <i className={`fas fa-edit ${styles.content__body}`} onClick={Modify}></i>
+          <i className={`fas fa-trash-alt ${styles.content__body}`} onClick={Delete}></i>
+        </section>
+      </div>
+    );
+  }else{
+    return (<></>)
   }
-  return (
-    <div className={styles.content_wrapper}>
-      <section className={styles.content}>
-        {userId === _id && <i className={`fas fa-edit ${styles.content__body}`} onClick={Modify}></i>}
-        {userId === _id && <i className={`fas fa-trash-alt ${styles.content__body}`} onClick={Delete}></i>}
-      </section>
-    </div>
-  );
+
 };
 export default ChatModal;
