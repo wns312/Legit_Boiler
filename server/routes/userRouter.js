@@ -2,8 +2,31 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const multer = require('multer');
+const path = require('path');
 const { User } = require('../models/User');
 const { auth } = require('../middleware/auth');
+
+
+let storage = multer.diskStorage({ // 파일이 저장될 스토리지경로와 저장될 파일명 지정
+  destination: (req, file, callback)=>{ // 경로설정
+    callback(null, `uploads/`); // 루트경로.uploads를 경로로 지정하겠다
+  },
+  filename: (req, file, callback)=>{   //파일이름설정 : 현재시_원래이름 으로 하였음
+    callback(null, `${Date.now()}_${file.originalname}`);
+  },
+  fileFilter: (req, file, callback) => {
+    const ext = path.extname(file.originalname);
+    console.log(ext);
+    if (ext !== ".jpg" || ext !== ".png") {
+      return callback(new Error("only jpg, png is allowed"));
+    }
+    callback(null, true);
+  }
+})
+const upload = multer({storage : storage}).single("file"); // 지정된 storage로 upload함수 생성
+
+
 
 //여기는 유저
 router.post('/register', (req, res) => {
@@ -81,6 +104,52 @@ router.post("/modify", auth, (req, res)=>{
     User.updateOne( {_id: user._id}, { $set: { password, image, name } }, (err,userInfo)=>{
       if(err) return res.json({success: false, err})
       return res.status(200).send({ success:true, user : userInfo })
+      }
+    )
+  })
+})
+
+router.post("/uploadImage", (req, res) => {
+  console.log("uploadImage");
+  upload(req, res, err => {
+    if (err) {
+      console.log("업로드 에러 : "+err);
+      return res.json({ success: false, err });
+    }
+    return res.json({
+      success: true,
+      filePath: res.req.file.path,
+      fileName: res.req.file.filename,
+    });
+  });
+});
+
+
+
+router.post("/nopassmodify", auth, (req, res)=>{
+  console.log("auth 노패스 모디파이", req.user)
+  User.findOne({ _id: req.user.id }, (err, user) => {
+    console.log("파인드원",user)
+  if (err) return res.json({ success: false, err });
+    // console.log("user._id 아이디아이디", user._id)
+    console.log("req.user 유저유저",req.user)
+    console.log("req.body 바디바디",req.body)
+    //req.body를 확인하기
+  User.updateOne(
+    {_id: user._id},
+    {//$set을 해야 해당 필드만 바뀝니다. https://www.zerocho.com/category/MongoDB/post/579e2821c097d015000404dc
+      $set: {       //req.body => body로 보내고
+        image: req.body.newImage,
+        name: req.body.newName,
+            },
+    },
+    console.log("req바디 패스워드",req.body.newPassword),
+    (err,userInfo)=>{
+      if(err) return res.json({success: false, err})
+      return res.status(200).send({
+        success:true,
+        user : userInfo,
+        })
       }
     )
   })

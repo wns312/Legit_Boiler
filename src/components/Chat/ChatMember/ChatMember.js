@@ -6,7 +6,10 @@ const ChatMember = ({Members}) => {
     let list = Members.map((member)=>{
       return (
         <li className={styles.li} key={member._id}>
-          <img className={styles.profile} src={member.image} alt="프로필"/>
+          <img 
+          className={styles.profile} 
+          src={`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${member.image}`}
+          alt="프로필"/>
           &nbsp;<span>{member.name}&nbsp;({member.email})</span>
         </li>
       )

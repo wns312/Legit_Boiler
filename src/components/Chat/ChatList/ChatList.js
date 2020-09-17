@@ -35,7 +35,10 @@ const ChatList = ({message, nsSocket, roomId, member}) => {
     <li className={styles.chatset_li} onMouseEnter={Open} onMouseLeave={Close}>
       {user && 
       <>
-        <img className={styles.chatset_image} src={user.image} alt="아바타" />
+        <img 
+        className={styles.chatset_image} 
+        src={`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${user.image}`}
+        alt="아바타" />
         <div className={styles.chatset_name}>{user.name} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
       </>}
       <div className={styles.chatset_message}>{convertedMsg}</div>
@@ -61,6 +64,7 @@ function convertMsg(text, type, filename) {
       tag = <strong className={styles.deleted}>&nbsp;<i className="info circle icon"></i>삭제된 메시지</strong>
       break; 
     case 'image/png': case 'image/jpeg': case 'image/gif':
+      
       tag = <img src={text} alt="이미지"></img>
       break;
     case 'video/mp4':

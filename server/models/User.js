@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
   image: {// 프로필이미지
     type : String, 
     required : true,
-    default : "/default_profile.png"
+    default : `http:${process.env.IP_ADDRESS}:9000/uploads/default_profile.png`
   },
   socket : { 
     type: String 
@@ -80,12 +80,8 @@ userSchema.pre("updateOne", function (next) {
     });             
   } else if(user._update.$set.image){ //이미지를 바꿀떄
     next();
-  }
+  } else next();
 });
-
-
-
-
 
 userSchema.methods.comparePassword = function (plainPassword, callback) {
   bcrypt.compare(plainPassword, this.password, function (err, isMatch) {

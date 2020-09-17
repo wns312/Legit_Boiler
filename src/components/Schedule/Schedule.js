@@ -72,7 +72,16 @@ function Schedule() {
           <Popup
             content={<><br/>{event.owner.email}<hr/>{event.desc}</>}
             key={event.owner._id}
-            header={<><img className={styles.image} src={event.owner.image} alt="아바타" />&ensp;<strong>By {event.owner.name}</strong></>}
+            header={
+            <>
+              <img 
+                className={styles.image} 
+                src={`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${event.owner.image}`}
+                alt="아바타" 
+              />&ensp;
+              <strong>By {event.owner.name}</strong>
+            </>
+          }
             trigger={<span>{event.title} </span>}
           />
           {userData._id===event.owner._id && <i className={`fas fa-times ${styles.removebutton}`} onClick={(e)=>{removeEvent(e, event)}} title=""></i>}
