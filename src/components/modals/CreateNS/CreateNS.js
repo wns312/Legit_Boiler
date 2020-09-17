@@ -58,7 +58,7 @@ const CreateNS = ({Socket}) => {
             <form onSubmit={createNs}>
             &emsp;<Input focus value={nsTitle} onChange={handleNstitle} placeholder="네임스페이스 입력" />
             <br/>&emsp;{hidden 
-            ? <span className={styles.check_visible}>2~20자의 한글과 영문, 언더바(_)만 사용가능합니다.</span>
+            ? <span className={styles.check_visible}>2~20자의 한글, 숫자, 영문, 언더바(_)만 사용가능합니다.</span>
             :  <span className={styles.check_hidden}>_를 제외한 특수문자는 사용할 수 없습니다.</span>}
             </form>
           </Modal.Content>
