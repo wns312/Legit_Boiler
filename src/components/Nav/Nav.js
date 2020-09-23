@@ -1,16 +1,6 @@
 import React from 'react';
 import styles from './Nav.module.css'
-import {
-  Container,
-  Divider,
-  Dropdown,
-  Grid,
-  Header,
-  Image,
-  List,
-  Menu,
-  Segment,
-} from 'semantic-ui-react'
+import {Container, Image, Menu } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 const Nav = () => {
   return (

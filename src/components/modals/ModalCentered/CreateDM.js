@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from'./CreateDM.module.css';
 import { Button } from 'semantic-ui-react'
@@ -10,9 +10,14 @@ const CreateDM = () => {
   let memberList = currentNs.nsMember // 이 네임스페이스의 멤버리스트
   let MemberArray = list(memberList, _id) // 나를 뺀 멤버배열
   const [Email, setEmail] = useState("");
-  let modal = useRef();
-  function Open() { modal.current.classList.remove(styles.hidden) }
-  function Close() { modal.current.classList.add(styles.hidden) }
+  function Open() {
+    let modal = document.getElementsByClassName('modal')[0]
+    modal.classList.remove(styles.hidden) 
+  }
+  function Close() {
+    let modal = document.getElementsByClassName('modal')[0]
+    modal.classList.add(styles.hidden) 
+  }
 
   function handleEmail(e) { setEmail(e.target.value) }
 
@@ -37,7 +42,7 @@ const CreateDM = () => {
   return (
     <>
       <div onClick={Open}>오픈</div>
-      <section ref={modal} className={`${styles.modal} ${styles.hidden}`} >
+      <section className={`${styles.modal} ${styles.hidden} modal`} >
         <section  className={styles.overlay} onClick={Close}></section>
         <section className={styles.content}>
           <header className={styles.content__header}>DM 생성</header>

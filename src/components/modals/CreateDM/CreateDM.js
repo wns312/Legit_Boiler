@@ -73,7 +73,7 @@ function createList(MemberArray) {
       let {name, email, image} = element //  _id도 있음
       return (
         <div key={index}>
-          <p style={{ color: "black" }}>&emsp;<img src={image} alt={image} style={{width : '50px', height : '50px', padding : '5px'}}></img>&ensp;{`${name} (${email})`}</p>
+          <p style={{ color: "black" }}>&emsp;<img src={`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${image}`} alt={image} style={{width : '50px', height : '50px', padding : '5px'}}></img>&ensp;{`${name} (${email})`}</p>
         </div>
       )
     }

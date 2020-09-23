@@ -88,18 +88,35 @@ const Rooms = ({hideList, Socket}) => {
 
   function getdmList() {
     let tmproom = roomList.filter((room)=> room.isDM === true ) // 내가 참여한 모든 DM방 목록
-    const newList= tmproom.map((room, index) => { // 내가 포함된 dm방 전체데이터를 map한다
-      let tmp = room.member.find(ele=>ele._id !==_id)
-      let dataOfOpponent = currentNs.nsMember.find((ele)=>ele._id ===tmp._id)
-      return (
-      <li key={index} onClick={()=>{handleList(room)}}>
-        {/* Icon대신 dataOfOpponent.socket.length가 0이면 비접속, 아니면 접속으로 */}
-        {/* <Icon name='user'></Icon> */}
-        {dataOfOpponent.socket.length===0 ? <i className={`far fa-circle ${styles.disconnect}`}></i>:<i className={`fas fa-circle ${styles.connect}`}></i>}
-        &ensp;{dataOfOpponent ? dataOfOpponent.name : "나간상대"} 
-      </li>)
-    });
-      return newList
+    if (tmproom.length!==0) {
+      const newList= tmproom.map((room, index) => { // 내가 포함된 dm방 전체데이터를 map한다
+        let tmp = room.member.find(ele=>{
+          return ele._id !==_id
+        }) // undefined
+        if (tmp!==undefined) {
+          let dataOfOpponent = currentNs.nsMember.find((ele)=>ele._id ===tmp._id)
+          if (dataOfOpponent!==undefined) {
+            return (
+              <li key={index} onClick={()=>{handleList(room)}}>
+                {/* Icon대신 dataOfOpponent.socket.length가 0이면 비접속, 아니면 접속으로 */}
+                {/* <Icon name='user'></Icon> */}
+                {dataOfOpponent.socket.length===0 ? <i className={`far fa-circle ${styles.disconnect}`}></i>:<i className={`fas fa-circle ${styles.connect}`}></i>}
+                &ensp;{dataOfOpponent ? dataOfOpponent.name : "나간상대"} 
+              </li>)
+          }else {
+            return "";
+          }
+
+        }else {
+          return "";
+        }
+
+      });
+        return newList
+    }else{
+      return
+    }
+
   }
 
   function getScheduleList() {

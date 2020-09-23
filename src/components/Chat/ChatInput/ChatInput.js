@@ -13,7 +13,9 @@ function ChatInput({roomId, scrollBottom}) {
   const [editorState, setEditorState] = useState(EditorState.createEmpty()
   );
   let editor = useRef();
-  function focus() { editor.current.focus() }
+  function focus() { 
+    editor.current.focus() 
+  }
   function onChange (e) {
     currentEditorState = e
     setEditorState(e)

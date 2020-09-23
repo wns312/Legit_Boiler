@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import styles from './Chat.module.css'
 import axios from 'axios';
 import ChatInput from "./ChatInput/ChatInput"
@@ -15,12 +15,12 @@ const Chat = ({handleAside}) => {
   let { roomTitle, _id, member} = currentRoom; //roomindex를 버릴경우 여기서 에러남
   let NS_id = currentNs._id
   const [messages, setMessages] = useState([]);
-  let chat_messages = useRef();
   
   useEffect(() => {
     console.log(`[${_id}]에 입장했습니다`);
     nsSocket.emit('joinRoom', NS_id, _id);
-    setTimeout(()=>{ chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight) }, 70)
+    let container = document.getElementsByClassName('container')[0]
+    setTimeout(()=>{ container.scrollTo(0,container.scrollHeight) }, 70)
     return () => { 
       console.log(`[${_id}]에서 나갔습니다`);
       nsSocket.emit('leaveRoom', {_id})
@@ -42,8 +42,11 @@ const Chat = ({handleAside}) => {
         setMessages(messages => [...messages, message]);
       }
       //스크롤부분 넣어주어야한다
-      let {scrollTop, offsetHeight, scrollHeight} = chat_messages.current
-      scrollTop+offsetHeight >(scrollHeight-200) && chat_messages.current.scrollTo(0,scrollHeight)
+      // console.log(chat_messages.current["scrollTop"]);
+      let container = document.getElementsByClassName('container')[0]
+      let {scrollTop, offsetHeight, scrollHeight} = container
+      scrollTop+offsetHeight >(scrollHeight-200) && container.scrollTo(0,scrollHeight)
+      
     });
   }, [nsSocket]);
 
@@ -76,7 +79,8 @@ const Chat = ({handleAside}) => {
   }
   function scrollBottom() {
     // ulTag.current.scrollIntoView(false) // scrollIntoView는 true일시 자신의 맨 위, false일시 자신의 맨 아래를 보여주게된다
-    chat_messages.current.scrollTo(0,chat_messages.current.scrollHeight)
+    let container = document.getElementsByClassName('container')[0]
+    container.scrollTo(0,container.scrollHeight)
   }
   return (
     <>
@@ -93,7 +97,7 @@ const Chat = ({handleAside}) => {
         {({ getRootProps }) => (
           <section className={styles.dropzone}>
             <div {...getRootProps()} className={styles.dropzone}>
-              <div ref={chat_messages} id={styles.chat_messages} >
+              <div  id={styles.chat_messages} className="container">
                 <ul id={styles.chatset_ul}>
                   {newChatList(messages, nsSocket, _id, member)} 
                   {/* 채팅목록 */}
