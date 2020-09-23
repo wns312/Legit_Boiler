@@ -16,11 +16,10 @@ const Nav = () => {
     <div>
       <Menu fixed='top' inverted style={{ height : '60px', width: '100%' }}>
       <Container style={{width: '85%'}}>
-          <Menu.Item as='a' header style={{padding : '0 5px'}}>
-            <Image size='mini' src='/logo.png' position="center" style={{ margin : '0 0 0 17px'}} />      
-          </Menu.Item>
+          
           <Menu.Item as='a' header>
-            <span className={styles.titleText}>Legit</span>        
+            <Image size='mini' src='/logo.png' position="center" style={{ margin : '0 15px 0 0px'}} />      
+            <span className={styles.titleText}>LATEGUYS</span>        
           </Menu.Item>
         <Menu.Item as='a' >A</Menu.Item>
         <Menu.Item as='a' >B</Menu.Item>
