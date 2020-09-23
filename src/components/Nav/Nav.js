@@ -11,6 +11,7 @@ import {
   Menu,
   Segment,
 } from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
 const Nav = () => {
   return (
     <div>
@@ -21,11 +22,13 @@ const Nav = () => {
             <Image size='mini' src='/logo.png' position="center" style={{ margin : '0 15px 0 0px'}} />      
             <span className={styles.titleText}>LATEGUYS</span>        
           </Menu.Item>
-        <Menu.Item as='a' >A</Menu.Item>
-        <Menu.Item as='a' >B</Menu.Item>
+        <Menu.Item as='a'><span className={styles.menu}>Main</span></Menu.Item>
+        <Menu.Item as='a'><span className={styles.menu}>B</span></Menu.Item>
         
-        <Menu.Item as='a' position='right' style={{ borderStyle : 'solid', borderWidth : '0 0.1px 0 0', borderColor : 'rgb(48, 48, 48)'}}>로그인</Menu.Item>
-        <Menu.Item as='a' >회원가입</Menu.Item>
+        <Menu.Item as='a' position='right' style={{ borderStyle : 'solid', borderWidth : '0 0.1px 0 0', borderColor : 'rgb(48, 48, 48)'}}>
+          <Link to='/login'><span className={styles.menu}>Login</span></Link>
+          </Menu.Item>
+        <Menu.Item as='a' ><Link to='/register'><span className={styles.menu}>Sign Up</span></Link></Menu.Item>
       </Container>
     </Menu>
     </div>

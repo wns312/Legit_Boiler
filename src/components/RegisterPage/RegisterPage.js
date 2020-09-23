@@ -179,7 +179,7 @@ const RegisterPage = (props) => {
         <br />
         <GoogleBtn
           clientId={'297011327835-5bmnie06q1t9abcmp2sbv1a5oomfsk6g.apps.googleusercontent.com'}
-          buttonText={<>&ensp;Google Sing In</>}
+          buttonText={<>&ensp;Google Sign In</>}
           onSuccess={responseGoogle}
           onFailure={responseFail}
         />
