@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './LoginPage.module.css';
+import Nav from '../Nav/Nav';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import { useDispatch } from "react-redux"
 import {loginUser} from '../../_actions/user_action'
@@ -76,6 +77,8 @@ const LoginPage = (props) => {
   }
 
   return (
+    <>
+    <Nav></Nav>
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
     <Grid.Column style={{ maxWidth: 450 }}>
       <Header as='h2' color='blue' textAlign='center'>
@@ -123,6 +126,7 @@ const LoginPage = (props) => {
       </KaKaoBtn>
     </Grid.Column>
     </Grid>
+    </>
   );
 };
 

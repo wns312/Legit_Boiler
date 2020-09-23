@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
   image: {// 프로필이미지
     type : String, 
     required : true,
-    default : `http:${process.env.IP_ADDRESS}:9000/uploads/default_profile.png`
+    default : `uploads/default_profile.png`
   },
   socket : { 
     type: String 

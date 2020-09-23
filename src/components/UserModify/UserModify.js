@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
+import Nav from '../Nav/Nav';
 import DropZone from 'react-dropzone'
 
 const UserModify = (props) => {
@@ -91,6 +92,8 @@ const UserModify = (props) => {
   };
 
   return (
+    <>
+    <Nav></Nav>
     <div style={{
       display: 'flex', justifyContent: 'center', alignItems:'center'
       ,width: '100%', height: '100vh'
@@ -139,6 +142,7 @@ const UserModify = (props) => {
       </button>
     </form>
   </div>
+  </>
   )
 };
 

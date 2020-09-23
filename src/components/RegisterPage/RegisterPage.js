@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Nav from '../Nav/Nav';
 import { useDispatch } from "react-redux"
 import { registerUser, loginUser } from '../../_actions/user_action'
 import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
@@ -152,6 +153,8 @@ const RegisterPage = (props) => {
   };
 
   return (
+    <>
+    <Nav></Nav>
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
       <Grid.Column style={{ maxWidth: 450 }}>
         <Header as='h2' color='blue' textAlign='center'>
@@ -193,6 +196,7 @@ const RegisterPage = (props) => {
         </KaKaoBtn>
       </Grid.Column>
     </Grid>
+    </>
   );
 };
 
