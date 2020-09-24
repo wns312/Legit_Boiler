@@ -81,7 +81,7 @@ const LoginPage = (props) => {
     <Nav></Nav>
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
     <Grid.Column style={{ maxWidth: 450 }}>
-      <Header as='h2' color='blue' textAlign='center'>
+      <Header as='h2'  textAlign='center' style={{ color: 'rgb(61, 79, 88)'}}>
         Log-in to your account
       </Header>
       <Form size='large' onSubmit={onSubmitHandler}>
@@ -97,7 +97,7 @@ const LoginPage = (props) => {
             onChange={onPasswordHandler}
           />
           {!chkEmail && <span className={styles.check_hidden}>이메일 또는 비밀번호를 확인해주세요</span>}
-          <Button color='blue' fluid size='large'>
+          <Button fluid size='large' style={{backgroundColor :'rgb(36, 61, 146)', color : 'white'}}>
             Login
           </Button>
         </Segment>

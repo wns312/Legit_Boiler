@@ -157,8 +157,8 @@ const RegisterPage = (props) => {
     <Nav></Nav>
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
       <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as='h2' color='blue' textAlign='center'>
-          Sign-in
+        <Header as='h2' textAlign='center' style={{ color: 'rgb(61, 79, 88)'}}>
+          회원가입
     </Header>
         <Form size='large' onSubmit={onSubmitHandler}>
           <Segment stacked>
@@ -171,7 +171,7 @@ const RegisterPage = (props) => {
             {!HdPwd && <span className={styles.check_hidden}>비밀번호는 영문,숫자를 혼합하여 6~12자 이내로 입력해주세요</span>}
             <Form.Input fluid icon='lock' iconPosition='left' placeholder='Confirm Password' type='password' value={Confirm} onChange={onConfirmHandler} />
             {!HdMatch && <span className={styles.check_hidden}>비밀번호가 일치하지 않습니다.</span>}
-            <Button color='blue' fluid size='large'>
+            <Button fluid size='large' style={{backgroundColor :'rgb(36, 61, 146)', color : 'white'}}>
               Sign In
         </Button>
           </Segment>
