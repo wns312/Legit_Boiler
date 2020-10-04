@@ -23,7 +23,7 @@ const ModalMenu = ({isAdmin, nsTitle, username, Socket}) => {
           <p>Namespace Settings</p>
           <InviteNS Close={Close}></InviteNS>
           <LeaveNS Close={Close}></LeaveNS>
-          <CreateNS Socket={Socket}></CreateNS>
+          <div><CreateNS Socket={Socket}></CreateNS></div>
           {isAdmin && <SettingNS Close={Close}></SettingNS> } 
           {/* <hr/> */}
         </div>
