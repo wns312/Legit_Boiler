@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './About.module.css'
-import {Container, Header, Divider, Image, Segment } from 'semantic-ui-react'
+import {Container, Header, Divider, Image } from 'semantic-ui-react'
 
 import Nav from '../Nav/Nav';
 
