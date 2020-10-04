@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './EmptyChat.module.css'
 import {CreateNS} from "../modals";
-import {Container, Header, Divider, Segment } from 'semantic-ui-react'
+import {Container, Header } from 'semantic-ui-react'
 
 
 const EmptyChat = ({Socket}) => {
@@ -19,7 +19,7 @@ const EmptyChat = ({Socket}) => {
             <h4>3. NameSpace를 생성후 <i className='fas fa-plus'/> 버튼으로 채팅방을 생성할 수 있습니다.</h4>
             <h4>4. 채팅방 생성 후 채팅방을 이용할 수 있습니다.</h4>
             <h4>5. Schedule에서는 NameSpace 멤버와 같이 Schedule을 공유 할 수 있습니다.</h4><br/>
-            <img src="ex3.png"></img>
+            <img src="ex3.png" alt=""></img>
         
       </div>
       </Container>
