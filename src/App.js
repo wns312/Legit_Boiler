@@ -8,12 +8,14 @@ import Namespaces from './components/Namespaces/Namespaces';
 import UserModify from './components/UserModify/UserModify';
 import Invalid from './components/Invalid/Invalid';
 import Valid from './components/Valid/Valid';
+import About from './components/About/About';
 import Auth from "./hoc/auth"
 function App() {
   return (
     <Router>
       <Switch>
         <Route exact path="/" component={Auth(LandingPage, true)}/>
+        <Route exact path="/about" component={Auth(About, false)}/>
         <Route exact path="/login" component={Auth(LoginPage, false)}/>
         <Route exact path="/register" component={Auth(RegisterPage, false)}/>
         <Route exact path="/chat" component={Auth(Namespaces, true)}/>
