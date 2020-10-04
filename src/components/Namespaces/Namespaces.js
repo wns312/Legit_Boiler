@@ -7,6 +7,8 @@ import EmptyChat from '../EmptyChat/EmptyChat'
 import {SidebarRoom} from '../sidebars'
 import Schedule from '../Schedule/Schedule'
 
+import Axios from "axios"
+
 import './Namespaces.css';
 import {useSelector, useDispatch} from 'react-redux';
 import {inputNsList, inputCurrentNs, inputRoomList, inputCurrentRoom, inputScheduleList, inputCurrentSchedule} from '../../_actions/chat_action'
@@ -93,11 +95,23 @@ const Namespaces = (props) => {
     Aside.current.style.display = 'none' 
   }
 
+  function onClickHandler(event) {
+    Axios.get(`api/users/logout`)
+    .then(response=>{
+      if(response.data.success){
+        props.history.replace('/login')
+      }else{
+        alert("로그아웃 실패")
+      }
+      
+    })
+  }
+
   return (
     <div id='bpp'>
       <header>
         {/* <nav></nav> 네비게이션은 헤더안에? */}
-        <div className="logout">로그아웃</div>
+        <div className="logout" onClick={onClickHandler}>로그아웃</div>
       </header>
       <div id="container">
         <section id='namespace'>
