@@ -96,13 +96,16 @@ const Namespaces = (props) => {
   return (
     <div id='bpp'>
       <header>
-        <nav></nav> {/* 네비게이션은 헤더안에? */}
+        {/* <nav></nav> 네비게이션은 헤더안에? */}
+        <div className="logout">로그아웃</div>
       </header>
       <div id="container">
         <section id='namespace'>
           <ul>
-            <ArrowIcon RightArrow={RightArrow} showList={showList}></ArrowIcon>
-            {nsList && getnsList() /* 네임스페이스 데이터가 있어야 nsList를 가져온다 (당연함) */}
+          {nsList.length !==0 &&
+            <><ArrowIcon RightArrow={RightArrow} showList={showList}></ArrowIcon>
+            {getnsList()} </>
+            }
           </ul>
         </section>
         

@@ -9,14 +9,29 @@
 }
 
 header {
-  background-color:rgb(26, 61, 110);
+  background-color:rgb(0, 0, 0);
+  display: grid;
+  grid-template-columns: 1fr 80px;
+}
+
+.logout {
+  grid-column: 2;
+  text-align: center;
+  color : rgb(216, 227, 240);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding-top : 10px;
+}
+
+.logout:hover {
+  background-color:rgb(45, 46, 47);
 }
 
 #namespace {
   display : grid;
   grid-template-rows: 1fr;
   flex: 0 0 59px;
-  background-color:rgb(34, 87, 143);
+  background-color:rgb(34, 36, 35);
 }
 
 .sidebar_iconright {
@@ -98,10 +113,10 @@ header {
   flex: 0 0 221px;
   display: grid;
   grid-template-rows: 70px 1fr;
-  background-color:rgb(34, 87, 143);
+  background-color:rgb(34, 36, 35);
   border-style: solid;
   border-width: 0px 1px 0px 1px;
-  border-color: rgb(56, 104, 154);
+  border-color: rgb(0, 0, 0);
 }
 
 #schedule {
@@ -136,7 +151,6 @@ aside {
   border-color: rgb(226, 226, 226);
   display: none;
   grid-template-rows : 70px 1fr;
-  
 }
 
 @media screen and (max-width: 768px) {
