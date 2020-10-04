@@ -10,7 +10,7 @@ const Nav = () => {
           
         <Menu.Item as={Link} to='/login' header>
           <Image size='mini' src='/logo.png' position="center" style={{ margin : '0 15px 0 0px'}} />      
-          <span className={styles.titleText}>LATEGUYS</span>        
+          <span className={styles.titleText}>LAZYGUYS</span>        
         </Menu.Item>
         <Menu.Item as={Link} to='/login'><span className={styles.menu}>Main</span></Menu.Item>
         <Menu.Item as={Link} to='/about'><span className={styles.menu}>About</span></Menu.Item>
