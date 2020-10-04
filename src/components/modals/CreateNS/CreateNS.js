@@ -50,7 +50,7 @@ const CreateNS = ({Socket}) => {
 
   return (
     <>
-      <div onClick={() => { show('tiny') }}>Create NS</div>
+      <span onClick={() => { show('tiny') }}>Create NS</span>
         <Modal size={Size} open={Open} onClose={close} centered={true}>
           <Modal.Header >네임스페이스 생성</Modal.Header>
           <Modal.Content>

@@ -1,11 +1,39 @@
 #emptychat {
   flex : 1;
-  grid-row: 1 / 7;
-  grid-column: 1 / 4;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top : -5rem;
 }
-#emptychat h1 {
-  color: rgb(26, 26, 26)
+.body{
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  
+
+}
+.body h4{
+  margin-bottom: -10px;
+}
+.header{
+  flex:0 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Ns{
+  padding: 5px 5px;
+  background-color:rgb(15, 15, 15);
+  border-radius: 5px;
+  color: rgb(235, 235, 235);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.Ns:hover{
+  background-color: rgb(40, 40, 40);
+}
+body h4 .plus{
+  font-weight: 800;
 }

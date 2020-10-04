@@ -90,7 +90,7 @@ const Namespaces = (props) => {
       ? Aside.current.style.display = 'none' 
       : Aside.current.style.display = 'grid'
   }
-
+ 
   function Close() {
     Aside.current.style.display = 'none' 
   }
