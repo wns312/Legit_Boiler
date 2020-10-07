@@ -8,7 +8,7 @@ const ChatMember = ({Members}) => {
         <li className={styles.li} key={member._id}>
           <img 
           className={styles.profile} 
-          src={`${process.env.PUBLIC_URL}/${member.image}`}
+          src={member.image}
           alt="프로필"/>
           &nbsp;<span>{member.name}&nbsp;({member.email})</span>
         </li>

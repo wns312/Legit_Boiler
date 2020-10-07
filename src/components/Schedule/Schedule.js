@@ -76,7 +76,7 @@ function Schedule() {
             <>
               <img 
                 className={styles.image} 
-                src={`${process.env.PUBLIC_URL}/${event.owner.image}`}
+                src={event.owner.image}
                 alt="아바타" 
               />&ensp;
               <strong>By {event.owner.name}</strong>

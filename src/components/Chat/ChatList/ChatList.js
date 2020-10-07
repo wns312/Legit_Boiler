@@ -37,7 +37,7 @@ const ChatList = ({message, nsSocket, roomId, member}) => {
       <>
         <img 
         className={styles.chatset_image} 
-        src={`${process.env.PUBLIC_URL}/${user.image}`}
+        src={user.image}
         alt="아바타" />
         <div className={styles.chatset_name}>{user.name} <small className={styles.chatset_time}>&ensp;{convertedDate}</small></div>
       </>}
