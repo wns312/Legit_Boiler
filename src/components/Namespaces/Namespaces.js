@@ -111,7 +111,7 @@ const Namespaces = (props) => {
     <div id='bpp'>
       <header>
         {/* <nav></nav> 네비게이션은 헤더안에? */}
-        <div className="logout" onClick={onClickHandler}>로그아웃</div>
+        <div className="logout" onClick={onClickHandler}>Logout</div>
       </header>
       <div id="container">
         <section id='namespace'>
