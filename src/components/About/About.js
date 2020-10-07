@@ -4,7 +4,7 @@ import {Container, Header, Divider, Image } from 'semantic-ui-react'
 
 import Nav from '../Nav/Nav';
 
-const About = () => {
+const About = () => { 
     return (
         <>
             <Nav></Nav>

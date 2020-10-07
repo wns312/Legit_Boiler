@@ -76,7 +76,7 @@ function Schedule() {
             <>
               <img 
                 className={styles.image} 
-                src={`http://${process.env.REACT_APP_IP_ADDRESS}:9000/${event.owner.image}`}
+                src={event.owner.image}
                 alt="아바타" 
               />&ensp;
               <strong>By {event.owner.name}</strong>
